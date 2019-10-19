@@ -1,0 +1,40 @@
+# Exclude environment specific and large folders
+/venv/
+
+# IntelliJ project files/.idea/
+/.idea/
+
+.DS_Store
+.AppleDouble
+.LSOverride
+.__pycache__*
+**/__pycache__
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Large files related to deployment
+*.tar.gz
+*.whl
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.apdisk
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+
+# Database
+/db.sqlite3
