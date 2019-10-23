@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+{% load verbose_names %}
+
+{% block content %}
+    <h1>Product</h1>
+    <h3>{{ product.product_type|title }}</h3>
+    {% for name, dimension in product.get_overall_specifications %}
+        <p><strong>{% get_verbose_field_name product name %}: </strong> {{ dimension }}</p>
+    {% endfor %}
+    <p>URL: <a href="{{ product.url }}">{{ product.url }}</a></p>
+
+    <h3>Inner dimensions:</h3>
+    {% for name, dimension in product.get_inner_dimensions %}
+        <p><strong>{% get_verbose_field_name product name %}: </strong> {{ dimension }} mm</p>
+    {% endfor %}
+
+    {% if product.get_outer_dimensions %}
+        <h3>Outer dimensions:</h3>
+        {% for name, dimension in product.get_outer_dimensions %}
+            <p><strong>{% get_verbose_field_name product name %}: </strong> {{ dimension }} mm</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if product.get_special_dimensions %}
+        <h3>Suitable for:</h3>
+        {% for name, dimension in product.get_special_dimensions %}
+            <p><strong>{% get_verbose_field_name product name %}: </strong> {{ dimension }} mm</p>
+        {% endfor %}
+    {% endif %}
+
+    <h3>Price-table</h3>
+    {% for tier_price in product.price_table.all %}
+            <p><strong>Tier: </strong> {{ tier_price.tier }}
+            <strong>Price: </strong> €{{ tier_price.price }}</p>
+
+    {% endfor %}
+
+    {#    <h3>Tags</h3>#}
+    {#    {% for tag in product.tags.all %}#}
+    {#        <em class="text-muted">{{ tag }}</em>#}
+    {#    {% endfor %}#}
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+<!-- Add additional CSS in static file -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+
+{% block title %}<title>BoxGuru Beta</title>{% endblock %}
+
+
+{% block content %}
+    <h1>BoxGuru Home</h1>
+    <p>Welcome to BoxGuru, a website developed by <em>Manuel Oostveen</em>!</p>
+    <h2>Dynamic content</h2>
+    <p>BoxGuru has the following record counts:</p>
+    <ul>
+        <li><strong>Products:</strong> {{ num_products }}</li>
+        <li><strong>Product types:</strong> {{ num_producttype }}</li>
+        <li><strong>Colors:</strong> {{ num_colors }}</li>
+        <li><strong>Wall thicknesses:</strong> {{ num_wallthickness }}</li>
+        <li><strong>Products of which the description contains "doos":</strong> {{ num_test }}</li>
+        <li><strong>Mailbox boxes:</strong> {{ num_mailbox }}</li>
+
+    </ul>
+{% endblock %}
