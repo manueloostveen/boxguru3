@@ -11,6 +11,9 @@ class Color(models.Model):
     class Meta:
         ordering = ['color']
 
+    def get_absolute_url(self):
+        return reverse('color-detail', args=[str(self.id)])
+
 
 class ProductType(models.Model):
     type = models.CharField(max_length=120, verbose_name='Product Type')
@@ -30,6 +33,9 @@ class WallThickness(models.Model):
 
     def __str__(self):
         return self.wall_thickness or ''
+
+    def get_absolute_url(self):
+        return reverse('wallthickness-detail', args=[str(self.id)])
 
 
 class Tag(models.Model):

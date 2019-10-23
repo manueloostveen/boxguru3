@@ -5,7 +5,9 @@
     <h1>Product</h1>
     <h3>{{ product.product_type|title }}</h3>
     {% for name, dimension in product.get_overall_specifications %}
+        {% if dimension %}
         <p><strong>{% get_verbose_field_name product name %}: </strong> {{ dimension }}</p>
+        {% endif %}
     {% endfor %}
     <p>URL: <a href="{{ product.url }}">{{ product.url }}</a></p>
 

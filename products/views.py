@@ -50,5 +50,42 @@ class ProductListView(generic.ListView):
         context['some_data'] = 'This is just some data'
         return context
 
+    paginate_by = 10
+
 class ProductDetailView(generic.DetailView):
     model = Product
+
+class ProductTypeListView(generic.ListView):
+    model = ProductType
+
+class ProductTypeDetailView(generic.DetailView):
+    model = ProductType
+    def get_context_data(self, **kwargs):
+        context = super(ProductTypeDetailView, self).get_context_data(**kwargs)
+        context['products'] = Product.objects.filter(product_type=self.get_object())
+        return context
+
+class ColorListView(generic.ListView):
+    model = Color
+
+class ColorDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
+    model = Color
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        object_list = Product.objects.filter(color=self.get_object())
+        context = super(ColorDetailView, self).get_context_data(object_list=object_list, **kwargs)
+        return context
+
+class WallThicknessListView(generic.ListView):
+    model = WallThickness
+
+class WallThicknessDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
+    model = WallThickness
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        object_list = Product.objects.filter(wall_thickness=self.get_object())
+        context = super(WallThicknessDetailView, self).get_context_data(object_list=object_list, **kwargs)
+        return context
+

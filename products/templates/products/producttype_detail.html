@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>{{ object.type|title }}</h1>
+
+    {% for product in products %}
+        <p>
+        <a href="{% url 'product-detail' product.pk %}" >{{ product|title }}</a>
+        </p>
+
+    {% endfor %}
+{% endblock %}
