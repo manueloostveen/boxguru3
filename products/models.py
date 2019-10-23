@@ -47,6 +47,14 @@ class Tag(models.Model):
     class Meta:
         ordering = ['tag']
 
+class Company(models.Model):
+    company = models.CharField(max_length=120, verbose_name='Company')
+
+    def __str__(self):
+        return self.company
+
+    class Meta:
+        ordering = ['company']
 
 class Product(models.Model):
     # TODO make prices to have more decimals, maybe
@@ -69,7 +77,7 @@ class Product(models.Model):
     standard_size = models.CharField(max_length=5, blank=True, null=True, verbose_name='Standard size')
 
     product_type = models.ForeignKey(ProductType, on_delete=models.SET_NULL, null=True)
-    company = models.CharField(max_length=120, verbose_name='Company')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
     description = models.CharField(max_length=120, blank=True, default='', verbose_name='Product description')
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, verbose_name='Color')
     wall_thickness = models.ForeignKey(WallThickness, on_delete=models.SET_NULL, null=True, verbose_name='Wall-thickness')

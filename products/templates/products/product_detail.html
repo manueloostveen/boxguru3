@@ -26,7 +26,7 @@
     {% if product.get_special_dimensions %}
         <h3>Suitable for:</h3>
         {% for name, dimension in product.get_special_dimensions %}
-            <p><strong>{% get_verbose_field_name product name %}: </strong> {{ dimension }} mm</p>
+            <p><strong>{% get_verbose_field_name product name %}: </strong> {{ dimension }}</p>
         {% endfor %}
     {% endif %}
 
