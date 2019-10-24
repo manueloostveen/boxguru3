@@ -83,9 +83,26 @@ class WallThicknessListView(generic.ListView):
 class WallThicknessDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
     model = WallThickness
     paginate_by = 10
-
     def get_context_data(self, **kwargs):
         object_list = Product.objects.filter(wall_thickness=self.get_object())
         context = super(WallThicknessDetailView, self).get_context_data(object_list=object_list, **kwargs)
         return context
 
+
+class GenericListView(generic.ListView):
+    model = None
+    template_name = 'products/generic_list.html'
+    def get_context_data(self, **kwargs):
+        context = super(GenericListView, self).get_context_data(name=self.model._meta.verbose_name_plural.title(), **kwargs)
+        return context
+
+class GenericDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
+    model = None
+    paginate_by = 10
+    template_name = 'products/generic_detail.html'
+
+    def get_context_data(self, **kwargs):
+        instance = self.get_object()
+        object_list = instance.product_set.all()
+        context = super(GenericDetailView, self).get_context_data(object_list=object_list, **kwargs)
+        return context

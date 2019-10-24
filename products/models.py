@@ -10,6 +10,7 @@ class Color(models.Model):
 
     class Meta:
         ordering = ['color']
+        verbose_name = 'Color'
 
     def get_absolute_url(self):
         return reverse('color-detail', args=[str(self.id)])
@@ -26,6 +27,8 @@ class ProductType(models.Model):
 
     class Meta:
         ordering = ['type']
+        verbose_name = 'Product type'
+
 
 
 class WallThickness(models.Model):
@@ -37,6 +40,9 @@ class WallThickness(models.Model):
     def get_absolute_url(self):
         return reverse('wallthickness-detail', args=[str(self.id)])
 
+    class Meta:
+        verbose_name = 'Wallthickness'
+        verbose_name_plural = "Wallthicknesses"
 
 class Tag(models.Model):
     tag = models.CharField(max_length=120, verbose_name='Tag')
@@ -46,6 +52,7 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['tag']
+
 
 class Company(models.Model):
     company = models.CharField(max_length=120, verbose_name='Company')
