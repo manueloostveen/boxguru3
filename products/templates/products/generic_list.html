@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>{{ name }}</h1>
+    <h1>{{ category_name }}</h1>
     {% if object_list %}
         {% for object in object_list %}
         <li>
@@ -9,6 +9,6 @@
         </li>
         {% endfor %}
     {% else %}
-    <p>There are no colors in the database.</p>
+    <p>There are no {{ category_name }} in the database.</p>
     {% endif %}
 {% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% if perms.products.can_see_all_liked_products %}
+    {% block content %}
+        <h1>Liked products</h1>
+        {% if product_list %}
+            <ul>
+            {% for product in product_list %}
+            <li>
+                <a href="{% url 'product-detail' product.pk %}">{{ product }}</a>
+            <p>Liked by: {{ product.display_users }}</p>
+            </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>There are no liked products</p>
+        {% endif %}
+    {% endblock %}
+{% endif %}

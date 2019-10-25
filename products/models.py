@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 
 
 class Color(models.Model):
@@ -65,8 +67,8 @@ class Company(models.Model):
 
 class Product(models.Model):
     # TODO make prices to have more decimals, maybe
-    inner_dim1 = models.PositiveIntegerField(blank=False, null=True, verbose_name='Inner width')
-    inner_dim2 = models.PositiveIntegerField(blank=False, null=True, verbose_name='Inner length')
+    inner_dim1 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Inner width')
+    inner_dim2 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Inner length')
     inner_dim3 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Inner height')
     outer_dim1 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Outer width')
     outer_dim2 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Outer length')
@@ -99,8 +101,13 @@ class Product(models.Model):
 
     tags = models.ManyToManyField(Tag)
 
-    def __str__(self):
-        return str(self.product_type) + ' ' + str(self.pk)
+    users = models.ManyToManyField(User, verbose_name='Liked by')
+
+    class Meta:
+        verbose_name = 'Product'
+        verbose_name_plural = 'Products'
+        ordering = ['product_type', 'inner_dim1']
+        permissions = (('can_see_all_liked_products', 'Get list of liked products'),)
 
     def get_absolute_url(self):
         """Returns the url to access a particular instance of the model."""
@@ -109,13 +116,14 @@ class Product(models.Model):
     def display_tierprices(self):
         """Create string for TierPrice's. This is required to display the tier-prices in Admin"""
         return ' | '.join(str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all())
-    # This sets the header description
-    display_tierprices.short_description = 'Staffelkorting'
 
-    class Meta:
-        verbose_name = 'Product'
-        verbose_name_plural = 'Products'
-        ordering = ['product_type', 'inner_dim1']
+    def display_users(self):
+        """Create string for Users that liked this product."""
+        return ', '.join(str(user) for user in self.users.all())
+
+    # This sets the header descriptions
+    display_tierprices.short_description = 'Staffelkorting'
+    display_users.short_description = 'Liked by'
 
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in Product._meta.fields]
@@ -152,7 +160,13 @@ class Product(models.Model):
             return None
         return fields_values
 
-
+    def __str__(self):
+        description = str(self.product_type) + ' |'
+        inner_dimensions = self.get_inner_dimensions()
+        for field, value in inner_dimensions[:-1]:
+            description += f" {value} x "
+        description += f'{inner_dimensions[-1][1]} mm'
+        return description
 
 
 

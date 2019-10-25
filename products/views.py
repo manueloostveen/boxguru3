@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
 # Create your views here.
 from products.models import Product, WallThickness, Color, ProductType
 
@@ -14,6 +17,10 @@ def index(request):
     num_test = Product.objects.filter(description__icontains='doos').count()
     num_mailbox = Product.objects.filter(product_type__type='mailbox box').count()
 
+    # Number of visits to this view, as counted in the session variable.
+    num_visits = request.session.get('num_visits', 0)
+    request.session['num_visits'] = num_visits + 1
+
     context = {
         'num_products':  num_products,
         'num_colors': num_colors,
@@ -21,6 +28,7 @@ def index(request):
         'num_producttype': num_producttype,
         'num_test': num_test,
         'num_mailbox': num_mailbox,
+        'num_visits': num_visits,
     }
 
     # Render the HTML template index.html with the data in the context variable
@@ -93,7 +101,7 @@ class GenericListView(generic.ListView):
     model = None
     template_name = 'products/generic_list.html'
     def get_context_data(self, **kwargs):
-        context = super(GenericListView, self).get_context_data(name=self.model._meta.verbose_name_plural.title(), **kwargs)
+        context = super(GenericListView, self).get_context_data(category_name=self.model._meta.verbose_name_plural.title(), **kwargs)
         return context
 
 class GenericDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
@@ -106,3 +114,25 @@ class GenericDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
         object_list = instance.product_set.all()
         context = super(GenericDetailView, self).get_context_data(object_list=object_list, **kwargs)
         return context
+
+class LikedProductsByUserView(LoginRequiredMixin, generic.ListView):
+    """Generic class-based view listing liked products to current user"""
+    model = Product
+    template_name = 'products/product_list_liked_user.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Product.objects.filter(users=self.request.user)
+
+class AllLikedProductsByUsersView(PermissionRequiredMixin, generic.ListView):
+    """View to check all liked products"""
+    model = Product
+    template_name = 'products/product_list_liked_all.html'
+    paginate_by = 10
+
+    # set permission 'appname.permission'
+    permission_required = 'products.can_see_all_liked_products'
+
+    def get_queryset(self):
+        return Product.objects.filter(users__isnull=False)
+

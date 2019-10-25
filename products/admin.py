@@ -13,7 +13,7 @@ admin.site.register(Company)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('product_type', 'company', 'price_ex_BTW', 'display_tierprices')
+    list_display = ('product_type', 'company', 'price_ex_BTW', 'display_users', 'display_tierprices')
     list_filter = ('product_type', 'wall_thickness', 'color', 'tags')
     ## Use 'fields = ' to show only specific fields, change order, show them horizontally
     # fields = [('inner_dim1', 'inner_dim2', 'inner_dim3'),
@@ -31,13 +31,16 @@ class ProductAdmin(admin.ModelAdmin):
         ('Other specifications', {
             'fields': ('company', 'description', 'product_type', 'color', 'wall_thickness', 'url')
         }),
+        ('Liked by', {
+            'fields': ['users']
+        })
     )
 
 
 class ProductsInline(admin.TabularInline):
     """An inline class can be used to edit associated records at the same time"""
     model = Product
-    extra = 0
+    extra = 0 # extra can be used to have blank entry fields at the bottom of the list for objects
     fieldsets = (
         ('Specifications', {
             'fields': ('company', 'product_type', 'color', 'wall_thickness', 'url')

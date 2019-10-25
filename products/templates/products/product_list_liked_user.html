@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Liked products</h1>
+    {% if product_list %}
+        <ul>
+        {% for product in product_list %}
+        <li><a href="{% url 'product-detail' product.pk %}">{{ product }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no liked products</p>
+    {% endif %}
+{% endblock %}

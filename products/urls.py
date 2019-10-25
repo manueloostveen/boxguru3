@@ -2,7 +2,6 @@ from django.urls import path, re_path
 from . import views
 from .models import Product, WallThickness, Color, ProductType
 
-DETAIL_TEMPLATE = 'products/color_detail.html'
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -28,5 +27,10 @@ urlpatterns = [
     path('wallthickness/<int:pk>',
          views.GenericDetailView.as_view(
                 model=WallThickness),
-                name='wallthickness-detail')
+                name='wallthickness-detail'),
+
+    path('myproducts/', views.LikedProductsByUserView.as_view(), name='my-liked'),
+
+    path('alllikedproducts/', views.AllLikedProductsByUsersView.as_view(), name='all-liked'),
+
 ]
