@@ -248,23 +248,30 @@ def search_product(request):
 
             context['queryset'] = queryset_total
             context['form'] = form
-            if request.method == 'POST':
-                request.session['form_data'] = request.POST
 
             return render(request, template_name, context)
 
     if request.method == 'GET':
+        context['test'] = (request.session.get('form_data').get('csrfmiddlewaretoken'), request.GET.get('csrfmiddlewaretoken'))
         old_form_data = request.session.get('form_data')
-        if old_form_data:
+
+        if request.GET.get('csrfmiddlewaretoken'):
+            del request.session['form_data']
+            form = SearchProductForm(request.GET)
+            request.session['form_data'] = request.GET
+
+        elif old_form_data:
             form = SearchProductForm(old_form_data)
-            return_results(form)
 
         else:
-            context['form'] = SearchProductForm()
+            form = SearchProductForm()
 
-    if request.method == 'POST':
-        form = SearchProductForm(request.POST)
+        context['form'] = form
         return_results(form)
+
+    # if request.method == 'POST':
+    #     form = SearchProductForm(request.POST)
+    #     return_results(form)
 
     return render(request, template_name, context)
 

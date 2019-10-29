@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Search products</h1>
     {{ test }}
-    <form action='' method="post">
+    <form action='' method="get">
         {% csrf_token %}
         <table>
             {{ form.as_table }}
