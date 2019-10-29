@@ -1,0 +1,56 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Search products</h1>
+    {{ test }}
+    <form action='' method="post">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if queryset %}
+        {% for object in queryset %}
+            <li>
+                <a href="{{ object.get_absolute_url }}">{{ object }}</a>
+                {% include 'products/like_unlike_product_form.html' %}
+            </li>
+        {% endfor %}
+    {% endif %}
+
+    {% if table_data %}
+        <table>
+            <tbody>
+            {% for pl in table_data %}
+                <tr>
+                    {% for l in pl %}
+                        <td>{{ l }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% if table_data2 %}
+        <table>
+            <tbody>
+            <tr>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+
+            </tr>
+            {% for item in table_data2 %}
+                <tr>
+                    {% for value in item %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

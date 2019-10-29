@@ -4,9 +4,13 @@
     <h1>{{ object|title }}</h1>
 
     {% for object in object_list %}
-        <p>
-        <a href="{% url 'product-detail' object.pk %}" >{{ object|title }}</a>
-        </p>
+        <li>
+            <a href="{% url 'product-detail' object.pk %}" >{{ object|title }}</a>
+            {% include 'products/like_unlike_product_form.html' %}
+
+        </li>
 
     {% endfor %}
+
+
 {% endblock %}

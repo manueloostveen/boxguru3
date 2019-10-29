@@ -5,7 +5,23 @@
     {% if product_list %}
         <ul>
         {% for product in product_list %}
-        <li><a href="{% url 'product-detail' product.pk %}">{{ product }}</a></li>
+        <li><a href="{% url 'product-detail' product.pk %}">{{ product }}</a>
+        {% if user.is_authenticated %}
+                    {% if user not in product.users.all %}
+                        <form action="{% url 'like-product' pk=product.pk %}" method="POST">
+                            {% csrf_token %}
+                            <button id="like-btn" type="submit">Like</button>
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                        </form>
+                    {% else %}
+                        <form action="{% url 'unlike-product' pk=product.pk %}" method="POST">
+                            {% csrf_token %}
+                            <button id="like-btn" type="submit">Unlike</button>
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                        </form>
+                    {% endif %}
+                {% endif %}
+        </li>
         {% endfor %}
         </ul>
     {% else %}

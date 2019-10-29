@@ -1,0 +1,17 @@
+{% load to_class_name %}
+{% if user.is_authenticated and object|to_class_name == 'Product' %}
+    {% if user not in object.users.all %}
+        <form action="{% url 'like-product' pk=object.pk %}" method="POST">
+            {% csrf_token %}
+            <button id="like-btn" type="submit">Like</button>
+            <input type="hidden" name="next" value="{{ request.path }}{{ current_page }}">
+        </form>
+    {% else %}
+        <form action="{% url 'unlike-product' pk=object.pk %}" method="POST">
+            {% csrf_token %}
+            <button id="like-btn" type="submit">Unlike</button>
+            <input type="hidden" name="next" value="{{ request.path }}{{ current_page }}">
+            <input type="hidden" name="test" value="test">
+        </form>
+    {% endif %}
+{% endif %}

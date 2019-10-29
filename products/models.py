@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
-
 class Color(models.Model):
     color = models.CharField(max_length=120, verbose_name='Color', null=True)
 
@@ -32,7 +31,6 @@ class ProductType(models.Model):
         verbose_name = 'Product type'
 
 
-
 class WallThickness(models.Model):
     wall_thickness = models.CharField(max_length=50, null=True)
 
@@ -45,6 +43,7 @@ class WallThickness(models.Model):
     class Meta:
         verbose_name = 'Wallthickness'
         verbose_name_plural = "Wallthicknesses"
+
 
 class Tag(models.Model):
     tag = models.CharField(max_length=120, verbose_name='Tag')
@@ -64,6 +63,7 @@ class Company(models.Model):
 
     class Meta:
         ordering = ['company']
+
 
 class Product(models.Model):
     # TODO make prices to have more decimals, maybe
@@ -89,7 +89,8 @@ class Product(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
     description = models.CharField(max_length=120, blank=True, default='', verbose_name='Product description')
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, verbose_name='Color')
-    wall_thickness = models.ForeignKey(WallThickness, on_delete=models.SET_NULL, null=True, verbose_name='Wall-thickness')
+    wall_thickness = models.ForeignKey(WallThickness, on_delete=models.SET_NULL, null=True,
+                                       verbose_name='Wall-thickness')
     in_stock = models.BooleanField(null=True, blank=True)
 
     url = models.URLField(max_length=120, blank=True, verbose_name='URL')
@@ -107,7 +108,10 @@ class Product(models.Model):
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
         ordering = ['product_type', 'inner_dim1']
-        permissions = (('can_see_all_liked_products', 'Get list of liked products'),)
+        permissions = (
+            ('can_see_all_liked_products', 'Get list of liked products'),
+            ('create_update_delete', 'Create/update/delete products'),
+        )
 
     def get_absolute_url(self):
         """Returns the url to access a particular instance of the model."""
@@ -167,8 +171,6 @@ class Product(models.Model):
             description += f" {value} x "
         description += f'{inner_dimensions[-1][1]} mm'
         return description
-
-
 
 
 class TierPrice(models.Model):

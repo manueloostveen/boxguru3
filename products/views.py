@@ -1,10 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from products.models import Product, WallThickness, Color, ProductType
+from .forms import SearchProductForm, SearchProductModelForm
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+
+from itertools import chain
+
 
 # Create your views here.
-from products.models import Product, WallThickness, Color, ProductType
 
 def index(request):
     """View function for home page of site"""
@@ -22,7 +31,7 @@ def index(request):
     request.session['num_visits'] = num_visits + 1
 
     context = {
-        'num_products':  num_products,
+        'num_products': num_products,
         'num_colors': num_colors,
         'num_wallthickness': num_wallthickness,
         'num_producttype': num_producttype,
@@ -33,6 +42,7 @@ def index(request):
 
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'products/index.html', context=context)
+
 
 class ProductListView(generic.ListView):
     """the generic views look for templates in /application_name/the_model_name_list.html
@@ -49,6 +59,9 @@ class ProductListView(generic.ListView):
     #     # return Product.objects.all()[:5]  # Get 5 products (test)
     #
     #
+
+    paginate_by = 10
+
     def get_context_data(self, **kwargs):
         """Overriding method to add arbitrary data to the context"""
 
@@ -58,23 +71,27 @@ class ProductListView(generic.ListView):
         context['some_data'] = 'This is just some data'
         return context
 
-    paginate_by = 10
 
 class ProductDetailView(generic.DetailView):
     model = Product
 
+
 class ProductTypeListView(generic.ListView):
     model = ProductType
 
+
 class ProductTypeDetailView(generic.DetailView):
     model = ProductType
+
     def get_context_data(self, **kwargs):
         context = super(ProductTypeDetailView, self).get_context_data(**kwargs)
         context['products'] = Product.objects.filter(product_type=self.get_object())
         return context
 
+
 class ColorListView(generic.ListView):
     model = Color
+
 
 class ColorDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
     model = Color
@@ -85,12 +102,15 @@ class ColorDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
         context = super(ColorDetailView, self).get_context_data(object_list=object_list, **kwargs)
         return context
 
+
 class WallThicknessListView(generic.ListView):
     model = WallThickness
+
 
 class WallThicknessDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
     model = WallThickness
     paginate_by = 10
+
     def get_context_data(self, **kwargs):
         object_list = Product.objects.filter(wall_thickness=self.get_object())
         context = super(WallThicknessDetailView, self).get_context_data(object_list=object_list, **kwargs)
@@ -100,9 +120,19 @@ class WallThicknessDetailView(generic.DetailView, generic.list.MultipleObjectMix
 class GenericListView(generic.ListView):
     model = None
     template_name = 'products/generic_list.html'
+    paginate_by = 12
+
     def get_context_data(self, **kwargs):
-        context = super(GenericListView, self).get_context_data(category_name=self.model._meta.verbose_name_plural.title(), **kwargs)
+        context = super(GenericListView, self).get_context_data(
+            category_name=self.model._meta.verbose_name_plural.title(), **kwargs)
+        context['clsname'] = self.model.__name__
+        current_page = self.request.GET.get('page', 1)
+        if current_page != 1:
+            current_page = f"?page={current_page}"
+            context['current_page'] = current_page
+
         return context
+
 
 class GenericDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
     model = None
@@ -111,9 +141,11 @@ class GenericDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
 
     def get_context_data(self, **kwargs):
         instance = self.get_object()
+
         object_list = instance.product_set.all()
         context = super(GenericDetailView, self).get_context_data(object_list=object_list, **kwargs)
         return context
+
 
 class LikedProductsByUserView(LoginRequiredMixin, generic.ListView):
     """Generic class-based view listing liked products to current user"""
@@ -123,6 +155,7 @@ class LikedProductsByUserView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return Product.objects.filter(users=self.request.user)
+
 
 class AllLikedProductsByUsersView(PermissionRequiredMixin, generic.ListView):
     """View to check all liked products"""
@@ -136,3 +169,118 @@ class AllLikedProductsByUsersView(PermissionRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Product.objects.filter(users__isnull=False)
 
+
+def like_product(request, pk):
+    if request.method == 'POST':
+        product = Product.objects.get(pk=pk)
+        product.users.add(request.user.id)
+        product.save()
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+def unlike_product(request, pk):
+    if request.method == 'POST':
+        product = Product.objects.get(pk=pk)
+        product.users.remove(request.user.id)
+        product.save()
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+def search_product(request):
+    context = {}
+    template_name = 'products/search_products.html'
+
+    def return_results(form):
+        if form.is_valid():
+            product_type = form.cleaned_data['product_type']
+            color = form.cleaned_data['color']
+            wall_thickness = form.cleaned_data['wall_thickness']
+            width = form.cleaned_data['width']
+            length = form.cleaned_data['length']
+            height = form.cleaned_data['height']
+            diameter = form.cleaned_data['diameter']
+            error_margin = form.cleaned_data['error_margin']
+            query = {}
+
+            if product_type:
+                query['product_type'] = product_type
+            if color:
+                query['color'] = color
+            if wall_thickness:
+                query['wall_thickness'] = wall_thickness
+
+            queryset = Product.objects.filter(**query)
+            # alternative queryset to swap width and length
+            queryset_alt = Product.objects.filter(**query)
+
+            # Query products based on w/l/h
+            if width:
+                queryset = queryset.filter(inner_dim1__range=(width - error_margin, width + error_margin))
+                queryset_alt = queryset_alt.filter(inner_dim2__range=(width - error_margin, width + error_margin))
+
+            if length:
+                queryset = queryset.filter(inner_dim2__range=(length - error_margin, length + error_margin))
+                queryset_alt = queryset_alt.filter(inner_dim1__range=(length - error_margin, length + error_margin))
+
+            if height:
+                queryset = queryset.filter(inner_dim3__range=(height - error_margin, height + error_margin))
+                queryset_alt = queryset_alt.filter(
+                    inner_variable_dimension_MAX__range=(height - error_margin, height + error_margin))
+
+            # query products based on diameter
+            if diameter:
+                queryset = queryset.filter(diameter__range=(diameter - error_margin, diameter + error_margin))
+                queryset_alt = queryset_alt.filter(diameter__range=(diameter - error_margin, diameter + error_margin))
+
+            queryset_total = set(chain(queryset, queryset_alt))
+            values = ['product_type', 'inner_dim1', 'inner_dim2', 'inner_dim3', 'company']
+            products = set(chain(queryset.values_list(*values), queryset_alt.values_list(*values)))
+
+            table_data = list(zip(*products))
+            table_data2 = products
+            context['table_data'] = table_data
+            context['table_data2'] = table_data2
+
+
+            context['queryset'] = queryset_total
+            context['form'] = form
+            if request.method == 'POST':
+                request.session['form_data'] = request.POST
+
+            return render(request, template_name, context)
+
+    if request.method == 'GET':
+        old_form_data = request.session.get('form_data')
+        if old_form_data:
+            form = SearchProductForm(old_form_data)
+            return_results(form)
+
+        else:
+            context['form'] = SearchProductForm()
+
+    if request.method == 'POST':
+        form = SearchProductForm(request.POST)
+        return_results(form)
+
+    return render(request, template_name, context)
+
+
+class ProductCreate(PermissionRequiredMixin, CreateView):
+    #template_name_suffix = '_other_suffix' default template is: model_name_form.html
+    model = Product
+    fields = '__all__'
+    permission_required = 'products.create_update_delete'
+
+class ProductUpdate(PermissionRequiredMixin, UpdateView):
+    model = Product
+    fields = '__all__'
+    permission_required = 'products.create_update_delete'
+
+class ProductDelete(PermissionRequiredMixin, DeleteView):
+    model = Product
+    success_url = reverse_lazy('products')
+    permission_required = 'products.create_update_delete'
