@@ -274,6 +274,9 @@ class ProductCreate(PermissionRequiredMixin, CreateView):
     model = Product
     fields = '__all__'
     permission_required = 'products.create_update_delete'
+    # def get_form(self, form_class=None):
+    #     form = super(ProductCreate, self).get_form(form_class)
+    #     form.fields['']
 
 class ProductUpdate(PermissionRequiredMixin, UpdateView):
     model = Product
