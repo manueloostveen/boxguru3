@@ -24,6 +24,7 @@
                     </th>
                 {% endfor %}
                 <th>Bulk discount</th>
+                <th>Lowest price</th>
                 <th>Product link</th>
                 <th>Like/unlike</th>
 
@@ -34,6 +35,7 @@
                         <td>{% get_field_value object field %}</td>
                     {% endfor %}
                     <td> {{ object.display_tierprices }} </td>
+                    <td> {{ object.lowest_price }}</td>
                     <td><a href="{{ object.url }}">Go to</a></td>
                     <td>{% include 'products/like_unlike_product_form.html' %}</td>
                 </tr>

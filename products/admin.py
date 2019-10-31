@@ -26,7 +26,7 @@ class ProductAdmin(admin.ModelAdmin):
         ('Outer dimensions', {'fields': (('outer_dim1', 'outer_dim2', 'outer_dim3'), ('outer_variable_dimension_MIN', 'outer_variable_dimension_MAX'))
         }),
         ('Price', {
-            'fields': (('price_ex_BTW', 'price_incl_BTW'), 'minimum_purchase', 'price_table')
+            'fields': (('price_ex_BTW', 'price_incl_BTW'), 'minimum_purchase', 'price_table', 'lowest_price')
         }),
         ('Other specifications', {
             'fields': ('company', 'description', 'product_type', 'color', 'wall_thickness', 'url')
