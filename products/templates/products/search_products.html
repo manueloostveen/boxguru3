@@ -1,52 +1,46 @@
 {% extends "base_generic.html" %}
+{% load verbose_names %}
+{% load field_values %}
 
 {% block content %}
     <h1>Search products</h1>
     {{ test }}
     <form action='' method="get">
-        {% csrf_token %}
         <table>
             {{ form.as_table }}
         </table>
         <input type="submit" value="Submit">
+        <input type="hidden" name="form_test" value="True">
     </form>
 
+
     {% if queryset %}
-        {% for object in queryset %}
-            <li>
-                <a href="{{ object.get_absolute_url }}">{{ object }}</a>
-                {% include 'products/like_unlike_product_form.html' %}
-            </li>
-        {% endfor %}
-    {% endif %}
-
-    {% if table_data %}
-        <table>
-            <tbody>
-            {% for pl in table_data %}
-                <tr>
-                    {% for l in pl %}
-                        <td>{{ l }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-
-    {% if table_data2 %}
         <table>
             <tbody>
             <tr>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
+                {% for field in model.get_all_table_fields %}
+                    <th>
+                        {% get_verbose_field_name model field %}
+                    </th>
+                {% endfor %}
+                <th>Bulk discount</th>
+                <th>Product link</th>
+                <th>Like/unlike</th>
 
             </tr>
-            {% for item in table_data2 %}
+            {% for object in queryset %}
                 <tr>
-                    {% for value in item %}
-                        <td>{{ value }}</td>
+                    {% for field in model.get_all_table_fields %}
+                        <td>{% get_field_value object field %}</td>
+                    {% endfor %}
+                    <td> {{ object.display_tierprices }} </td>
+                    <td><a href="{{ object.url }}">Go to</a></td>
+                    <td>{% include 'products/like_unlike_product_form.html' %}</td>
+                </tr>
+                <tr>
+                    {%  get_dimensions_match object search_width search_length search_height as all_matches %}
+                    {% for match in all_matches %}
+                        <td>{{ match }}%</td>
                     {% endfor %}
                 </tr>
             {% endfor %}

@@ -195,6 +195,24 @@ def search_product(request):
     template_name = 'products/search_products.html'
 
     def return_results(form):
+
+
+            return render(request, template_name, context)
+
+    if request.method == 'GET':
+        context['test'] = request.GET
+        old_form_data = request.session.get('form_data')
+
+        if request.GET.get('form_test'):
+            form = SearchProductForm(request.GET)
+            request.session['form_data'] = request.GET
+        elif old_form_data:
+            form = SearchProductForm(old_form_data)
+        else:
+            form = SearchProductForm()
+
+        context['form'] = form
+
         if form.is_valid():
             product_type = form.cleaned_data['product_type']
             color = form.cleaned_data['color']
@@ -204,8 +222,14 @@ def search_product(request):
             height = form.cleaned_data['height']
             diameter = form.cleaned_data['diameter']
             error_margin = form.cleaned_data['error_margin']
-            query = {}
 
+            # Add search params to context
+            context['search_width'] = width
+            context['search_length'] = length
+            context['search_height'] = height
+
+            # Create query params
+            query = {}
             if product_type:
                 query['product_type'] = product_type
             if color:
@@ -214,7 +238,7 @@ def search_product(request):
                 query['wall_thickness'] = wall_thickness
 
             queryset = Product.objects.filter(**query)
-            # alternative queryset to swap width and length
+            # alternative queryset to swap width and length and check diameter
             queryset_alt = Product.objects.filter(**query)
 
             # Query products based on w/l/h
@@ -236,42 +260,17 @@ def search_product(request):
                 queryset = queryset.filter(diameter__range=(diameter - error_margin, diameter + error_margin))
                 queryset_alt = queryset_alt.filter(diameter__range=(diameter - error_margin, diameter + error_margin))
 
-            queryset_total = set(chain(queryset, queryset_alt))
-            values = ['product_type', 'inner_dim1', 'inner_dim2', 'inner_dim3', 'company']
-            products = set(chain(queryset.values_list(*values), queryset_alt.values_list(*values)))
-
-            table_data = list(zip(*products))
-            table_data2 = products
-            context['table_data'] = table_data
-            context['table_data2'] = table_data2
-
-
+            # merge querysets
+            queryset_total = queryset | queryset_alt
             context['queryset'] = queryset_total
-            context['form'] = form
+            context['model'] = Product
 
-            return render(request, template_name, context)
+            def test():
+                return "test"
 
-    if request.method == 'GET':
-        context['test'] = (request.session.get('form_data').get('csrfmiddlewaretoken'), request.GET.get('csrfmiddlewaretoken'))
-        old_form_data = request.session.get('form_data')
+            context['test_function'] = test
 
-        if request.GET.get('csrfmiddlewaretoken'):
-            del request.session['form_data']
-            form = SearchProductForm(request.GET)
-            request.session['form_data'] = request.GET
-
-        elif old_form_data:
-            form = SearchProductForm(old_form_data)
-
-        else:
-            form = SearchProductForm()
-
-        context['form'] = form
-        return_results(form)
-
-    # if request.method == 'POST':
-    #     form = SearchProductForm(request.POST)
-    #     return_results(form)
+            # create table data
 
     return render(request, template_name, context)
 

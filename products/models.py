@@ -104,6 +104,14 @@ class Product(models.Model):
 
     users = models.ManyToManyField(User, verbose_name='Liked by')
 
+    inner_dimensions = ['inner_dim1', 'inner_dim2', 'inner_dim3', 'inner_variable_dimension_MIN',
+                        'inner_variable_dimension_MAX', 'diameter']
+    outer_dimensions = ['outer_dim1', 'outer_dim2', 'outer_dim3', 'outer_variable_dimension_MIN',
+                        'outer_variable_dimension_MAX']
+    special_dimensions = ['bottles', 'standard_size']
+    specifications = ['company', 'description', 'color', 'wall_thickness']
+    price_fields = ['price_ex_BTW', 'price_incl_BTW']
+
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
@@ -125,33 +133,37 @@ class Product(models.Model):
         """Create string for Users that liked this product."""
         return ', '.join(str(user) for user in self.users.all())
 
-    # This sets the header descriptions
+    def get_all_table_fields(self):
+        return self.inner_dimensions + self.special_dimensions + self.price_fields + self.specifications
+
+    def get_dimension_fields(self):
+        return self.inner_dimensions
+
+    def get_remaining_table_fields(self):
+        return self.special_dimensions + self.price_fields + self.specifications
+
+    # This sets the header descriptions in admin
     display_tierprices.short_description = 'Staffelkorting'
     display_users.short_description = 'Liked by'
 
-    def get_fields(self):
+    def get_all_field_names(self):
         return [(field.name, field.value_to_string(self)) for field in Product._meta.fields]
 
     def get_inner_dimensions(self):
         """Returns inner dimensions"""
-        inner_dimension_list = ['inner_dim1', 'inner_dim2', 'inner_dim3', 'inner_variable_dimension_MIN',
-                                'inner_variable_dimension_MAX', 'diameter']
-        return self.get_field_value(inner_dimension_list)
+        return self.get_field_value(self.inner_dimensions)
 
     def get_outer_dimensions(self):
         """Returns outer dimensions"""
-        outer_dimension_list = ['outer_dim1', 'outer_dim2', 'outer_dim3', 'outer_variable_dimension_MIN',
-                                'outer_variable_dimension_MAX']
-        return self.get_field_value(outer_dimension_list)
+        return self.get_field_value(self.outer_dimensions)
 
     def get_special_dimensions(self):
         """Returns bottles or standard size"""
-        special_dimensions_list = ['bottles', 'standard_size']
-        return self.get_field_value(special_dimensions_list)
+        return self.get_field_value(self.special_dimensions)
 
     def get_overall_specifications(self):
-        specification_list = ['company', 'description', 'color', 'wall_thickness']
-        return self.get_field_value(specification_list)
+        """Returns overall specifications"""
+        return self.get_field_value(self.specifications)
 
     def get_field_value(self, dimension_list):
         """Helper method to return present dimensions. Yield a list of tuple (field_name, field_value)"""
