@@ -37,11 +37,14 @@ urlpatterns = [
     path('unlike/<pk>/', views.unlike_product, name='unlike-product'),
 
     path('search/', views.search_product, name='search-product'),
-
 ]
 
 urlpatterns += [
     path('products/create/', views.ProductCreate.as_view(), name='product_create'),
     path('products/<int:pk>/update/', views.ProductUpdate.as_view(), name='product_update'),
     path('products/<int:pk>/delete/', views.ProductDelete.as_view(), name='product_delete'),
+]
+
+urlpatterns += [
+    path('bootstrap/', views.bootstrap, name='bootstrap')
 ]

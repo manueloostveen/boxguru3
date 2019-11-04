@@ -2,51 +2,180 @@
 {% load verbose_names %}
 {% load field_values %}
 
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+</script>
+
+
+{#<div class="d-flex p-2 justify-content-sm-center">#}
+{#    <div class="p-2 bg-info">flex test</div>#}
+{#</div>#}
+
 {% block content %}
-    <h1>Search products</h1>
-    {{ test }}
-    <form action='' method="get">
-        <table>
-            {{ form.as_table }}
-        </table>
-        <input type="submit" value="Submit">
-        <input type="hidden" name="form_test" value="True">
-    </form>
+
+    <div class="row">
+        <div class="col-sm-8">
+            <h1 class="pt-3">..zoekkk..</h1>
 
 
-    {% if queryset %}
-        <table>
-            <tbody>
-            <tr>
-                {% for field in model.get_all_table_fields %}
-                    <th>
-                        {% get_verbose_field_name model field %}
-                    </th>
-                {% endfor %}
-                <th>Bulk discount</th>
-                <th>Lowest price</th>
-                <th>Product link</th>
-                <th>Like/unlike</th>
+            <form action='' method="get">
 
-            </tr>
-            {% for object in queryset %}
-                <tr>
-                    {% for field in model.get_all_table_fields %}
-                        <td>{% get_field_value object field %}</td>
-                    {% endfor %}
-                    <td> {{ object.display_tierprices }} </td>
-                    <td> {{ object.lowest_price }}</td>
-                    <td><a href="{{ object.url }}">Go to</a></td>
-                    <td>{% include 'products/like_unlike_product_form.html' %}</td>
-                </tr>
-                <tr>
-                    {%  get_dimensions_match object search_width search_length search_height as all_matches %}
-                    {% for match in all_matches %}
-                        <td>{{ match }}%</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+                <div class="row info-block">
+
+                    <div class="col">
+                        <h3 class="text-center text-white m-2">AFMETINGEN</h3>
+
+                        <div class="row">
+
+                            <div class="col-lg">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">B</span>
+                                    </div>
+                                    {{ form.width }}
+                                </div>
+                            </div>
+
+                            <div class="col-lg">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">L</span>
+                                    </div>
+                                    {{ form.length }}
+                                </div>
+                            </div>
+
+                            <div class="col-lg">
+                                <div class="input-group mb-3 input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">H</span>
+                                    </div>
+                                    {{ form.height }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row info-block-2 mt-2">
+                    <div class="col">
+                        <h3 class=" text-center text-white m-2">VERFIJN</h3>
+                        <div class="row">
+                            <div class="col-lg">
+                                <div class="dropdown dropright">
+                                    <button type="button"
+                                            class="btn-sm btn-block dropdown-toggle mb-2"
+                                            data-toggle="dropdown">
+                                        Type doos
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        {% for type in form.product_types %}
+                                            <ul class="dropdown-item small">{{ type }}</ul>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg">
+                                <div class="dropdown dropright">
+                                    <button type="button"
+                                            class="btn-sm btn-block dropdown-toggle mb-2"
+                                            data-toggle="dropdown">
+                                        Kwaliteit
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        {% for wall_thickness in form.wall_thicknesses %}
+                                            <ul class="dropdown-item small">{{ wall_thickness }}</ul>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg">
+                                <div class="dropdown dropright">
+                                    <button type="button"
+                                            class="btn-sm btn-block dropdown-toggle mb-3"
+                                            data-toggle="dropdown">
+                                        Kleuren
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        {% for color in form.colors %}
+                                            <ul class="dropdown-item small">{{ color }}</ul>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
+                <input type="hidden" name="form_test" value="True">
+            </form>
+        </div>
+    </div>
+
+
+    <div class="row">
+        {% if queryset %}
+            <div class="col-sm-8">
+                <div class="alert alert-success alert-dismissible mt-3">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Yes!</strong> Er zijn {{ queryset.count }} producten gevonden.
+                </div>
+            </div>
+            <div class="container-fluid">
+
+
+                <div class="table-responsive pt-3">
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Type</th>
+                            {% for field in model.get_all_table_fields %}
+                                <th>
+                                    {% get_verbose_field_name model field %}
+                                </th>
+                            {% endfor %}
+                            <th>Bulk discount</th>
+                            <th>Lowest price</th>
+                            <th>Product link</th>
+                            <th>Like/unlike</th>
+
+                        </tr>
+                        </thead>
+                        {% for object in queryset %}
+                            <tbody>
+
+                            <tr>
+                                <td>{{ object.product_type }}</td>
+                                {% for field in model.get_all_table_fields %}
+                                    <td>{% get_field_value object field %}</td>
+                                {% endfor %}
+                                <td>
+                                    <a href="#" data-toggle="popover" title="Popover Header"
+                                       data-content="Some content inside popover">Toggle popover</a>
+                                    {{ object.display_tierprices }}
+                                </td>
+                                <td> {{ object.lowest_price }}</td>
+                                <td><a href="{{ object.url }}">Go to</a></td>
+                                <td>{% include 'products/like_unlike_product_form.html' %}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                {% get_dimensions_match object search_width search_length search_height as all_matches %}
+                                {% for match in all_matches %}
+                                    <td>{{ match }}%</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+
 {% endblock %}

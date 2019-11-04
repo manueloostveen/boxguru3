@@ -1,0 +1,73 @@
+.sidebar-nav {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+}
+
+.jumbotron {
+    background-color: #ec42f5;
+}
+
+.btn-primary {
+    background-color: lightslategray;
+}
+
+#filter-picks {
+    background-color: #ec42f5
+}
+
+#filter {
+    color: green;
+}
+
+.item {
+    display: flex;
+    flex-direction: row;
+}
+
+.input-group-text {
+    width: 28px;
+}
+
+.table-condensed {
+    font-size: 10px;
+}
+
+.info-block {
+    border-radius: 0.2rem;
+    background-color: #73AD21;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin: 0;
+
+}
+
+.info-block-2 {
+    border-radius: 0.2rem;
+    background-color: #73AD21;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin: 0;
+}
+
+
+body {
+  font-family: Arvo, Charcoal, sans-serif;
+}
+
+h1 {
+    font-family: 'Alfa Slab One', Charcoal, sans-serif;
+    font-size: 40px;
+    letter-spacing: 1px;
+    color: #5e008b;
+}
+
+
+h3 {
+    font-family: 'Alfa Slab One', Charcoal, sans-serif;
+    font-size: 25px;
+    letter-spacing: 1px;
+    color: #5e008b;
+}
+
+

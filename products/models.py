@@ -103,7 +103,7 @@ class Product(models.Model):
 
     tags = models.ManyToManyField(Tag)
 
-    users = models.ManyToManyField(User, verbose_name='Liked by', null=True, blank=True)
+    users = models.ManyToManyField(User, verbose_name='Liked by', blank=True)
 
     inner_dimensions = ['inner_dim1', 'inner_dim2', 'inner_dim3', 'inner_variable_dimension_MIN',
                         'inner_variable_dimension_MAX', 'diameter']
@@ -112,16 +112,6 @@ class Product(models.Model):
     special_dimensions = ['bottles', 'standard_size']
     specifications = ['company', 'description', 'color', 'wall_thickness']
     price_fields = ['price_ex_BTW', 'price_incl_BTW']
-
-    def get_lowest_bulk_price(self):
-        all_tiers = self.price_table.all()
-        lowest_price = float('inf')
-        for tier in all_tiers:
-            price = tier.price
-            if price < lowest_price:
-                lowest_price = price
-        # test
-        return lowest_price
 
     class Meta:
         verbose_name = 'Product'
@@ -194,10 +184,6 @@ class Product(models.Model):
             description += f" {value} x "
         description += f'{inner_dimensions[-1][1]} mm'
         return description
-
-    def save(self, *args, **kwargs):
-        self.lowest_price = self.get_lowest_bulk_price()
-        super(Product, self).save(*args, **kwargs)
 
 
 class TierPrice(models.Model):

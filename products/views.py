@@ -9,6 +9,7 @@ from products.models import Product, WallThickness, Color, ProductType
 from .forms import SearchProductForm, SearchProductModelForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 from itertools import chain
 
@@ -194,83 +195,84 @@ def search_product(request):
     context = {}
     template_name = 'products/search_products.html'
 
-    def return_results(form):
-
-
-            return render(request, template_name, context)
-
     if request.method == 'GET':
-        context['test'] = request.GET
-        old_form_data = request.session.get('form_data')
 
         if request.GET.get('form_test'):
             form = SearchProductForm(request.GET)
-            request.session['form_data'] = request.GET
-        elif old_form_data:
-            form = SearchProductForm(old_form_data)
+
+            # save form data in session
+            request.session['width'] = request.GET['width']
+            request.session['length'] = request.GET['length']
+            request.session['height'] = request.GET['height']
+            request.session['product_types'] = request.GET.getlist('product_types')
+            request.session['wall_thicknesses'] = request.GET.getlist('wall_thicknesses')
+            request.session['colors'] = request.GET.getlist('colors')
+            request.session['searched'] = True
+
+        elif request.session.get('searched'):
+            data = {
+                'width': request.session['width'],
+                'length': request.session['length'],
+                'height': request.session['height'],
+                'product_types': request.session['product_types'],
+                'wall_thicknesses': request.session['wall_thicknesses'],
+                'colors': request.session['colors']
+            }
+            form = SearchProductForm(data)
+
         else:
             form = SearchProductForm()
 
         context['form'] = form
-
         if form.is_valid():
-            product_type = form.cleaned_data['product_type']
-            color = form.cleaned_data['color']
-            wall_thickness = form.cleaned_data['wall_thickness']
+
             width = form.cleaned_data['width']
             length = form.cleaned_data['length']
             height = form.cleaned_data['height']
             diameter = form.cleaned_data['diameter']
-            error_margin = form.cleaned_data['error_margin']
+            colors = form.cleaned_data['colors']
+            wall_thicknesses = form.cleaned_data['wall_thicknesses']
+            product_types = form.cleaned_data['product_types']
+
+            # Q objects checkboxes
+            qcolors = Q(color__in=colors)
+            qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
+            qproduct_types = Q(product_type__in=product_types)
+
+            error_margin = 50
+
+            # Q objects search fields
+            qwidth = Q()
+            qlength = Q()
+            qheight = Q()
+            qdiameter = Q()
+
+            if width:
+                qwidth = Q(inner_dim1__range=(width - error_margin, width + error_margin)) | Q(inner_dim2__range=(width - error_margin, width + error_margin))
+            if length:
+                qlength = Q(inner_dim2__range=(length - error_margin, length + error_margin)) | Q(inner_dim1__range=(length - error_margin, length + error_margin))
+            if height:
+                qheight = Q(inner_dim3__range=(height - error_margin, height + error_margin)) | Q(inner_variable_dimension_MAX__range=(height - error_margin, height + error_margin))
+            if diameter:
+                qdiameter = Q(diameter__range=(diameter - error_margin, diameter + error_margin)) | Q(diameter__range=(diameter - error_margin, diameter + error_margin))
+
+            queryset_qobjects = Product.objects.filter(
+                qcolors,
+                qwall_thicknesses,
+                qproduct_types,
+                qwidth,
+                qlength,
+                qheight,
+                qdiameter
+            )
 
             # Add search params to context
             context['search_width'] = width
             context['search_length'] = length
             context['search_height'] = height
-
-            # Create query params
-            query = {}
-            if product_type:
-                query['product_type'] = product_type
-            if color:
-                query['color'] = color
-            if wall_thickness:
-                query['wall_thickness'] = wall_thickness
-
-            queryset = Product.objects.filter(**query)
-            # alternative queryset to swap width and length and check diameter
-            queryset_alt = Product.objects.filter(**query)
-
-            # Query products based on w/l/h
-            if width:
-                queryset = queryset.filter(inner_dim1__range=(width - error_margin, width + error_margin))
-                queryset_alt = queryset_alt.filter(inner_dim2__range=(width - error_margin, width + error_margin))
-
-            if length:
-                queryset = queryset.filter(inner_dim2__range=(length - error_margin, length + error_margin))
-                queryset_alt = queryset_alt.filter(inner_dim1__range=(length - error_margin, length + error_margin))
-
-            if height:
-                queryset = queryset.filter(inner_dim3__range=(height - error_margin, height + error_margin))
-                queryset_alt = queryset_alt.filter(
-                    inner_variable_dimension_MAX__range=(height - error_margin, height + error_margin))
-
-            # query products based on diameter
-            if diameter:
-                queryset = queryset.filter(diameter__range=(diameter - error_margin, diameter + error_margin))
-                queryset_alt = queryset_alt.filter(diameter__range=(diameter - error_margin, diameter + error_margin))
-
-            # merge querysets
-            queryset_total = queryset | queryset_alt
-            context['queryset'] = queryset_total
+            context['queryset'] = queryset_qobjects
+            context['products_found'] = len(queryset_qobjects)
             context['model'] = Product
-
-            def test():
-                return "test"
-
-            context['test_function'] = test
-
-            # create table data
 
     return render(request, template_name, context)
 
@@ -293,3 +295,10 @@ class ProductDelete(PermissionRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('products')
     permission_required = 'products.create_update_delete'
+
+def bootstrap(request):
+
+    context = {}
+    template_name = 'products/bootstrap.html'
+    context['queryset'] = Product.objects.all()
+    return render(request, template_name, context)
