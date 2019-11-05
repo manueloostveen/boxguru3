@@ -6,7 +6,7 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from products.models import Product, WallThickness, Color, ProductType
-from .forms import SearchProductForm, SearchProductModelForm
+from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q
@@ -196,6 +196,11 @@ def search_product(request):
     template_name = 'products/search_products.html'
 
     if request.method == 'GET':
+        # Search box form
+        box_form = SearchBoxForm()
+        context['box_form'] = box_form
+        tube_form = SearchTubeForm()
+        context['tube_form'] = tube_form
 
         if request.GET.get('form_test'):
             form = SearchProductForm(request.GET)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Color, ProductType, WallThickness, Product, Tag, TierPrice, Company
+from .models import Color, ProductType, WallThickness, Product, Tag, TierPrice, Company, MainCategory
 
 # Register your models here.
 # admin.site.register(Color)
@@ -9,6 +9,7 @@ from .models import Color, ProductType, WallThickness, Product, Tag, TierPrice, 
 admin.site.register(Tag)
 admin.site.register(TierPrice)
 admin.site.register(Company)
+admin.site.register(MainCategory)
 
 
 @admin.register(Product)
@@ -62,4 +63,5 @@ class WallThicknessAdmin(admin.ModelAdmin):
 
 @admin.register(ProductType)
 class ProductTypeAdmin(admin.ModelAdmin):
-    inlines = [ProductsInline]
+    # inlines = [ProductsInline]
+    pass

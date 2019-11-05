@@ -3,6 +3,17 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
+class MainCategory(models.Model):
+    category = models.CharField(max_length=120, verbose_name='Hoofdcategorie', null=True)
+
+    def __str__(self):
+        return self.category
+
+    class Meta:
+        ordering = ['category']
+        verbose_name = 'Hoofdcategorie'
+        verbose_name_plural = 'Hoofdcategoriën'
+
 class Color(models.Model):
     color = models.CharField(max_length=120, verbose_name='Color', null=True)
 
@@ -19,6 +30,7 @@ class Color(models.Model):
 
 class ProductType(models.Model):
     type = models.CharField(max_length=120, verbose_name='Product Type')
+    main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.type
@@ -180,9 +192,10 @@ class Product(models.Model):
     def __str__(self):
         description = str(self.product_type) + ' |'
         inner_dimensions = self.get_inner_dimensions()
-        for field, value in inner_dimensions[:-1]:
-            description += f" {value} x "
-        description += f'{inner_dimensions[-1][1]} mm'
+        if inner_dimensions != None:
+            for field, value in inner_dimensions[:-1]:
+                description += f" {value} x "
+            description += f'{inner_dimensions[-1][1]} mm'
         return description
 
 
