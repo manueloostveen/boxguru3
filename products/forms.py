@@ -93,6 +93,7 @@ class SearchBoxForm(forms.Form):
 
         # Q objects & queryset for all box main_categories
         q_objects = (Q(category=category) for category in box_cat.values())
+
         main_category_queryset = MainCategory.objects.filter(reduce(operator.or_, q_objects))
 
         # # Q objects to select products that exclude not box categories
@@ -155,17 +156,3 @@ class SearchTubeForm(forms.Form):
         self.fields['colors'].queryset = color_qset
         self.fields['colors'].initial = [color for color in color_qset]
 
-    pass
-
-class SearchProductModelForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = [
-            'product_type',
-            'color',
-            'wall_thickness',
-            'inner_dim1',
-            'inner_dim2',
-            'inner_dim3',
-            'diameter',
-        ]

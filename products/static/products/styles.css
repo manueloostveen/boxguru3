@@ -52,7 +52,7 @@
 
 
 body {
-  font-family: Arvo, Charcoal, sans-serif;
+    font-family: Arvo, Charcoal, sans-serif;
 }
 
 h1 {
@@ -69,5 +69,6 @@ h3 {
     letter-spacing: 1px;
     color: #5e008b;
 }
+
 
 

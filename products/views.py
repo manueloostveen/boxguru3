@@ -203,13 +203,13 @@ def search_product(request):
         context['tube_form'] = tube_form
 
         if request.GET.get('form_test'):
-            form = SearchProductForm(request.GET)
+            form = SearchBoxForm(request.GET)
 
             # save form data in session
             request.session['width'] = request.GET['width']
             request.session['length'] = request.GET['length']
             request.session['height'] = request.GET['height']
-            request.session['product_types'] = request.GET.getlist('product_types')
+            request.session['main_categories'] = request.GET.getlist('main_categories')
             request.session['wall_thicknesses'] = request.GET.getlist('wall_thicknesses')
             request.session['colors'] = request.GET.getlist('colors')
             request.session['searched'] = True
@@ -219,14 +219,14 @@ def search_product(request):
                 'width': request.session['width'],
                 'length': request.session['length'],
                 'height': request.session['height'],
-                'product_types': request.session['product_types'],
+                'main_categories': request.session['main_categories'],
                 'wall_thicknesses': request.session['wall_thicknesses'],
                 'colors': request.session['colors']
             }
-            form = SearchProductForm(data)
+            form = SearchBoxForm(data)
 
         else:
-            form = SearchProductForm()
+            form = SearchBoxForm()
 
         context['form'] = form
         if form.is_valid():
@@ -234,15 +234,15 @@ def search_product(request):
             width = form.cleaned_data['width']
             length = form.cleaned_data['length']
             height = form.cleaned_data['height']
-            diameter = form.cleaned_data['diameter']
+            diameter = form.cleaned_data.get('diameter')
             colors = form.cleaned_data['colors']
             wall_thicknesses = form.cleaned_data['wall_thicknesses']
-            product_types = form.cleaned_data['product_types']
+            main_categories = form.cleaned_data['main_categories']
 
             # Q objects checkboxes
             qcolors = Q(color__in=colors)
             qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
-            qproduct_types = Q(product_type__in=product_types)
+            qproduct_types = Q(product_type__main_category__in=main_categories)
 
             error_margin = 50
 
@@ -304,6 +304,6 @@ class ProductDelete(PermissionRequiredMixin, DeleteView):
 def bootstrap(request):
 
     context = {}
-    template_name = 'products/bootstrap.html'
+    template_name = 'products/bootstrap2.html'
     context['queryset'] = Product.objects.all()
     return render(request, template_name, context)

@@ -36,7 +36,6 @@ box_main_category_dict = {
     'FLESSEN_DOZEN': 'Flessendozen',
     'VEILIGHEIDS_DOZEN': 'Veiligheidsdozen',
     'SPECIALE_DOZEN': 'Speciale dozen',
-    'VERZENDKOKERS': 'Verzendkokers',
     'VERZEND_DOZEN': 'Verzenddozen',
     'WIKKEL_DOZEN': 'Wikkelverpakkingen en -dozen',
     'VERHUIS_DOZEN': 'Verhuis-, ordner- en archiefdozen',
