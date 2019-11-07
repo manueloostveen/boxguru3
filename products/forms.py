@@ -156,3 +156,41 @@ class SearchTubeForm(forms.Form):
         self.fields['colors'].queryset = color_qset
         self.fields['colors'].initial = [color for color in color_qset]
 
+class SearchEnvelopeBagForm(forms.Form):
+    width = forms.IntegerField(required=False, label='Height in mm', widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Breedte in mm",
+    }))
+
+    length = forms.IntegerField(required=False, label='Length in mm', widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Lengte in mm",
+    }))
+
+    categories = forms.ModelMultipleChoiceField(
+        queryset=None,
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        initial=None
+    )
+
+    colors = forms.ModelMultipleChoiceField(
+        queryset=None,
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        initial=None
+    )
+    def __init__(self, *args, **kwargs):
+        super(SearchEnvelopeBagForm, self).__init__(*args, **kwargs)
+
+        main_category_qset = MainCategory.objects.get(category='Enveloppen & zakken')
+        category_qset = main_category_qset.producttype_set.all()
+
+        products_qset = Product.objects.filter(product_type__main_category__category='Enveloppen & zakken')
+        color_qset = Color.objects.filter(product__in=products_qset).distinct()
+
+        # populate initial values and queryset for selectboxes
+        self.fields['categories'].queryset = category_qset
+        self.fields['categories'].initial = [category for category in category_qset]
+        self.fields['colors'].queryset = color_qset
+        self.fields['colors'].initial = [color for color in color_qset]

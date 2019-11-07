@@ -52,6 +52,37 @@
     margin: 0;
 }
 
+.info-block-middle {
+    border-radius: 0.2rem;
+    background-color: #73AD21;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin: 0;
+}
+
+.info-block-right {
+    border-bottom-left-radius: 0.2rem;
+    border-bottom-right-radius: 0.2rem;
+    border-top-left-radius: 0.2rem;
+    background-color: #73AD21;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin: 0;
+}
+
+.checkbox-cell {
+    width: 50% !important;
+    /*text-align: center;*/
+}
+
+label {
+    margin-left: 18px;
+}
+
+label input[type='checkbox'] {
+    margin-left: -18px;
+}
+
 
 body {
     font-family: Arvo, Charcoal, sans-serif;
