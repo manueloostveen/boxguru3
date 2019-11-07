@@ -195,26 +195,34 @@ def search_product(request):
     context = {}
     template_name = 'products/search_products.html'
 
-    if request.method == 'GET':
-        # Search box form
-        box_form = SearchBoxForm()
-        context['box_form'] = box_form
-        tube_form = SearchTubeForm()
-        context['tube_form'] = tube_form
 
-        if request.GET.get('form_test'):
-            form = SearchBoxForm(request.GET)
+    if request.method == 'GET':
+
+        if request.GET.get('box-form') or request.GET.get('tube-form'):
+            if request.GET.get('box-form'):
+                box_form = SearchBoxForm(request.GET)
+                tube_form = SearchTubeForm()
+                context['box_form'] = box_form
+                context['tube_form'] = tube_form
+                request.session['searched'] = 'box'
+
+            elif request.GET.get('tube-form'):
+                tube_form = SearchTubeForm(request.GET)
+                box_form = SearchBoxForm()
+                context['box_form'] = box_form
+                context['tube_form'] = tube_form
+                request.session['searched'] = 'tube'
 
             # save form data in session
-            request.session['width'] = request.GET['width']
-            request.session['length'] = request.GET['length']
-            request.session['height'] = request.GET['height']
+            request.session['width'] = request.GET.get('width')
+            request.session['length'] = request.GET.get('length')
+            request.session['height'] = request.GET.get('height')
+            request.session['diameter'] = request.GET.get('diameter')
             request.session['main_categories'] = request.GET.getlist('main_categories')
             request.session['wall_thicknesses'] = request.GET.getlist('wall_thicknesses')
             request.session['colors'] = request.GET.getlist('colors')
-            request.session['searched'] = True
 
-        elif request.session.get('searched'):
+        elif request.session.get('searched') == 'box':
             data = {
                 'width': request.session['width'],
                 'length': request.session['length'],
@@ -223,61 +231,94 @@ def search_product(request):
                 'wall_thicknesses': request.session['wall_thicknesses'],
                 'colors': request.session['colors']
             }
-            form = SearchBoxForm(data)
+            box_form = SearchBoxForm(data)
+            tube_form = SearchTubeForm()
+            context['box_form'] = box_form
+            context['tube_form'] = tube_form
+
+        elif request.session.get('searched') == 'tube':
+            data = {
+                'length': request.session['length'],
+                'diameter': request.session['diameter'],
+                'main_categories': request.session['main_categories'],
+                'wall_thicknesses': request.session['wall_thicknesses'],
+                'colors': request.session['colors'],
+            }
+            tube_form = SearchTubeForm(data)
+            box_form = SearchBoxForm()
+            context['box_form'] = box_form
+            context['tube_form'] = tube_form
 
         else:
-            form = SearchBoxForm()
+            # Search box form
+            box_form = SearchBoxForm()
+            tube_form = SearchTubeForm()
+            context['box_form'] = box_form
+            context['tube_form'] = tube_form
 
-        context['form'] = form
-        if form.is_valid():
+        # testing testing
+        if request.session.get('searched') == 'box':
+            form = box_form
+        elif request.session.get('searched') == 'tube':
+            form = tube_form
+        else:
+            form = None
 
-            width = form.cleaned_data['width']
-            length = form.cleaned_data['length']
-            height = form.cleaned_data['height']
-            diameter = form.cleaned_data.get('diameter')
-            colors = form.cleaned_data['colors']
-            wall_thicknesses = form.cleaned_data['wall_thicknesses']
-            main_categories = form.cleaned_data['main_categories']
+        if form:
+            if form.is_valid():
 
-            # Q objects checkboxes
-            qcolors = Q(color__in=colors)
-            qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
-            qproduct_types = Q(product_type__main_category__in=main_categories)
+                width = form.cleaned_data.get('width')
+                length = form.cleaned_data.get('length')
+                height = form.cleaned_data.get('height')
+                diameter = form.cleaned_data.get('diameter')
+                colors = form.cleaned_data.get('colors')
+                wall_thicknesses = form.cleaned_data.get('wall_thicknesses')
+                main_categories = form.cleaned_data.get('main_categories')
+                categories = form.cleaned_data.get('categories')
 
-            error_margin = 50
 
-            # Q objects search fields
-            qwidth = Q()
-            qlength = Q()
-            qheight = Q()
-            qdiameter = Q()
+                # Q objects checkboxes
+                qcolors = Q(color__in=colors)
+                qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
+                if main_categories:
+                    qproduct_types = Q(product_type__main_category__in=main_categories)
+                elif categories:
+                    qproduct_types = Q(product_type__in=categories)
+                error_margin = 50
 
-            if width:
-                qwidth = Q(inner_dim1__range=(width - error_margin, width + error_margin)) | Q(inner_dim2__range=(width - error_margin, width + error_margin))
-            if length:
-                qlength = Q(inner_dim2__range=(length - error_margin, length + error_margin)) | Q(inner_dim1__range=(length - error_margin, length + error_margin))
-            if height:
-                qheight = Q(inner_dim3__range=(height - error_margin, height + error_margin)) | Q(inner_variable_dimension_MAX__range=(height - error_margin, height + error_margin))
-            if diameter:
-                qdiameter = Q(diameter__range=(diameter - error_margin, diameter + error_margin)) | Q(diameter__range=(diameter - error_margin, diameter + error_margin))
+                # Q objects search fields
+                qwidth = Q()
+                qlength = Q()
+                qheight = Q()
+                qdiameter = Q()
 
-            queryset_qobjects = Product.objects.filter(
-                qcolors,
-                qwall_thicknesses,
-                qproduct_types,
-                qwidth,
-                qlength,
-                qheight,
-                qdiameter
-            )
+                if width:
+                    qwidth = Q(inner_dim1__range=(width - error_margin, width + error_margin)) | Q(inner_dim2__range=(width - error_margin, width + error_margin))
+                if length:
+                    qlength = Q(inner_dim2__range=(length - error_margin, length + error_margin)) | Q(inner_dim1__range=(length - error_margin, length + error_margin))
+                if height:
+                    qheight = Q(inner_dim3__range=(height - error_margin, height + error_margin)) | Q(inner_variable_dimension_MAX__range=(height - error_margin, height + error_margin))
+                if diameter:
+                    qdiameter = Q(diameter__range=(diameter - error_margin, diameter + error_margin)) | Q(diameter__range=(diameter - error_margin, diameter + error_margin))
 
-            # Add search params to context
-            context['search_width'] = width
-            context['search_length'] = length
-            context['search_height'] = height
-            context['queryset'] = queryset_qobjects
-            context['products_found'] = len(queryset_qobjects)
-            context['model'] = Product
+                queryset_qobjects = Product.objects.filter(
+                    qcolors,
+                    qwall_thicknesses,
+                    qproduct_types,
+                    qwidth,
+                    qlength,
+                    qheight,
+                    qdiameter
+                )
+
+                # Add search params to context
+                context['search_width'] = width
+                context['search_length'] = length
+                context['search_height'] = height
+                context['search_diameter'] = diameter
+                context['queryset'] = queryset_qobjects
+                context['products_found'] = len(queryset_qobjects)
+                context['model'] = Product
 
     return render(request, template_name, context)
 

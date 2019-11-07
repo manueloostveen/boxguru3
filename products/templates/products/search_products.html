@@ -23,20 +23,27 @@
 
     <div class="row">
         <div class="col-sm-8">
-            <h1 class="pt-3">zoek doos</h1>
+
+            <h1 class="pt-3">..zoekkk..</h1>
 
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+                    <a class="nav-item nav-item-bg-1 nav-link col active" id="nav-home-tab"
+                       data-toggle="tab"
+                       href="#nav-dozen" role="tab"
                        aria-controls="nav-home" aria-selected="true">DOZEN</a>
-                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-                       aria-controls="nav-profile" aria-selected="false">Profile</a>
-                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-                       aria-controls="nav-contact" aria-selected="false">Contact</a>
+                    <a class="nav-item nav-link col" id="nav-profile-tab" data-toggle="tab"
+                       href="#nav-verzendkokers"
+                       role="tab"
+                       aria-controls="nav-profile" aria-selected="false">KOKERS</a>
+                    <a class="nav-item nav-link col" id="nav-contact-tab" data-toggle="tab"
+                       href="#nav-overig"
+                       role="tab"
+                       aria-controls="nav-contact" aria-selected="false">OVERIG</a>
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="tab-pane show active" id="nav-dozen" role="tabpanel" aria-labelledby="nav-home-tab">
                     <form action='' method="get">
 
                         <div class="row info-block">
@@ -51,7 +58,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">B</span>
                                             </div>
-                                            {{ form.width }}
+                                            {{ box_form.width }}
                                         </div>
                                     </div>
 
@@ -60,7 +67,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">L</span>
                                             </div>
-                                            {{ form.length }}
+                                            {{ box_form.length }}
                                         </div>
                                     </div>
 
@@ -69,7 +76,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">H</span>
                                             </div>
-                                            {{ form.height }}
+                                            {{ box_form.height }}
                                         </div>
                                     </div>
                                 </div>
@@ -90,7 +97,7 @@
                                         </button>
                                         <div id="main-categories" class="collapse" data-parent="#accordion">
                                             <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for type in form.main_categories %}
+                                                {% for type in box_form.main_categories %}
                                                     <div class="small text-white p-1">{{ type }}</div>
                                                 {% endfor %}
                                             </div>
@@ -106,7 +113,7 @@
                                         </button>
                                         <div id="wallthickness" class="collapse" data-parent="#accordion">
                                             <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for wall_thickness in form.wall_thicknesses %}
+                                                {% for wall_thickness in box_form.wall_thicknesses %}
                                                     <div class="small text-white p-1">{{ wall_thickness }}</div>
                                                 {% endfor %}
                                             </div>
@@ -122,7 +129,8 @@
                                         </button>
                                         <div class="collapse" id="colors" data-parent="#accordion">
                                             <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for color in form.colors %}
+                                                {#{% for color in form.colors|slice:":4" %}#}
+                                                {% for color in box_form.colors %}
                                                     <div class="p-1 text-white small">{{ color }}</div>
                                                 {% endfor %}
                                             </div>
@@ -133,11 +141,104 @@
                         </div>
 
                         <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
-                        <input type="hidden" name="form_test" value="True">
+                        <input type="hidden" name="box-form" value="True">
                     </form>
                 </div>
-                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-                <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+                <div class="tab-pane" id="nav-verzendkokers" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <form action='' method="get">
+
+                        <div class="row info-block">
+
+                            <div class="col">
+                                <h3 class="text-center text-white m-2">AFMETINGEN</h3>
+
+                                <div class="row">
+
+                                    <div class="col-lg">
+                                        <div class="input-group mb-2 input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">&Oslash</span>
+                                            </div>
+                                            {{ tube_form.diameter }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg">
+                                        <div class="input-group mb-3 input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">L</span>
+                                            </div>
+                                            {{ tube_form.length }}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row info-block-2 mt-2 pb-2">
+
+                            <div class="col" id="accordion">
+                                <h3 class=" text-center text-white m-2">VERFIJN</h3>
+                                <div class="row">
+                                    <div class="col-lg">
+                                        <button type="button"
+                                                class="btn-sm btn-block mb-2"
+                                                data-toggle="collapse"
+                                                data-target="#main-categories">
+                                            Type koker
+                                        </button>
+                                        <div id="main-categories" class="collapse" data-parent="#accordion">
+                                            <div class="d-flex align-content-start flex-wrap pt-2">
+                                                {% for type in tube_form.categories %}
+                                                    <div class="small text-white p-1">{{ type }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg">
+                                        <button type="button"
+                                                class="btn-sm btn-block mb-2"
+                                                data-toggle="collapse"
+                                                data-target="#wallthickness">
+                                            Kwaliteit
+                                        </button>
+                                        <div id="wallthickness" class="collapse" data-parent="#accordion">
+                                            <div class="d-flex align-content-start flex-wrap pt-2">
+                                                {% for wall_thickness in tube_form.wall_thicknesses %}
+                                                    <div class="small text-white p-1">{{ wall_thickness }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg">
+                                        <button type="button"
+                                                class="btn-sm btn-block mb-2"
+                                                data-toggle="collapse"
+                                                data-target="#colors">
+                                            Kleuren
+                                        </button>
+                                        <div class="collapse" id="colors" data-parent="#accordion">
+                                            <div class="d-flex align-content-start flex-wrap pt-2">
+                                                {% for color in tube_form.colors %}
+                                                    <div class="p-1 text-white small">{{ color }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
+                        <input type="hidden" name="tube-form" value="True">
+                    </form>
+                </div>
+                <div class="tab-pane" id="nav-overig" role="tabpanel" aria-labelledby="nav-contact-tab">
+                    ...
+                </div>
             </div>
 
         </div>
@@ -204,6 +305,41 @@
         {% endif %}
     </div>
 
+    <script>
+        {#    $(document).ready(function () {#}
+        {#        if (location.hash) {#}
+        {#            $("a[href='" + location.hash + "']").tab("show");#}
+        {#        }#}
+        {#        $(document.body).on("click", "a[data-toggle='tab']", function (event) {#}
+        {#            location.hash = this.getAttribute("href");#}
+        {#        });#}
+        {#    });#}
+        {#    $(window).on("popstate", function () {#}
+        {#        var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");#}
+        {#        $("a[href='" + anchor + "']").tab("show");#}
+        {#    });#}
+        {##}
+        {#    if (history.pushState) {#}
+        {#        history.pushState(null, null, '#myhash');#}
+        {#    } else {#}
+        {#        location.hash = '#myhash';#}
+        {#    }#}
+        $('a[data-toggle="tab"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        $('a[data-toggle="tab"]').on("show.bs.tab", function (e) {
+            var id = $(e.target).attr("href");
+            sessionStorage.setItem('selectedTab', id)
+        });
+
+        var selectedTab = sessionStorage.getItem('selectedTab');
+        if (selectedTab != null) {
+            $('a[data-toggle="tab"][href="' + selectedTab + '"]').tab('show');
+        }
+
+    </script>
 
 
 {% endblock %}
