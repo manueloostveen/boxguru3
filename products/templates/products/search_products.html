@@ -338,10 +338,14 @@
                 <input type="text" id="myInput" placeholder="Search for names..">
 
                 <label for="checkbox-test">
-                    <input id="checkbox-test" type="checkbox" name="checkbox">Checkbox test
+                    <input id="checkbox-test" type="checkbox" name="checkbox" value="1">Checkbox test
                 </label>
 
-                <button type="button" onclick="myFunction2()">Try it</button>
+                <label for="checkbox-test2">
+                    <input id="checkbox-test2" type="checkbox" name="checkbox" value="2">Checkbox test2
+                </label>
+
+                <button type="button" onclick="myFunction3(2)">Try it</button>
 
 
                 <table class="table table-hover table-condensed sortable" id="myTable">
@@ -368,40 +372,40 @@
                     {% for object in queryset %}
 
                         <tr>
-                        <td>img.</td>
-                        <td>{{ object.product_type }}</td>
-                        <td>{{ object.inner_dim1 }}</td>
-                        <td>{{ object.inner_dim2 }}</td>
+                            <td>img.</td>
+                            <td>{{ object.product_type }}</td>
+                            <td>{{ object.inner_dim1 }}</td>
+                            <td>{{ object.inner_dim2 }}</td>
 
-                        <td>
-                            {% if object.inner_variable_dimension_MAX %}
-                                {% if object.inner_variable_dimension_MIN %}
-                                    {{ object.inner_variable_dimension_MIN }}
-                                {% else %} 0
-                                {% endif %}
-                                - {{ object.inner_variable_dimension_MAX }}
-                            {% elif object.inner_dim3 %}
-                                {{ object.inner_dim3 }}
-                            {% elif object.diameter %}
-                                {{ object.diameter }}
-                            {% endif %}</td>
-                        {##}
-                        {#                            <td>#}
-                        {#                                <a href="#" data-toggle="popover" title="Popover Header"#}
-                        {#                                   data-content="Some content inside popover">Toggle popover</a>#}
-                        {#                                {{ object.display_tierprices }}#}
-                        {#                            </td>#}
-                        {#                            <td> {{ object.lowest_price }}</td>#}
-                        {#                            <td><a href="{{ object.url }}">Go to</a></td>#}
-                        {#                            <td>{% include 'products/like_unlike_product_form.html' %}</td>#}
-                        {#                        </tr>#}
-                        {#                        <tr>#}
-                        {#                            <td></td>#}
-                        {#                            {% get_dimensions_match object search_width search_length search_height as all_matches %}#}
-                        {#                            {% for match in all_matches %}#}
-                        {#                                <td>{{ match }}%</td>#}
-                        {#                            {% endfor %}#}
-                        {#                        </tr>#}
+                            <td>
+                                {% if object.inner_variable_dimension_MAX %}
+                                    {% if object.inner_variable_dimension_MIN %}
+                                        {{ object.inner_variable_dimension_MIN }}
+                                    {% else %} 0
+                                    {% endif %}
+                                    - {{ object.inner_variable_dimension_MAX }}
+                                {% elif object.inner_dim3 %}
+                                    {{ object.inner_dim3 }}
+                                {% elif object.diameter %}
+                                    {{ object.diameter }}
+                                {% endif %}</td>
+                            {##}
+                            {#                            <td>#}
+                            {#                                <a href="#" data-toggle="popover" title="Popover Header"#}
+                            {#                                   data-content="Some content inside popover">Toggle popover</a>#}
+                            {#                                {{ object.display_tierprices }}#}
+                            {#                            </td>#}
+                            {#                            <td> {{ object.lowest_price }}</td>#}
+                            {#                            <td><a href="{{ object.url }}">Go to</a></td>#}
+                            {#                            <td>{% include 'products/like_unlike_product_form.html' %}</td>#}
+                            {#                        </tr>#}
+                            {#                        <tr>#}
+                            {#                            <td></td>#}
+                            {#                            {% get_dimensions_match object search_width search_length search_height as all_matches %}#}
+                            {#                            {% for match in all_matches %}#}
+                            {#                                <td>{{ match }}%</td>#}
+                            {#                            {% endfor %}#}
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>
@@ -411,6 +415,7 @@
     </div>
 
     <script>
+        // Script to store selected tab when refreshing
 
         $('a[data-toggle="tab"]').click(function (e) {
             e.preventDefault();
@@ -429,19 +434,43 @@
 
     </script>
     <script>
-
-        var table = document.getElementById('myTable');
+        // Script to show/hide a row
         $('input[name=checkbox]').change(function () {
+            var table, tr, value;
+            value = $(this).val();
+            table = document.getElementById('myTable');
+            tr = table.getElementsByTagName("tr")[value];
 
             if ($(this).is(':checked')) {
-                table.style.display = 'none';
+                tr.style.display = 'none';
             } else {
-                table.style.display = "block"
+                tr.style.display = "table-row";
             }
         })
         ;
+        {##}
+        {#$('input[name=checkbox]').change( function() {#}
+        {#    myFunction3(1)#}
+        {#    }#}
+        {##}
+        {#    )#}
+        {#;#}
+
+
+        function myFunction3(row) {
+            var table, tr;
+            table = document.getElementById('myTable');
+            tr = table.getElementsByTagName("tr")[row];
+
+            if (tr.style.display === "none") {
+                tr.style.display = 'table-row';
+            } else {
+                tr.style.display = "none";
+            }
+        }
 
         function myFunction2() {
+            {#e.preventDefault();#}
             var table = document.getElementById("myTable");
             {#tr = table.getElementsByTagName("tr");#}
             if (table.style.display === "none") {
