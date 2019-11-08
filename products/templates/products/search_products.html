@@ -22,7 +22,7 @@
             <h1 class="pt-3">..zoekkk..</h1>
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-item-bg-1 nav-link col active" id="nav-home-tab"
+                    <a class="nav-item nav-link col active" id="nav-home-tab"
                        data-toggle="tab"
                        href="#nav-dozen" role="tab"
                        aria-controls="nav-home" aria-selected="true">DOZEN</a>
@@ -314,61 +314,98 @@
 
 
     <div class="row">
-        {% if queryset %}
-            <div class="col-sm-8">
+
+
+        <div class="col-sm-8">
+            {% if queryset %}
                 <div class="alert alert-success alert-dismissible mt-3">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                     <strong>Yes!</strong> Er zijn {{ queryset.count }} producten gevonden.
                 </div>
-            </div>
-            <div class="container-fluid">
-
-
-                <div class="table-responsive pt-3">
-                    <table class="table table-hover table-condensed">
-                        <thead>
-                        <tr>
-                            <th>Type</th>
-                            {% for field in model.get_all_table_fields %}
-                                <th>
-                                    {% get_verbose_field_name model field %}
-                                </th>
-                            {% endfor %}
-                            <th>Bulk discount</th>
-                            <th>Lowest price</th>
-                            <th>Product link</th>
-                            <th>Like/unlike</th>
-
-                        </tr>
-                        </thead>
-                        {% for object in queryset %}
-                            <tbody>
-
-                            <tr>
-                                <td>{{ object.product_type }}</td>
-                                {% for field in model.get_all_table_fields %}
-                                    <td>{% get_field_value object field %}</td>
-                                {% endfor %}
-                                <td>
-                                    <a href="#" data-toggle="popover" title="Popover Header"
-                                       data-content="Some content inside popover">Toggle popover</a>
-                                    {{ object.display_tierprices }}
-                                </td>
-                                <td> {{ object.lowest_price }}</td>
-                                <td><a href="{{ object.url }}">Go to</a></td>
-                                <td>{% include 'products/like_unlike_product_form.html' %}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                {% get_dimensions_match object search_width search_length search_height as all_matches %}
-                                {% for match in all_matches %}
-                                    <td>{{ match }}%</td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+            {% else %}
+                <div class="alert alert-danger alert-dismissible mt-3">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Helaas!</strong> Er zijn met de huidige zoekopdracht geen producten gevonden.
                 </div>
+
+            {% endif %}
+        </div>
+
+
+        {% if queryset %}
+            <div class="table-responsive pt-3">
+
+                <input type="text" id="myInput" placeholder="Search for names..">
+
+                <label for="checkbox-test">
+                    <input id="checkbox-test" type="checkbox" name="checkbox">Checkbox test
+                </label>
+
+                <button type="button" onclick="myFunction2()">Try it</button>
+
+
+                <table class="table table-hover table-condensed sortable" id="myTable">
+                    <thead>
+                    <tr>
+                        <th>afb.</th>
+                        <th>Categorie</th>
+                        <th>Breedte</th>
+                        <th>Lengte</th>
+                        <th>Hoogte/Diameter</th>
+                        {#                        <th>Kwaliteit</th>#}
+                        {#                        <th>Kleur</th>#}
+                        {#                        <th>Geschikt voor</th>#}
+                        {#                        <th>Prijs ex. BTW</th>#}
+                        {#                        <th>Staffelkorting</th>#}
+                        {#                        <th>Producent/productlink</th>#}
+                        {#                        <th>Bulk discount</th>#}
+                        {#                        <th>Like/unlike</th>#}
+
+                    </tr>
+                    </thead>
+                    <tbody id="myTable">
+
+                    {% for object in queryset %}
+
+                        <tr>
+                        <td>img.</td>
+                        <td>{{ object.product_type }}</td>
+                        <td>{{ object.inner_dim1 }}</td>
+                        <td>{{ object.inner_dim2 }}</td>
+
+                        <td>
+                            {% if object.inner_variable_dimension_MAX %}
+                                {% if object.inner_variable_dimension_MIN %}
+                                    {{ object.inner_variable_dimension_MIN }}
+                                {% else %} 0
+                                {% endif %}
+                                - {{ object.inner_variable_dimension_MAX }}
+                            {% elif object.inner_dim3 %}
+                                {{ object.inner_dim3 }}
+                            {% elif object.diameter %}
+                                {{ object.diameter }}
+                            {% endif %}</td>
+                        {##}
+                        {#                            <td>#}
+                        {#                                <a href="#" data-toggle="popover" title="Popover Header"#}
+                        {#                                   data-content="Some content inside popover">Toggle popover</a>#}
+                        {#                                {{ object.display_tierprices }}#}
+                        {#                            </td>#}
+                        {#                            <td> {{ object.lowest_price }}</td>#}
+                        {#                            <td><a href="{{ object.url }}">Go to</a></td>#}
+                        {#                            <td>{% include 'products/like_unlike_product_form.html' %}</td>#}
+                        {#                        </tr>#}
+                        {#                        <tr>#}
+                        {#                            <td></td>#}
+                        {#                            {% get_dimensions_match object search_width search_length search_height as all_matches %}#}
+                        {#                            {% for match in all_matches %}#}
+                        {#                                <td>{{ match }}%</td>#}
+                        {#                            {% endfor %}#}
+                        {#                        </tr>#}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             </div>
         {% endif %}
     </div>
@@ -390,6 +427,61 @@
             $('a[data-toggle="tab"][href="' + selectedTab + '"]').tab('show');
         }
 
+    </script>
+    <script>
+
+        var table = document.getElementById('myTable');
+        $('input[name=checkbox]').change(function () {
+
+            if ($(this).is(':checked')) {
+                table.style.display = 'none';
+            } else {
+                table.style.display = "block"
+            }
+        })
+        ;
+
+        function myFunction2() {
+            var table = document.getElementById("myTable");
+            {#tr = table.getElementsByTagName("tr");#}
+            if (table.style.display === "none") {
+                table.style.display = 'block';
+            } else {
+                table.style.display = "none";
+            }
+        }
+
+    </script>
+
+    <script>
+        var search = document.getElementById('myInput');
+        search.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                myFunction()
+            }
+        });
+
+        function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
     </script>
 
 
