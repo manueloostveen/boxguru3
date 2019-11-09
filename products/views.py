@@ -288,6 +288,7 @@ def search_product(request):
             context['box_form'] = box_form
             context['tube_form'] = tube_form
             context['envelope_form'] = envelope_form
+            context['no_search'] = True
 
 
     # testing testing
