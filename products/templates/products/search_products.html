@@ -17,7 +17,7 @@
 
 
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-5">
 
             <h1 class="pt-3">..zoekkk..</h1>
             <nav>
@@ -45,33 +45,31 @@
                             <div class="col">
                                 <h3 class="text-center text-white m-2">AFMETINGEN</h3>
 
-                                <div class="row">
 
-                                    <div class="col-lg">
-                                        <div class="input-group mb-2 input-group-sm">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">B</span>
-                                            </div>
-                                            {{ box_form.width }}
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">B</span>
                                         </div>
+                                        {{ box_form.width }}
                                     </div>
+                                </div>
 
-                                    <div class="col-lg">
-                                        <div class="input-group mb-2 input-group-sm">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">L</span>
-                                            </div>
-                                            {{ box_form.length }}
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">L</span>
                                         </div>
+                                        {{ box_form.length }}
                                     </div>
+                                </div>
 
-                                    <div class="col-lg">
-                                        <div class="input-group mb-3 input-group-sm">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">H</span>
-                                            </div>
-                                            {{ box_form.height }}
+                                <div class="col-lg">
+                                    <div class="input-group mb-3 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">H</span>
                                         </div>
+                                        {{ box_form.height }}
                                     </div>
                                 </div>
                             </div>
@@ -81,53 +79,51 @@
 
                             <div class="col" id="accordion">
                                 <h3 class="text-center text-white m-2">VERFIJN</h3>
-                                <div class="row">
-                                    <div class="col-lg">
-                                        <button type="button"
-                                                class="btn-sm btn-block mb-2"
-                                                data-toggle="collapse"
-                                                data-target="#main-categories">
-                                            Type doos
-                                        </button>
-                                        <div id="main-categories" class="collapse" data-parent="#accordion">
-                                            <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for type in box_form.main_categories %}
-                                                    <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
-                                                {% endfor %}
-                                            </div>
+                                <div class="col-lg">
+                                    <button type="button"
+                                            class="btn-sm btn-block mb-2"
+                                            data-toggle="collapse"
+                                            data-target="#main-categories">
+                                        Type doos
+                                    </button>
+                                    <div id="main-categories" class="collapse" data-parent="#accordion">
+                                        <div class="d-flex align-content-start flex-wrap pt-2">
+                                            {% for type in box_form.main_categories %}
+                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
+                                            {% endfor %}
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg">
-                                        <button type="button"
-                                                class="btn-sm btn-block mb-2"
-                                                data-toggle="collapse"
-                                                data-target="#wallthickness">
-                                            Kwaliteit
-                                        </button>
-                                        <div id="wallthickness" class="collapse" data-parent="#accordion">
-                                            <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for wall_thickness in box_form.wall_thicknesses %}
-                                                    <div class="small text-white p-1 checkbox-cell">{{ wall_thickness }}</div>
-                                                {% endfor %}
-                                            </div>
+                                <div class="col-lg">
+                                    <button type="button"
+                                            class="btn-sm btn-block mb-2"
+                                            data-toggle="collapse"
+                                            data-target="#wallthickness">
+                                        Kwaliteit
+                                    </button>
+                                    <div id="wallthickness" class="collapse" data-parent="#accordion">
+                                        <div class="d-flex align-content-start flex-wrap pt-2">
+                                            {% for wall_thickness in box_form.wall_thicknesses %}
+                                                <div class="small text-white p-1 checkbox-cell">{{ wall_thickness }}</div>
+                                            {% endfor %}
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg">
-                                        <button type="button"
-                                                class="btn-sm btn-block mb-2"
-                                                data-toggle="collapse"
-                                                data-target="#colors">
-                                            Kleuren
-                                        </button>
-                                        <div class="collapse" id="colors" data-parent="#accordion">
-                                            <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {#{% for color in form.colors|slice:":4" %}#}
-                                                {% for color in box_form.colors %}
-                                                    <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
-                                                {% endfor %}
-                                            </div>
+                                <div class="col-lg">
+                                    <button type="button"
+                                            class="btn-sm btn-block mb-2"
+                                            data-toggle="collapse"
+                                            data-target="#colors">
+                                        Kleuren
+                                    </button>
+                                    <div class="collapse" id="colors" data-parent="#accordion">
+                                        <div class="d-flex align-content-start flex-wrap pt-2">
+                                            {#{% for color in form.colors|slice:":4" %}#}
+                                            {% for color in box_form.colors %}
+                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
@@ -146,27 +142,25 @@
                             <div class="col">
                                 <h3 class="text-center text-white m-2">AFMETINGEN</h3>
 
-                                <div class="row">
 
-                                    <div class="col-lg">
-                                        <div class="input-group mb-2 input-group-sm">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">&Oslash</span>
-                                            </div>
-                                            {{ tube_form.diameter }}
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">&Oslash</span>
                                         </div>
+                                        {{ tube_form.diameter }}
                                     </div>
-
-                                    <div class="col-lg">
-                                        <div class="input-group mb-3 input-group-sm">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">L</span>
-                                            </div>
-                                            {{ tube_form.length }}
-                                        </div>
-                                    </div>
-
                                 </div>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-3 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">L</span>
+                                        </div>
+                                        {{ tube_form.length }}
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -174,52 +168,50 @@
 
                             <div class="col" id="accordion-2">
                                 <h3 class=" text-center text-white m-2">VERFIJN</h3>
-                                <div class="row">
-                                    <div class="col-lg">
-                                        <button type="button"
-                                                class="btn-sm btn-block mb-2"
-                                                data-toggle="collapse"
-                                                data-target="#main-categories">
-                                            Type koker
-                                        </button>
-                                        <div id="main-categories" class="collapse" data-parent="#accordion-2">
-                                            <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for type in tube_form.categories %}
-                                                    <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
-                                                {% endfor %}
-                                            </div>
+                                <div class="col-lg">
+                                    <button type="button"
+                                            class="btn-sm btn-block mb-2"
+                                            data-toggle="collapse"
+                                            data-target="#main-categories">
+                                        Type koker
+                                    </button>
+                                    <div id="main-categories" class="collapse" data-parent="#accordion-2">
+                                        <div class="d-flex align-content-start flex-wrap pt-2">
+                                            {% for type in tube_form.categories %}
+                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
+                                            {% endfor %}
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg">
-                                        <button type="button"
-                                                class="btn-sm btn-block mb-2"
-                                                data-toggle="collapse"
-                                                data-target="#wallthickness">
-                                            Kwaliteit
-                                        </button>
-                                        <div id="wallthickness" class="collapse" data-parent="#accordion-2">
-                                            <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for wall_thickness in tube_form.wall_thicknesses %}
-                                                    <div class="small text-white p-1 checkbox-cell">{{ wall_thickness }}</div>
-                                                {% endfor %}
-                                            </div>
+                                <div class="col-lg">
+                                    <button type="button"
+                                            class="btn-sm btn-block mb-2"
+                                            data-toggle="collapse"
+                                            data-target="#wallthickness">
+                                        Kwaliteit
+                                    </button>
+                                    <div id="wallthickness" class="collapse" data-parent="#accordion-2">
+                                        <div class="d-flex align-content-start flex-wrap pt-2">
+                                            {% for wall_thickness in tube_form.wall_thicknesses %}
+                                                <div class="small text-white p-1 checkbox-cell">{{ wall_thickness }}</div>
+                                            {% endfor %}
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg">
-                                        <button type="button"
-                                                class="btn-sm btn-block mb-2"
-                                                data-toggle="collapse"
-                                                data-target="#colors">
-                                            Kleuren
-                                        </button>
-                                        <div class="collapse" id="colors" data-parent="#accordion-2">
-                                            <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for color in tube_form.colors %}
-                                                    <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
-                                                {% endfor %}
-                                            </div>
+                                <div class="col-lg">
+                                    <button type="button"
+                                            class="btn-sm btn-block mb-2"
+                                            data-toggle="collapse"
+                                            data-target="#colors">
+                                        Kleuren
+                                    </button>
+                                    <div class="collapse" id="colors" data-parent="#accordion-2">
+                                        <div class="d-flex align-content-start flex-wrap pt-2">
+                                            {% for color in tube_form.colors %}
+                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
@@ -239,27 +231,25 @@
                             <div class="col">
                                 <h3 class="text-center text-white m-2">AFMETINGEN</h3>
 
-                                <div class="row">
 
-                                    <div class="col-lg">
-                                        <div class="input-group mb-2 input-group-sm">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">B</span>
-                                            </div>
-                                            {{ envelope_form.width }}
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">B</span>
                                         </div>
+                                        {{ envelope_form.width }}
                                     </div>
-
-                                    <div class="col-lg">
-                                        <div class="input-group mb-3 input-group-sm">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">L</span>
-                                            </div>
-                                            {{ envelope_form.length }}
-                                        </div>
-                                    </div>
-
                                 </div>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-3 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">L</span>
+                                        </div>
+                                        {{ envelope_form.length }}
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -267,36 +257,34 @@
 
                             <div class="col" id="accordion-3">
                                 <h3 class=" text-center text-white m-2">VERFIJN</h3>
-                                <div class="row">
-                                    <div class="col-lg">
-                                        <button type="button"
-                                                class="btn-sm btn-block mb-2"
-                                                data-toggle="collapse"
-                                                data-target="#main-categories">
-                                            Type product
-                                        </button>
-                                        <div id="main-categories" class="collapse" data-parent="#accordion-3">
-                                            <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for type in envelope_form.categories %}
-                                                    <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
-                                                {% endfor %}
-                                            </div>
+                                <div class="col-lg">
+                                    <button type="button"
+                                            class="btn-sm btn-block mb-2"
+                                            data-toggle="collapse"
+                                            data-target="#main-categories">
+                                        Type product
+                                    </button>
+                                    <div id="main-categories" class="collapse" data-parent="#accordion-3">
+                                        <div class="d-flex align-content-start flex-wrap pt-2">
+                                            {% for type in envelope_form.categories %}
+                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
+                                            {% endfor %}
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg">
-                                        <button type="button"
-                                                class="btn-sm btn-block mb-2"
-                                                data-toggle="collapse"
-                                                data-target="#colors">
-                                            Kleuren
-                                        </button>
-                                        <div class="collapse" id="colors" data-parent="#accordion-3">
-                                            <div class="d-flex align-content-start flex-wrap pt-2">
-                                                {% for color in envelope_form.colors %}
-                                                    <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
-                                                {% endfor %}
-                                            </div>
+                                <div class="col-lg">
+                                    <button type="button"
+                                            class="btn-sm btn-block mb-2"
+                                            data-toggle="collapse"
+                                            data-target="#colors">
+                                        Kleuren
+                                    </button>
+                                    <div class="collapse" id="colors" data-parent="#accordion-3">
+                                        <div class="d-flex align-content-start flex-wrap pt-2">
+                                            {% for color in envelope_form.colors %}
+                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
@@ -310,13 +298,26 @@
             </div>
 
         </div>
+        <div class="col-sm-5">
+            <h1>Filters</h1>
+            {% if queryset %}
+                {% if filter_producttypes %}
+                    {% for producttype in filter_producttypes %}
+                        <label for="checkbox-producttype-{{ forloop.counter }}" >
+                        <input type="checkbox" value="1" name="filter-checkbox" id="checkbox-producttype-{{ forloop.counter }}" checked>
+                        {{ producttype }}
+                        </label>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </div>
     </div>
 
 
     <div class="row">
 
 
-        <div class="col-sm-8">
+        <div class="col-sm-5">
             {% if queryset %}
                 <div class="alert alert-success alert-dismissible mt-3">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -338,7 +339,7 @@
                 <input type="text" id="myInput" placeholder="Search for names..">
 
                 <label for="checkbox-test">
-                    <input id="checkbox-test" type="checkbox" name="checkbox" value="1">Checkbox test
+                    <input id="checkbox-test" type="checkbox" name="checkbox" value="1" checked>Autolock dozen
                 </label>
 
                 <label for="checkbox-test2">
@@ -410,7 +411,6 @@
                     </tbody>
                 </table>
             </div>
-            </div>
         {% endif %}
     </div>
 
@@ -433,30 +433,40 @@
         }
 
     </script>
+
     <script>
-        // Script to show/hide a row
-        $('input[name=checkbox]').change(function () {
-            var table, tr, value;
-            value = $(this).val();
+        // Script that gets inner text from checkbox
+        $('input[name=filter-checkbox]').change(function () {
+
+            var table, tr, checkboxText, cellText, column;
+            checkboxText = $.trim($(this).parent().text()).toUpperCase();
             table = document.getElementById('myTable');
-            tr = table.getElementsByTagName("tr")[value];
+            tr = table.getElementsByTagName("tr");
+            column = $(this).val();
 
-            if ($(this).is(':checked')) {
-                tr.style.display = 'none';
-            } else {
-                tr.style.display = "table-row";
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[column];
+                if (td) {
+
+                    cellText = td.textContent || td.innerText;
+                    cellText = cellText.toUpperCase();
+
+                    if (cellText === checkboxText) {
+                        if ($(this).is(':checked')) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+
+                    }
+                }
             }
-        })
-        ;
-        {##}
-        {#$('input[name=checkbox]').change( function() {#}
-        {#    myFunction3(1)#}
-        {#    }#}
-        {##}
-        {#    )#}
-        {#;#}
+        });
 
+    </script>
 
+    <script>
+        // Test functions
         function myFunction3(row) {
             var table, tr;
             table = document.getElementById('myTable');

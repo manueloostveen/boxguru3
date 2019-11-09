@@ -351,8 +351,6 @@ def search_product(request):
                 qdiameter = Q(diameter__range=(diameter - error_margin_diameter, diameter + error_margin_diameter)) | Q(
                     diameter__range=(diameter - error_margin_diameter, diameter + error_margin_diameter))
 
-            print(diameter)
-
             queryset_qobjects = Product.objects.filter(
                 qcolors,
                 qwall_thicknesses,
@@ -362,6 +360,13 @@ def search_product(request):
                 qheight,
                 qdiameter
             )
+            # Create  querysets for result filter
+            context['filter_producttypes'] = ProductType.objects.filter(product__in=queryset_qobjects).distinct()
+            context['filter_colors'] = Color.objects.filter(product__in=queryset_qobjects).distinct()
+            context['filter_wallthicknesses'] = WallThickness.objects.filter(product__in=queryset_qobjects).distinct()
+            #todo geschikt voor filter, standaardformaat flessen
+            context['filter_standard_size'] = queryset_qobjects.values('standard_size').distinct()
+            context['filter_bottles'] = queryset_qobjects.values('bottles').distinct()
 
             # Add search params to context
             context['search_width'] = width
