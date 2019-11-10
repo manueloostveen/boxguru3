@@ -40,7 +40,6 @@ def get_dimensions_match(instance, search_width, search_length, search_height, s
     object_diameter = getattr(instance, 'diameter')
     object_min_height = getattr(instance, 'inner_variable_dimension_MIN')
     object_max_height = getattr(instance, 'inner_variable_dimension_MAX')
-    print(object_min_height)
 
     def get_match(search_dim, object_dim):
         if search_dim and object_dim:
@@ -80,7 +79,7 @@ def get_dimensions_match(instance, search_width, search_length, search_height, s
     all_matches = [match1, match2, match3, match4]
     found_matches = [match for match in all_matches if match > 0]
     if len(found_matches) > 0:
-        overall_match = sum(found_matches) / len(found_matches)
+        overall_match = round(sum(found_matches) / len(found_matches))
     else:
         overall_match = 0
 

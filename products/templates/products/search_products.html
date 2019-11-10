@@ -17,7 +17,7 @@
 
 
     <div class="row">
-        <div class="col-sm-5">
+        <div class="col-md-6 col-lg-5 col-sm-8">
 
             <h1 class="pt-3">..zoekkk..</h1>
             <nav>
@@ -321,7 +321,7 @@
         <div class="col-sm-3 p-0">
             <div class="small">
                 {% if queryset %}
-                    <h4>Filter resultaten</h4>
+                    <h4>Filter resultaten FIX VALUES!! KLOPT NIET MEER</h4>
                     {% if filter_producttypes %}
                         <br><h6>Product types</h6>
                         {% for producttype in filter_producttypes %}
@@ -339,7 +339,7 @@
                         {% for wall_thickness in filter_wallthicknesses %}
                             <div>
                                 <label for="checkbox-color-{{ forloop.counter }}">
-                                    <input type="checkbox" value="8" name="filter-checkbox"
+                                    <input type="checkbox" value="6" name="filter-checkbox"
                                            id="checkbox-color-{{ forloop.counter }}">
                                     {{ wall_thickness }}
                                 </label>
@@ -351,7 +351,7 @@
                         {% for color in filter_colors %}
                             <div>
                                 <label for="checkbox-color-{{ forloop.counter }}">
-                                    <input type="checkbox" value="9" name="filter-checkbox"
+                                    <input type="checkbox" value="7" name="filter-checkbox"
                                            id="checkbox-color-{{ forloop.counter }}">
                                     {{ color }}
                                 </label>
@@ -373,18 +373,19 @@
                             <th class="sorttable_nosort header">afb.</th>
                             <th class="header-1">Categorie</th>
                             <th class="header">Breedte</th>
-                            {% if search_width or search_length %}
-                                <th class="header">match</th>
-                            {% endif %}
+                            {#                            {% if search_width or search_length %}#}
+                            {#                                <th class="header">match</th>#}
+                            {#                            {% endif %}#}
                             <th class="header">Lengte</th>
-                            {% if search_length or search_width %}
-                                <th class="header">match</th>
-                            {% endif %}
+                            {#                            {% if search_length or search_width %}#}
+                            {#                                <th class="header">match</th>#}
+                            {#                            {% endif %}#}
                             <th class="header">{% if searched == 'tube' %}
                                 Diameter{% elif searched == 'box' or searched == 'envelope' %}Hoogte{% endif %}</th>
-                            {% if search_height or search_diameter %}
-                                <th class="header">match</th>
-                            {% endif %}
+                            {#                            {% if search_height or search_diameter %}#}
+                            {#                                <th class="header">match</th>#}
+                            {#                            {% endif %}#}
+                            <th>Zoekmatch</th>
                             <th class="header">Kwaliteit</th>
                             <th class="header">Kleur</th>
                             {#                        <th>Geschikt voor</th>#}
@@ -408,13 +409,13 @@
                                 <td>img.</td>
                                 <td>{{ object.product_type }}</td>
                                 <td>{{ object.inner_dim1 }}</td>
-                                {% if search_width or search_length %}
-                                    <td>{% if all_matches.0 == 0 %}-{% else %}{{ all_matches.0 }}%{% endif %}</td>
-                                {% endif %}
+                                {#                                {% if search_width or search_length %}#}
+                                {#                                    <td>{% if all_matches.0 == 0 %}-{% else %}{{ all_matches.0 }}%{% endif %}</td>#}
+                                {#                                {% endif %}#}
                                 <td>{{ object.inner_dim2 }}</td>
-                                {% if search_width or search_length %}
-                                    <td>{% if all_matches.1 == 0 %}-{% else %}{{ all_matches.1 }}%{% endif %}</td>
-                                {% endif %}
+                                {#                                {% if search_width or search_length %}#}
+                                {#                                    <td>{% if all_matches.1 == 0 %}-{% else %}{{ all_matches.1 }}%{% endif %}</td>#}
+                                {#                                {% endif %}#}
 
                                 <td>
                                     {% if object.inner_variable_dimension_MAX %}
@@ -426,10 +427,11 @@
                                         {{ object.diameter }}
                                     {% else %}-
                                     {% endif %}</td>
-                                {% if search_height or search_diameter %}
-                                    <td>{% if all_matches.3 > 0 %}{{ all_matches.3 }}%
-                                        {% elif all_matches.2 > 0 %}{{ all_matches.2 }}%{% else %}-{% endif %}</td>
-                                {% endif %}
+                                {#                                {% if search_height or search_diameter %}#}
+                                {#                                    <td>{% if all_matches.3 > 0 %}{{ all_matches.3 }}%#}
+                                {#                                        {% elif all_matches.2 > 0 %}{{ all_matches.2 }}%{% else %}-{% endif %}</td>#}
+                                {#                                {% endif %}#}
+                                <td>{{ all_matches.4 }}%</td>
                                 <td>{{ object.wall_thickness }}</td>
                                 <td>{{ object.color }}</td>
                                 {##}
@@ -623,6 +625,24 @@
                 }
             }
         }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "scrollY": "400px",
+                "order": [[5, "desc"]],
+                "paging": false,
+                "bFilter": false,
+                "columnDefs": [
+                    {"orderSequence": ['desc', "asc"], "targets": '_all'},
+                    {"type": "natural", "targets": '_all'}
+
+                ]
+            })
+        });
+
+
     </script>
 
 
