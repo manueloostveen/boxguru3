@@ -206,6 +206,7 @@ def search_product(request):
                 context['tube_form'] = tube_form
                 context['envelope_form'] = envelope_form
                 request.session['searched'] = 'box'
+                context['searched'] = 'box'
 
             elif request.GET.get('tube-form'):
                 tube_form = SearchTubeForm(request.GET)
@@ -215,6 +216,8 @@ def search_product(request):
                 context['tube_form'] = tube_form
                 context['envelope_form'] = envelope_form
                 request.session['searched'] = 'tube'
+                context['searched'] = 'tube'
+
 
             elif request.GET.get('envelope-form'):
                 tube_form = SearchTubeForm()
@@ -224,6 +227,7 @@ def search_product(request):
                 context['tube_form'] = tube_form
                 context['envelope_form'] = envelope_form
                 request.session['searched'] = 'envelope'
+                context['searched'] = 'envelope'
 
             # save form data in session
             request.session['width'] = request.GET.get('width')
@@ -345,9 +349,10 @@ def search_product(request):
             if length:
                 qlength = Q(inner_dim2__range=(length - error_margin, length + error_margin)) | Q(
                     inner_dim1__range=(length - error_margin, length + error_margin))
+
             if height:
-                qheight = Q(inner_dim3__range=(height - error_margin, height + error_margin)) | Q(
-                    inner_variable_dimension_MAX__range=(height - error_margin, height + error_margin))
+                qheight = Q(inner_dim3__range=(height - error_margin, height + error_margin)) | (Q(inner_variable_dimension_MAX__gte=height) & Q(inner_variable_dimension_MIN__lte=height))
+
             if diameter:
                 qdiameter = Q(diameter__range=(diameter - error_margin_diameter, diameter + error_margin_diameter)) | Q(
                     diameter__range=(diameter - error_margin_diameter, diameter + error_margin_diameter))

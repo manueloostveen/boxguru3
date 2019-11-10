@@ -70,6 +70,9 @@
     margin: 0;
 }
 
+
+
+/*Checkbox search*/
 .checkbox-cell {
     width: 50% !important;
     /*text-align: center;*/
@@ -83,6 +86,8 @@ label input[type='checkbox'] {
     margin-left: -18px;
 }
 
+
+/*Overall style text*/
 
 body {
     font-family: Arvo, Charcoal, sans-serif;
@@ -103,6 +108,8 @@ h3 {
     color: #5e008b;
 }
 
+
+/*Tabs and search navigation*/
 
 .tab-content {
     color: #fff;
@@ -161,3 +168,28 @@ h3 {
     background-color: #cdfac3;
     height: 45px;
 }
+
+/*Table style*/
+
+table .header-1 {
+    width: auto;
+    padding: 1em;
+    background-color: rgb(222, 226, 230);
+    /*text-align: center;*/
+    /*white-space: nowrap;*/
+}
+table .header-2 {
+    width: 40px !important;
+    /*text-align: center;*/
+    /*white-space: nowrap;*/
+}
+table .content {
+    width: 100%;
+}
+
+/*table {*/
+/*    border-collapse: collapse;*/
+/*    border-spacing: 0;*/
+/*    width: 100%;*/
+/*    border: 1px solid*/
+/*}*/
