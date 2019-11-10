@@ -373,9 +373,13 @@
                             <th class="sorttable_nosort header">afb.</th>
                             <th class="header-1">Categorie</th>
                             <th class="header">Breedte</th>
-                            <th class="header">match</th>
+                            {% if search_width or search_length %}
+                                <th class="header">match</th>
+                            {% endif %}
                             <th class="header">Lengte</th>
-                            <th class="header">match</th>
+                            {% if search_length or search_width %}
+                                <th class="header">match</th>
+                            {% endif %}
                             <th class="header">{% if searched == 'tube' %}
                                 Diameter{% elif searched == 'box' or searched == 'envelope' %}Hoogte{% endif %}</th>
                             {% if search_height or search_diameter %}
@@ -404,13 +408,17 @@
                                 <td>img.</td>
                                 <td>{{ object.product_type }}</td>
                                 <td>{{ object.inner_dim1 }}</td>
-                                <td>{{ all_matches.0 }}%</td>
+                                {% if search_width or search_length %}
+                                    <td>{% if all_matches.0 == 0 %}-{% else %}{{ all_matches.0 }}%{% endif %}</td>
+                                {% endif %}
                                 <td>{{ object.inner_dim2 }}</td>
-                                <td>{{ all_matches.1 }}%</td>
+                                {% if search_width or search_length %}
+                                    <td>{% if all_matches.1 == 0 %}-{% else %}{{ all_matches.1 }}%{% endif %}</td>
+                                {% endif %}
 
                                 <td>
                                     {% if object.inner_variable_dimension_MAX %}
-                                            {{ object.inner_variable_dimension_MIN }}
+                                        {{ object.inner_variable_dimension_MIN }}
                                         - {{ object.inner_variable_dimension_MAX }}
                                     {% elif object.inner_dim3 %}
                                         {{ object.inner_dim3 }}
