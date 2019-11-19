@@ -378,16 +378,18 @@ def search_product(request):
                 function = 'ROUND'
                 arity = 1
 
+            # Create absolute function
+            class Abs(Func):
+                function = 'ABS'
+
             # Create Queryset
             if width and not length and not height:
                 swidth_width_test = Case(
-                    When(inner_dim1__gte=width, then=(100 - ((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
-                    When(inner_dim1__lt=width, then=(100 - ((width - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    When(inner_dim1__isnull=False, then=(100 - Abs((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 swidth_length_test = Case(
-                    When(inner_dim2__gte=width, then=(100 - ((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
-                    When(inner_dim2__lt=width, then=(100 - ((width - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    When(inner_dim2__isnull=False, then=(100 - Abs((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 queryset_qobjects = Product.objects.filter(
@@ -401,13 +403,11 @@ def search_product(request):
             elif length and not width and not height:
 
                 slength_width_test = Case(
-                    When(inner_dim1__isnull=False, inner_dim1__gte=length, then=(100 - ((F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-                    When(inner_dim1__isnull=False, inner_dim1__lt=length, then=(100 - ((length - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    When(inner_dim1__isnull=False, then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 slength_length_test = Case(
-                    When(inner_dim2__isnull=False, inner_dim2__gte=length, then=(100 - ((F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-                    When(inner_dim2__isnull=False, inner_dim2__lt=length, then=(100 - ((length - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    When(inner_dim2__isnull=False, then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
 
@@ -422,27 +422,21 @@ def search_product(request):
             elif length and width and not height:
 
                 swidth_width_test = Case(
-                    When(inner_dim1__gte=width, then=(100 - ((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
-                    When(inner_dim1__lt=width, then=(100 - ((width - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    When(inner_dim1__isnull=False, then=(100 - (Abs(F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 swidth_length_test = Case(
-                    When(inner_dim2__gte=width, then=(100 - ((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
-                    When(inner_dim2__lt=width, then=(100 - ((width - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    When(inner_dim2__isnull=False, then=(100 - (Abs(F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 slength_width_test = Case(
-                    When(inner_dim1__isnull=False, inner_dim1__gte=length,
-                         then=(100 - ((F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-                    When(inner_dim1__isnull=False, inner_dim1__lt=length,
-                         then=(100 - ((length - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 slength_length_test = Case(
-                    When(inner_dim2__isnull=False, inner_dim2__gte=length,
-                         then=(100 - ((F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-                    When(inner_dim2__isnull=False, inner_dim2__lt=length,
-                         then=(100 - ((length - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
 
@@ -461,27 +455,21 @@ def search_product(request):
             elif width and length and height:
 
                 swidth_width_test = Case(
-                    When(inner_dim1__gte=width, then=(100 - ((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
-                    When(inner_dim1__lt=width, then=(100 - ((width - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    When(inner_dim1__isnull=False, then=(100 - (Abs(F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 swidth_length_test = Case(
-                    When(inner_dim2__gte=width, then=(100 - ((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
-                    When(inner_dim2__lt=width, then=(100 - ((width - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    When(inner_dim2__isnull=False, then=(100 - (Abs(F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 slength_width_test = Case(
-                    When(inner_dim1__isnull=False, inner_dim1__gte=length,
-                         then=(100 - ((F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-                    When(inner_dim1__isnull=False, inner_dim1__lt=length,
-                         then=(100 - ((length - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
                 slength_length_test = Case(
-                    When(inner_dim2__isnull=False, inner_dim2__gte=length,
-                         then=(100 - ((F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-                    When(inner_dim2__isnull=False, inner_dim2__lt=length,
-                         then=(100 - ((length - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
 
@@ -506,9 +494,7 @@ def search_product(request):
                     wl_match=Greatest('sww_sll_match', 'swl_slw_match')).annotate(
                     max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).order_by('-max_match')
 
-
             elif length and diameter:
-                search_volume = (diameter / 2)**2 * pi
 
                 volume_test = Case(
 
