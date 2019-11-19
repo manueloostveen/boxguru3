@@ -459,17 +459,53 @@ def search_product(request):
 
 
             elif width and length and height:
-                search_volume = width * length * height
-                var_dim_test = Case(
-                    When(inner_variable_dimension_MAX__isnull=False, then=(F('inner_dim1') * F('inner_dim2') * height) - search_volume),
-                    When(inner_variable_dimension_MAX__isnull=True, then=(F('inner_dim1') * F('inner_dim2') * F('inner_dim3') - search_volume)),
+
+                swidth_width_test = Case(
+                    When(inner_dim1__gte=width, then=(100 - ((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
+                    When(inner_dim1__lt=width, then=(100 - ((width - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    default=0, output_field=DecimalField()
+                )
+                swidth_length_test = Case(
+                    When(inner_dim2__gte=width, then=(100 - ((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
+                    When(inner_dim2__lt=width, then=(100 - ((width - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_width_test = Case(
+                    When(inner_dim1__isnull=False, inner_dim1__gte=length,
+                         then=(100 - ((F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+                    When(inner_dim1__isnull=False, inner_dim1__lt=length,
+                         then=(100 - ((length - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_length_test = Case(
+                    When(inner_dim2__isnull=False, inner_dim2__gte=length,
+                         then=(100 - ((F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+                    When(inner_dim2__isnull=False, inner_dim2__lt=length,
+                         then=(100 - ((length - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    default=0, output_field=DecimalField()
+                )
+
+                sheight_height_test = Case(
+                    When(inner_variable_dimension_MAX__isnull=False,
+                         then=100),
+                    When(inner_variable_dimension_MAX__isnull=True,
+                         then=(100 - (Func((F('inner_dim3') - length), function='ABS') / F('inner_dim3')) * 100.0)),
                     default=0, output_field=DecimalField()
                 )
 
                 queryset_qobjects = Product.objects.filter(
-                    *qobjects).annotate(
-                    max_match=Round(((1 - Func(var_dim_test, function='ABS') / search_volume) * 100))
-                ).order_by('-max_match')
+                    *qobjects
+                ).annotate(
+                    slength_width_test=slength_width_test).annotate(
+                    slength_length_test=slength_length_test).annotate(
+                    swidth_width_test=swidth_width_test).annotate(
+                    swidth_length_test=swidth_length_test).annotate(
+                    sheight_height_test=sheight_height_test).annotate(
+                    sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2).annotate(
+                    swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
+                    wl_match=Greatest('sww_sll_match', 'swl_slw_match')).annotate(
+                    max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).order_by('-max_match')
+
 
             elif length and diameter:
                 search_volume = (diameter / 2)**2 * pi
