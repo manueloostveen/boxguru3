@@ -400,7 +400,7 @@ def search_product(request):
                     max_match=Round(Greatest('swidth_width_test', 'swidth_length_test'))).order_by('-max_match')
 
 
-            elif length and not width and not height:
+            elif length and not width and not height and not diameter:
 
                 slength_width_test = Case(
                     When(inner_dim1__isnull=False, then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
@@ -495,11 +495,32 @@ def search_product(request):
                     max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).order_by('-max_match')
 
             elif length and diameter:
-
-                volume_test = Case(
-
+                slength_width_test = Case(
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+                    default=0, output_field=DecimalField()
                 )
-                pass
+                slength_length_test = Case(
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+
+                sdiameter_diameter_test = Case(
+                    When(diameter__isnull=False,
+                         then=(100 - (Abs(F('diameter') - diameter) / F('diameter')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+
+                queryset_qobjects = Product.objects.filter(
+                    *qobjects
+                ).annotate(
+                    slength_width_test=slength_width_test).annotate(
+                    slength_length_test=slength_length_test).annotate(
+                    sdiameter_diameter_test=sdiameter_diameter_test).annotate(
+                    slength_match=Greatest('slength_width_test', 'slength_length_test')).annotate(
+                    max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2)).order_by('-max_match')
+
 
             else:
                 queryset_qobjects = Product.objects.filter(*qobjects)
