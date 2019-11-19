@@ -12,8 +12,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalField, Avg, Func
 from django.db.models.functions import Greatest, Sqrt
 
-from itertools import chain
-
+from math import pi
 
 # Create your views here.
 
@@ -295,7 +294,7 @@ def search_product(request):
             context['envelope_form'] = envelope_form
             context['no_search'] = True
 
-    # testing testing
+    # Create form
     if request.session.get('searched') == 'box':
         form = box_form
     elif request.session.get('searched') == 'tube':
@@ -368,85 +367,120 @@ def search_product(request):
                 diameter = float(diameter)
                 qdiameter = Q(diameter__range=(diameter - error_margin_diameter, diameter + error_margin_diameter))
 
-
+            # list qobject for *args
             qobjects = [qcolors,
                          qwall_thicknesses,
                          qproduct_types, qwidth_length,
                          qheight, qdiameter
                          ]
-
+            # Create round function, arity 1 so rounds to 0 decimals, no input needed
             class Round(Func):
                 function = 'ROUND'
                 arity = 1
 
             # Create Queryset
-            if width and not length and not height and not diameter:
+            if width and not length and not height:
                 swidth_width_test = Case(
                     When(inner_dim1__gte=width, then=(100 - ((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
                     When(inner_dim1__lt=width, then=(100 - ((width - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    default=0, output_field=DecimalField()
                 )
                 swidth_length_test = Case(
                     When(inner_dim2__gte=width, then=(100 - ((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
                     When(inner_dim2__lt=width, then=(100 - ((width - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    default=0, output_field=DecimalField()
                 )
                 queryset_qobjects = Product.objects.filter(
                     *qobjects
                 ).annotate(
-                    swidth_width_test=ExpressionWrapper(swidth_width_test, output_field=DecimalField())).annotate(
-                    swidth_length_test=ExpressionWrapper(swidth_length_test, output_field=DecimalField())).annotate(
+                    swidth_width_test=swidth_width_test).annotate(
+                    swidth_length_test=swidth_length_test).annotate(
                     max_match=Round(Greatest('swidth_width_test', 'swidth_length_test'))).order_by('-max_match')
 
 
             elif length and not width and not height:
+
                 slength_width_test = Case(
-                    When(inner_dim1__gte=length, then=(100 - ((F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-                    When(inner_dim1__lt=length, then=(100 - ((length - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    When(inner_dim1__isnull=False, inner_dim1__gte=length, then=(100 - ((F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+                    When(inner_dim1__isnull=False, inner_dim1__lt=length, then=(100 - ((length - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    default=0, output_field=DecimalField()
                 )
                 slength_length_test = Case(
-                    When(inner_dim2__gte=length, then=(100 - ((F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-                    When(inner_dim2__lt=length, then=(100 - ((length - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    When(inner_dim2__isnull=False, inner_dim2__gte=length, then=(100 - ((F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+                    When(inner_dim2__isnull=False, inner_dim2__lt=length, then=(100 - ((length - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    default=0, output_field=DecimalField()
                 )
 
                 queryset_qobjects = Product.objects.filter(
                     *qobjects
                 ).annotate(
-                    slength_width_test=ExpressionWrapper(slength_width_test, output_field=DecimalField())).annotate(
-                    slength_length_test=ExpressionWrapper(slength_length_test, output_field=DecimalField())).annotate(
+                    slength_width_test=slength_width_test).annotate(
+                    slength_length_test=slength_length_test).annotate(
                     max_match=Round(Greatest('slength_width_test', 'slength_length_test'))).order_by('-max_match')
 
 
-
             elif length and width and not height:
-                search_surface = length * width
 
-                surface_test = Case(
-                    When(object_surface__gte=search_surface,
-                         then=(1 - Sqrt((F('object_surface') - search_surface) / search_surface)) * 100),
-                    When(object_surface__lt=search_surface,
-                         then=(1 - Sqrt((search_surface - F('object_surface')) / search_surface)) * 100),
+                swidth_width_test = Case(
+                    When(inner_dim1__gte=width, then=(100 - ((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
+                    When(inner_dim1__lt=width, then=(100 - ((width - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    default=0, output_field=DecimalField()
+                )
+                swidth_length_test = Case(
+                    When(inner_dim2__gte=width, then=(100 - ((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
+                    When(inner_dim2__lt=width, then=(100 - ((width - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_width_test = Case(
+                    When(inner_dim1__isnull=False, inner_dim1__gte=length,
+                         then=(100 - ((F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+                    When(inner_dim1__isnull=False, inner_dim1__lt=length,
+                         then=(100 - ((length - F('inner_dim1')) / F('inner_dim1')) * 100)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_length_test = Case(
+                    When(inner_dim2__isnull=False, inner_dim2__gte=length,
+                         then=(100 - ((F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+                    When(inner_dim2__isnull=False, inner_dim2__lt=length,
+                         then=(100 - ((length - F('inner_dim2')) / F('inner_dim2')) * 100)),
+                    default=0, output_field=DecimalField()
                 )
 
-                queryset_qobjects = Product.objects.filter(*qobjects).annotate(
-                    max_match=Round(ExpressionWrapper((1 - (Func(F('inner_dim1') * F('inner_dim2') - search_surface, function='ABS') / search_surface)) * 100, output_field=DecimalField()))
-                ).order_by('-max_match')
+                queryset_qobjects = Product.objects.filter(
+                    *qobjects
+                ).annotate(
+                    slength_width_test=slength_width_test).annotate(
+                    slength_length_test=slength_length_test).annotate(
+                    swidth_width_test=swidth_width_test).annotate(
+                    swidth_length_test=swidth_length_test).annotate(
+                    sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2).annotate(
+                    swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
+                    max_match=Round(Greatest('sww_sll_match', 'swl_slw_match'))).order_by('-max_match')
+
 
             elif width and length and height:
                 search_volume = width * length * height
                 var_dim_test = Case(
                     When(inner_variable_dimension_MAX__isnull=False, then=(F('inner_dim1') * F('inner_dim2') * height) - search_volume),
-                    When(inner_variable_dimension_MAX__isnull=True, then=(F('inner_dim1') * F('inner_dim2') * F('inner_dim3') - search_volume))
+                    When(inner_variable_dimension_MAX__isnull=True, then=(F('inner_dim1') * F('inner_dim2') * F('inner_dim3') - search_volume)),
+                    default=0, output_field=DecimalField()
                 )
 
                 queryset_qobjects = Product.objects.filter(
                     *qobjects).annotate(
-                    max_match=Round(((1 - Func(ExpressionWrapper(var_dim_test, output_field=DecimalField()), function='ABS') / search_volume) * 100))
+                    max_match=Round(((1 - Func(var_dim_test, function='ABS') / search_volume) * 100))
                 ).order_by('-max_match')
+
+            elif length and diameter:
+                search_volume = (diameter / 2)**2 * pi
+
+                volume_test = Case(
+
+                )
+                pass
 
             else:
                 queryset_qobjects = Product.objects.filter(*qobjects)
-
-
-
 
             # Create  querysets for result filter
             context['filter_producttypes'] = ProductType.objects.filter(product__in=queryset_qobjects).distinct()
