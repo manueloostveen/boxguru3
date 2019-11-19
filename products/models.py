@@ -142,6 +142,9 @@ class Product(models.Model):
         """Create string for TierPrice's. This is required to display the tier-prices in Admin"""
         return ' | '.join(str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all())
 
+    def popover_tierprices(self):
+        return [str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all()]
+
     def display_users(self):
         """Create string for Users that liked this product."""
         return ', '.join(str(user) for user in self.users.all())

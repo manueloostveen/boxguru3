@@ -8,11 +8,6 @@
     });
 </script>
 
-
-{#<div class="d-flex p-2 justify-content-sm-center">#}
-{#    <div class="p-2 bg-info">flex test</div>#}
-{#</div>#}
-
 {% block content %}
 
 
@@ -303,8 +298,8 @@
                     <div class="alert alert-success alert-dismissible mt-3">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 
-                        <strong>Yes!</strong> {% if queryset.count > 1 %}Er zijn {{ queryset.count }} producten
-                        gevonden.{% else %}Er is {{ queryset.count }} product gevonden.{% endif %}
+                        <strong>Yes!</strong> {% if queryset|length > 1 %}Er zijn {{ queryset|length }} producten
+                        gevonden.{% else %}Er is {{ queryset|length }} product gevonden.{% endif %}
                     </div>
                 {% else %}
                     <div class="alert alert-danger alert-dismissible mt-3">
@@ -321,7 +316,7 @@
         <div class="col-sm-3 p-0">
             <div class="small">
                 {% if queryset %}
-                    <h4>Filter resultaten FIX VALUES!! KLOPT NIET MEER</h4>
+                    <h4>Filter resultaten</h4>
                     {% if filter_producttypes %}
                         <br><h6>Product types</h6>
                         {% for producttype in filter_producttypes %}
@@ -334,13 +329,37 @@
                             </div>
                         {% endfor %}
                     {% endif %}
+                    {% if filter_standard_size %}
+                        <br><h6>Standaard formaat</h6>
+                        {% for size in filter_standard_size %}
+                            <div>
+                                <label for="checkbox-size-{{ forloop.counter }}">
+                                    <input type="checkbox" value="8" name="filter-checkbox"
+                                           id="checkbox-size-{{ forloop.counter }}">
+                                    {{ size }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% if filter_bottles %}
+                        <br><h6>Aantal flessen</h6>
+                        {% for bottles in filter_bottles %}
+                            <div>
+                                <label for="checkbox-bottles-{{ forloop.counter }}">
+                                    <input type="checkbox" value="8" name="filter-checkbox"
+                                           id="checkbox-bottles-{{ forloop.counter }}">
+                                    {{ bottles }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                     {% if filter_colors %}
                         <br><h6>Kwaliteit</h6>
                         {% for wall_thickness in filter_wallthicknesses %}
                             <div>
-                                <label for="checkbox-color-{{ forloop.counter }}">
+                                <label for="checkbox-quality-{{ forloop.counter }}">
                                     <input type="checkbox" value="6" name="filter-checkbox"
-                                           id="checkbox-color-{{ forloop.counter }}">
+                                           id="checkbox-quality-{{ forloop.counter }}">
                                     {{ wall_thickness }}
                                 </label>
                             </div>
@@ -367,28 +386,22 @@
             {% if queryset %}
                 <div class="table-responsive pt-3">
 
-                    <table class="table-hover table-condensed sortable" id="myTable">
+                    <table class="dt-head-center table-hover table-condensed sortable" id="myTable">
                         <thead>
                         <tr>
-                            <th class="sorttable_nosort header">afb.</th>
-                            <th class="header-1">Categorie</th>
-                            <th class="header">Breedte</th>
-                            {#                            {% if search_width or search_length %}#}
-                            {#                                <th class="header">match</th>#}
-                            {#                            {% endif %}#}
-                            <th class="header">Lengte</th>
-                            {#                            {% if search_length or search_width %}#}
-                            {#                                <th class="header">match</th>#}
-                            {#                            {% endif %}#}
-                            <th class="header">{% if searched == 'tube' %}
+                            <th>afb.</th>
+                            <th>Categorie</th>
+                            <th>Breedte</th>
+
+                            <th>Lengte</th>
+
+                            <th>{% if searched == 'tube' %}
                                 Diameter{% elif searched == 'box' or searched == 'envelope' %}Hoogte{% endif %}</th>
-                            {#                            {% if search_height or search_diameter %}#}
-                            {#                                <th class="header">match</th>#}
-                            {#                            {% endif %}#}
+
                             <th>Zoekmatch</th>
-                            <th class="header">Kwaliteit</th>
-                            <th class="header">Kleur</th>
-                            {#                        <th>Geschikt voor</th>#}
+                            <th>Kwaliteit</th>
+                            <th>Kleur</th>
+                            <th>Geschikt voor</th>
                             {#                        <th>Prijs ex. BTW</th>#}
                             {#                        <th>Staffelkorting</th>#}
                             {#                        <th>Producent/productlink</th>#}
@@ -400,22 +413,12 @@
                         <tbody id="myTable">
 
                         {% for object in queryset %}
-                            {% get_dimensions_match object search_width search_length search_height search_diameter as all_matches %}
-                            {#                                {% for match in all_matches %}#}
-                            {#                                    <td>{{ match }}%</td>#}
-                            {#                                {% endfor %}#}
-
                             <tr>
                                 <td>img.</td>
                                 <td>{{ object.product_type }}</td>
                                 <td>{{ object.inner_dim1 }}</td>
-                                {#                                {% if search_width or search_length %}#}
-                                {#                                    <td>{% if all_matches.0 == 0 %}-{% else %}{{ all_matches.0 }}%{% endif %}</td>#}
-                                {#                                {% endif %}#}
+
                                 <td>{{ object.inner_dim2 }}</td>
-                                {#                                {% if search_width or search_length %}#}
-                                {#                                    <td>{% if all_matches.1 == 0 %}-{% else %}{{ all_matches.1 }}%{% endif %}</td>#}
-                                {#                                {% endif %}#}
 
                                 <td>
                                     {% if object.inner_variable_dimension_MAX %}
@@ -427,25 +430,22 @@
                                         {{ object.diameter }}
                                     {% else %}-
                                     {% endif %}</td>
-                                {#                                {% if search_height or search_diameter %}#}
-                                {#                                    <td>{% if all_matches.3 > 0 %}{{ all_matches.3 }}%#}
-                                {#                                        {% elif all_matches.2 > 0 %}{{ all_matches.2 }}%{% else %}-{% endif %}</td>#}
-                                {#                                {% endif %}#}
-                                <td>{{ all_matches.4 }}%</td>
+
+                                <td>{{ object.max_match }}%</td>
                                 <td>{{ object.wall_thickness }}</td>
                                 <td>{{ object.color }}</td>
-                                {##}
-                                {#                            <td>#}
-                                {#                                <a href="#" data-toggle="popover" title="Popover Header"#}
-                                {#                                   data-content="Some content inside popover">Toggle popover</a>#}
-                                {#                                {{ object.display_tierprices }}#}
-                                {#                            </td>#}
-                                {#                            <td> {{ object.lowest_price }}</td>#}
-                                {#                            <td><a href="{{ object.url }}">Go to</a></td>#}
-                                {#                            <td>{% include 'products/like_unlike_product_form.html' %}</td>#}
-                                {#                        </tr>#}
-                                {#                        <tr>#}
-                                {#                            <td></td>#}
+                                <td>
+                                    {% if object.standard_size %}{{ object.standard_size }}{% elif object.bottles %}
+                                        {% if object.bottles > 1 %}{{ object.bottles }} flessen
+                                            {% else %}{{ object.bottles }} fles{% endif %}{% else %}-{% endif %}
+                                </td>
+                                <td class="test">{{object.lowest_price}}
+                                    {% if object.popover_tierprices|length > 0 %}
+                                    <span class="tooltiptext">{% for tierprice in object.popover_tierprices %}{{ tierprice }}<br/>{% endfor %}</span>
+                                    {% endif %}
+                                </td>
+                                <td><a href="{{ object.url }}" target="_blank" rel="noopener noreferrer">linkje</a></td>
+                                <td>{% include 'products/like_unlike_product_form.html' %}</td>
 
                             </tr>
                         {% endfor %}
@@ -478,10 +478,9 @@
     </script>
 
     <script>
-        function getCheckedBoxes(checkboxname) {
+        function getCheckedBoxes(checkboxName) {
             var checkboxes, checkboxesChecked;
-            checkboxes = document.getElementsByName(checkboxname);
-
+            checkboxes = document.getElementsByName(checkboxName);
             checkboxesChecked = [];
 
             for (i = 0; i < checkboxes.length; i++) {
@@ -489,110 +488,65 @@
                     checkboxesChecked.push(checkboxes[i]);
                 }
             }
-            console.log(checkboxesChecked);
             return checkboxesChecked;
         }
 
-        function refreshData(checkboxeschecked) {
-            var column, table, tr, cellText, checkboxText;
-            table = document.getElementById('myTable');
-            tr = table.getElementsByTagName('tr');
-
-            for (i = 1; i < tr.length; i++) {
-                if (checkboxeschecked.length === 0) {
-                    tr[i].style.display = ""
-                } else {
-                    tr[i].style.display = "none"
+        function checkCell(cellText, wordArray) {
+            var flag;
+            flag = false;
+            for (word of wordArray) {
+                flag = word === cellText;
+                if (flag === true) {
+                    break;
                 }
 
             }
+            return flag
+        }
 
-            for (j = 0; j < checkboxeschecked.length; j++) {
-                column = checkboxeschecked[j].value;
-                console.log(checkboxeschecked[j]);
-                checkboxText = checkboxeschecked[j].parentNode.textContent.trim().toUpperCase();
-                for (i = 0; i < tr.length; i++) {
-                    td = tr[i].getElementsByTagName("td")[column];
-                    if (td) {
+        function checkPassArray(value) {
+            return value
+        }
 
-                        cellText = td.textContent || td.innerText;
-                        cellText = cellText.toUpperCase();
+        function refreshData(checkboxeschecked) {
+            var table, tr, cellText, td, checkboxTextArray;
+            table = document.getElementById('myTable');
+            tr = table.getElementsByTagName('tr');
+            checkboxTextArray = [];
+            columnCheckArray = [];
 
-                        if (cellText === checkboxText) {
-                            tr[i].style.display = "";
-                        }
-                        {#else {#}
-                        {#    tr[i].style.display = "none";}#}
-                    }
+            for (i = 0; i < checkboxeschecked.length; i++) {
+                var checkbox = checkboxeschecked[i];
+                text = checkbox.parentNode.textContent.trim().toUpperCase();
+                checkboxTextArray.push(text);
+                if (!(columnCheckArray.includes(checkbox.value))) {
+                    columnCheckArray.push(checkbox.value)
+                }
+            }
+
+            // Iterate over every column row
+            for (i = 1; i < tr.length; i++) {
+                passArray = [];
+                td = tr[i].getElementsByTagName('td');
+                for (const column of columnCheckArray) {
+                    td_checked = td[column];
+                    cellText = td_checked.textContent || td_checked.innerText;
+                    cellText = cellText.trim().toUpperCase();
+                    passArray.push(checkCell(cellText, checkboxTextArray))
+                }
+                if (passArray.every(checkPassArray)) {
+                    tr[i].style.display = ""
+                } else {
+                    tr[i].style.display = "none"
                 }
             }
         }
 
         // Script that gets inner text from checkbox
         $('input[name=filter-checkbox]').change(function () {
-
-            var table, tr, checkboxText, cellText, column;
-            checkboxText = $.trim($(this).parent().text()).toUpperCase();
-            table = document.getElementById('myTable');
-            tr = table.getElementsByTagName("tr");
-            column = $(this).val();
-
-
             var checkedBoxes = getCheckedBoxes('filter-checkbox');
-            if (checkedBoxes.length === 0) {
-                console.log(checkedBoxes.length, "lengte");
-                table.style.display = ""
-                console.log(table.style.display, 'table.style.display')
-            }
-
             refreshData(checkedBoxes);
-
-
-            {#for (i = 0; i < tr.length; i++) {#}
-            {#    td = tr[i].getElementsByTagName("td")[column];#}
-            {#    if (td) {#}
-            {##}
-            {#        cellText = td.textContent || td.innerText;#}
-            {#        cellText = cellText.toUpperCase();#}
-            {##}
-            {#        if (cellText === checkboxText) {#}
-            {#            if ($(this).is(':checked')) {#}
-            {#                tr[i].style.display = "";#}
-            {#            } else {#}
-            {#                tr[i].style.display = "none";#}
-            {#            }#}
-            {##}
-            {#        }#}
-            {#    }#}
-            {#//}//#}
         });
-
-    </script>
-
-    <script>
-        // Test functions
-        function myFunction3(row) {
-            var table, tr;
-            table = document.getElementById('myTable');
-            tr = table.getElementsByTagName("tr")[row];
-
-            if (tr.style.display === "none") {
-                tr.style.display = 'table-row';
-            } else {
-                tr.style.display = "none";
-            }
-        }
-
-        function myFunction2() {
-            {#e.preventDefault();#}
-            var table = document.getElementById("myTable");
-            {#tr = table.getElementsByTagName("tr");#}
-            if (table.style.display === "none") {
-                table.style.display = 'block';
-            } else {
-                table.style.display = "none";
-            }
-        }
 
     </script>
 
@@ -627,23 +581,24 @@
         }
     </script>
 
-    <script>
-        $(document).ready(function () {
-            $('#myTable').DataTable({
-                "scrollY": "400px",
-                "order": [[5, "desc"]],
-                "paging": false,
-                "bFilter": false,
-                "columnDefs": [
-                    {"orderSequence": ['desc', "asc"], "targets": '_all'},
-                    {"type": "natural", "targets": '_all'}
-
-                ]
-            })
-        });
-
-
-    </script>
+    {#    <script>#}
+    {#        $(document).ready(function () {#}
+    {#            $('#myTable').DataTable({#}
+    {#                "scrollY": "400px",#}
+    {#                "scrollX": true,#}
+    {#"order": [[5, "desc"]],#}
+    {#                "paging": false,#}
+    {#                "bFilter": false,#}
+    {#                "columnDefs": [#}
+    {#                    {"orderSequence": ['desc', "asc"], "targets": '_all'},#}
+    {#                    {"type": "natural", "targets": '_all'}#}
+    {##}
+    {#                ]#}
+    {#            })#}
+    {#        });#}
+    {##}
+    {##}
+    {#    </script>#}
 
 
 {% endblock %}

@@ -50,7 +50,6 @@ def get_dimensions_match(instance, search_width, search_length, search_height, s
         if object_min_height is not None and object_max_height is not None:
             return 100
 
-
     swidth_width_match = get_match(search_width, object_width)
     swidth_length_match = get_match(search_width, object_length)
     slength_width_match = get_match(search_length, object_width)
@@ -81,7 +80,7 @@ def get_dimensions_match(instance, search_width, search_length, search_height, s
     if len(found_matches) > 0:
         overall_match = round(sum(found_matches) / len(found_matches))
     else:
-        overall_match = 0
+        overall_match = 100
 
     if search_width and search_length:
         return match1, match2, match3, match4, overall_match
