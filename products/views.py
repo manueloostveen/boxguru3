@@ -232,15 +232,19 @@ def search_product(request):
         else:
             param_symbol = "&"
 
-        category_header = current_path + param_symbol + "sort=product_type" + f'&by={ordering_dict.get("product_type", "DESC")}'
-        width_header = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
-        length_header = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
-        height_header = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
+        context['category_header'] = current_path + param_symbol + "sort=product_type" + f'&by={ordering_dict.get("product_type", "DESC")}'
+        context['width_header'] = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
+        context['length_header'] = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
+        context['height_header'] = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
+        context['match_header'] = current_path + param_symbol + "sort=max_match" + f'&by={ordering_dict.get("max_match", "ASC")}'
+        context['wall_thickness_header'] = current_path + param_symbol + "sort=wall_thickness" + f'&by={ordering_dict.get("wall_thickness", "ASC")}'
+        context['color_header'] = current_path + param_symbol + "sort=color" + f'&by={ordering_dict.get("color", "DESC")}'
+        context['standard_size_header'] = current_path + param_symbol + "sort=standard_size" + f'&by={ordering_dict.get("standard_size", "ASC")}'
+        context['bottles_header'] = current_path + param_symbol + "sort=bottles" + f'&by={ordering_dict.get("bottles", "ASC")}'
 
-        context['category_header'] = category_header
-        context['width_header'] = width_header
-        context['length_header'] = length_header
-        context['height_header'] = height_header
+        context['lowest_price_header'] = current_path + param_symbol + "sort=lowest_price" + f'&by={ordering_dict.get("lowest_price", "DESC")}'
+        context['price_header'] = current_path + param_symbol + "sort=price_ex_BTW" + f'&by={ordering_dict.get("price_ex_BTW", "DESC")}'
+
 
         # Set  ordering
         if order_by:
@@ -327,7 +331,7 @@ def search_product(request):
             context['box_form'] = SearchBoxForm()
             context['tube_form'] = SearchTubeForm()
             context['envelope_form'] = SearchEnvelopeBagForm()
-            context['searched'] = 'no_search'
+            context['no_search'] = True
 
     # Create form
     if request.session.get('searched') == 'box':

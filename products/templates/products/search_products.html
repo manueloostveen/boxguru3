@@ -309,10 +309,9 @@
     </div>
 
     <div class="row flex-xl-nowrap">
-
-        <div class="col-xl-2 col-lg-3 col-md-5 col mt-5 filter-section">
-            <div id="filters">
-                {% if queryset %}
+        {% if queryset %}
+            <div class="col-xl-2 col-lg-3 col-md-5 col mt-5 filter-section">
+                <div id="filters">
                     <h4>Filter resultaten</h4>
                     {% if filter_producttypes %}
                         <br><h6>Product types</h6>
@@ -375,13 +374,12 @@
                             </div>
                         {% endfor %}
                     {% endif %}
-                {% endif %}
+                </div>
             </div>
-        </div>
 
-        <div class="col mt-5">
 
-            {% if queryset %}
+            <div class="col mt-5">
+
 
                 <table class="table-hover table-condensed" id="productTable">
                     <thead>
@@ -393,14 +391,16 @@
                         <th><a href="{{ length_header }}">Lengte</a></th>
 
                         <th>{% if searched == 'tube' %}
-                            <a href="{{ diameter_header }}">Diameter</a>{% else %}<a href="{{ height_header }}">Hoogte</a>{% endif %}</th>
+                            <a href="{{ diameter_header }}">Diameter</a>{% else %}
+                            <a href="{{ height_header }}">Hoogte</a>{% endif %}</th>
 
-                        <th>Zoekmatch</th>
-                        <th>Kwaliteit</th>
-                        <th>Kleur</th>
-                        <th>Geschikt voor</th>
-                        {#                        <th>Prijs ex. BTW</th>#}
-                        <th>Staffelkorting</th>
+                        <th><a href="{{ match_header }}">Zoekmatch</a></th>
+                        <th><a href="{{ wall_thickness_header }}">Kwaliteit</a></th>
+                        <th><a href="{{ color_header }}">Kleur</a></th>
+                        <th><a href="{{ bottles_header }}">Flessen</a> /<br><a href="{{ standard_size_header }}">Standaard
+                            formaat</a></th>
+                        <th><a href="{{ price_header }}">Prijs ex. BTW</a></th>
+                        <th><a href="{{ lowest_price_header }}">Staffelkorting</a></th>
                         {#                        <th>Producent/productlink</th>#}
                         {#                        <th>Bulk discount</th>#}
                         {#                        <th>Like/unlike</th>#}
@@ -437,6 +437,7 @@
                                     {% if object.bottles > 1 %}{{ object.bottles }} flessen
                                         {% else %}{{ object.bottles }} fles{% endif %}{% else %}-{% endif %}
                             </td>
+                            <td>{{ object.price_ex_BTW }}</td>
                             <td class="test">{{ object.lowest_price }}
                                 {% if object.popover_tierprices|length > 0 %}
                                     <span class="tooltiptext">{% for tierprice in object.popover_tierprices %}
@@ -450,9 +451,8 @@
                     {% endfor %}
                     </tbody>
                 </table>
-            {% endif %}
-        </div>
-
+            </div>
+        {% endif %}
     </div>
 
 
@@ -550,24 +550,24 @@
     </script>
 
 
-{#    <script>#}
-{#        $(document).ready(function () {#}
-{#            $('#productTable').DataTable(#}
-{#                {#}
-                    {#"scrollY": "400px",#}
-                    {#"scrollX": true,#}
-{#                    "order": [[5, "desc"]],#}
-{#                    "paging": false,#}
-{#                    "bFilter": false,#}
-{#                    "columnDefs": [#}
-{#                        {"orderSequence": ['desc', "asc"], "targets": '_all'},#}
-{#                        {"type": "natural", "targets": '_all'}#}
-{##}
-{#                    ]#}
-{#                }#}
-{#            );#}
-{#        });#}
-{#    </script>#}
+    {#    <script>#}
+    {#        $(document).ready(function () {#}
+    {#            $('#productTable').DataTable(#}
+    {#                {#}
+    {#"scrollY": "400px",#}
+    {#"scrollX": true,#}
+    {#                    "order": [[5, "desc"]],#}
+    {#                    "paging": false,#}
+    {#                    "bFilter": false,#}
+    {#                    "columnDefs": [#}
+    {#                        {"orderSequence": ['desc', "asc"], "targets": '_all'},#}
+    {#                        {"type": "natural", "targets": '_all'}#}
+    {##}
+    {#                    ]#}
+    {#                }#}
+    {#            );#}
+    {#        });#}
+    {#    </script>#}
 
 
 {% endblock %}
