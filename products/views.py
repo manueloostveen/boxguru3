@@ -236,6 +236,7 @@ def search_product(request):
         context['width_header'] = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
         context['length_header'] = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
         context['height_header'] = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
+        context['diameter_header'] = current_path + param_symbol + "sort=diameter" + f'&by={ordering_dict.get("diameter", "ASC")}'
         context['match_header'] = current_path + param_symbol + "sort=max_match" + f'&by={ordering_dict.get("max_match", "ASC")}'
         context['wall_thickness_header'] = current_path + param_symbol + "sort=wall_thickness" + f'&by={ordering_dict.get("wall_thickness", "ASC")}'
         context['color_header'] = current_path + param_symbol + "sort=color" + f'&by={ordering_dict.get("color", "DESC")}'
