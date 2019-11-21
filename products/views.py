@@ -606,6 +606,7 @@ def search_product(request):
             context['queryset'] = queryset_qobjects
             context['products_found'] = len(queryset_qobjects)
             context['model'] = Product
+            context['order_by'] = order_by
 
     return render(request, template_name, context)
 

@@ -6,7 +6,8 @@
 {% block content %}
 
 
-    <div class="row d-flex justify-content-center">
+    <div class="row d-flex justify-content-left">
+        <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5"></div>
         <div class="col-md-6 col-lg-5 col-sm-8">
 
             <h1 class="pt-3">..zoekkk..</h1>
@@ -310,7 +311,7 @@
 
     <div class="row flex-xl-nowrap">
         {% if queryset %}
-            <div class="col-xl-2 col-lg-3 col-md-5 col mt-5 filter-section">
+            <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5 filter-section">
                 <div id="filters">
                     <h4>Filter resultaten</h4>
                     {% if filter_producttypes %}
@@ -377,32 +378,92 @@
                 </div>
             </div>
 
-
-
-            <div class="col mt-5">
-                <table class="table-hover table-condensed" id="productTable">
-
+            <div class="col-sm-8 col-md-9 mt-5">
+                <table class="table table-striped table-condensed" id="productTable">
                     <thead>
-
-
                     <tr>
                         <th rowspan="2">afb.</th>
-                        <th rowspan="2"><a href="{{ category_header }}">Categorie</a></th>
-                        <th rowspan="2" class="arrowUp"><a href="{{ width_header }}">Breedte</a></th>
+                        <th rowspan="2"><a href="{{ category_header }}">Categorie</a>
+                            <div {% if order_by == '-product_type' %}class="arrowDown"
+                                 {% elif order_by == 'product_type' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
+                        {#                        <th rowspan="2" colspan="3" class="header-blh">#}
+                        {#                            <a href="{{ width_header }}">Breedte</a>#}
+                        {#                            <div {% if order_by == '-inner_dim1' %}class="arrowDown"#}
+                        {#                                 {% elif order_by == 'inner_dim1' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                        {#                            &times <a href="{{ length_header }}">Lengte</a>#}
+                        {#                            <div {% if order_by == '-inner_dim2' %}class="arrowDown"#}
+                        {#                                 {% elif order_by == 'inner_dim2' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                        {#                            {% if searched == 'tube' %}#}
+                        {#                                &times <a href="{{ diameter_header }}">Diameter</a>{% else %}#}
+                        {#                                &times <a href="{{ height_header }}">Hoogte</a>{% endif %}#}
+                        {#                            <div {% if order_by == '-inner_dim3' %}class="arrowDown"#}
+                        {#                                 {% elif order_by == 'inner_dim3' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                        {#                        </th>#}
+                        <th rowspan="2" colspan="3" class="header-blh">
+                            <div>
+                                <a href="{{ width_header }}">Breedte</a> &times
+                                {#                            <div {% if order_by == '-inner_dim1' %}class="arrowDown"#}
+                                {#                                 {% elif order_by == 'inner_dim1' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                                <a href="{{ length_header }}">Lengte</a> &times
+                                {#                                <div {% if order_by == '-inner_dim2' %}class="arrowDown"#}
+                                {#                                     {% elif order_by == 'inner_dim2' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                                {% if searched == 'tube' %}
+                                    <a href="{{ diameter_header }}">Diameter</a>{% else %}
+                                    <a href="{{ height_header }}">Hoogte</a>{% endif %}
+                                {#                                <div {% if order_by == '-inner_dim3' %}class="arrowDown"#}
+                                {#                                     {% elif order_by == 'inner_dim3' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                            </div>
+                            <div {% if order_by == '-inner_dim3' %}class="arrowDown" style="left:80%"
+                                 {% elif order_by == 'inner_dim3' %}class="arrowUp" style="left:80%"
+                                 {% elif order_by == '-inner_dim2' %}class="arrowDown" style="left:50%"
+                                 {% elif order_by == 'inner_dim2' %}class="arrowUp" style="left:50%"
+                                 {% elif order_by == '-inner_dim1' %}class="arrowDown" style="left:20%"
+                                 {% elif order_by == 'inner_dim1' %}class="arrowUp" style="left:20%"{% endif %}></div>
+                        </th>
 
-                        <th rowspan="2" class="arrowUp"><a href="{{ length_header }}">Lengte</a></th>
+                        {#                        <th rowspan="2"><a href="{{ width_header }}">Breedte</a>#}
+                        {#                            <div {% if order_by == '-inner_dim1' %}class="arrowDown"#}
+                        {#                                 {% elif order_by == 'inner_dim1' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                        {#                        </th>#}
+                        {##}
+                        {#                        <th rowspan="2"><a href="{{ length_header }}">Lengte</a>#}
+                        {#                            <div {% if order_by == '-inner_dim2' %}class="arrowDown"#}
+                        {#                                 {% elif order_by == 'inner_dim2' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                        {#                        </th>#}
+                        {##}
+                        {#                        <th rowspan="2">{% if searched == 'tube' %}#}
+                        {#                            <a href="{{ diameter_header }}">Diameter</a>{% else %}#}
+                        {#                            <a href="{{ height_header }}">Hoogte</a>{% endif %}#}
+                        {#                            <div {% if order_by == '-inner_dim3' %}class="arrowDown"#}
+                        {#                                 {% elif order_by == 'inner_dim3' %}class="arrowUp"{% else %}{% endif %}></div>#}
+                        {#                        </th>#}
 
-                        <th rowspan="2">{% if searched == 'tube' %}
-                            <a href="{{ diameter_header }}">Diameter</a>{% else %}
-                            <a href="{{ height_header }}">Hoogte</a>{% endif %}</th>
-
-                        <th rowspan="2" class="arrowUp"><a href="{{ match_header }}">Zoekmatch</a></th>
-                        <th rowspan="2"><a href="{{ wall_thickness_header }}">Kwaliteit</a></th>
-                        <th rowspan="2"><a href="{{ color_header }}">Kleur</a></th>
-                        <th><a href="{{ standard_size_header }}">Standaard
-                            formaat</a></th>
-                        <th rowspan="2"><a href="{{ price_header }}">Prijs ex. BTW</a></th>
-                        <th rowspan="2"><a href="{{ lowest_price_header }}">Staffelkorting</a></th>
+                        <th rowspan="2"><a href="{{ match_header }}">Zoekmatch</a>
+                            <div {% if order_by == '-max_match' %}class="arrowDown"
+                                 {% elif order_by == 'max_match' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
+                        <th rowspan="2"><a href="{{ wall_thickness_header }}">Kwaliteit</a>
+                            <div {% if order_by == '-wall_thickness' %}class="arrowDown"
+                                 {% elif order_by == 'wall_thickness' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
+                        <th rowspan="2"><a href="{{ color_header }}">Kleur</a>
+                            <div {% if order_by == '-color' %}class="arrowDown"
+                                 {% elif order_by == 'color' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
+                        <th class="header-standard-size d-none d-sm-table-cell"><a href="{{ standard_size_header }}">Standaard
+                            formaat</a>
+                            <div {% if order_by == '-standard_size' %}class="arrowDown"
+                                 {% elif order_by == 'standard_size' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
+                        <th rowspan="2"><a href="{{ price_header }}">Prijs ex. BTW</a>
+                            <div {% if order_by == '-price_ex_BTW' %}class="arrowDown"
+                                 {% elif order_by == 'price_ex_BTW' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
+                        <th rowspan="2"><a href="{{ lowest_price_header }}">Staffelkorting</a>
+                            <div {% if order_by == '-lowest_price' %}class="arrowDown"
+                                 {% elif order_by == 'lowest_price' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
                         {#                        <th>Producent/productlink</th>#}
                         {#                        <th>Bulk discount</th>#}
                         {#                        <th>Like/unlike</th>#}
@@ -410,7 +471,10 @@
 
                     </tr>
                     <tr>
-                        <th><a href="{{ bottles_header }}">Flessen</a></th>
+                        <th class="header-flessen d-none d-sm-table-cell"><a href="{{ bottles_header }}">Flessen</a>
+                            <div {% if order_by == '-bottles' %}class="arrowDown"
+                                 {% elif order_by == 'bottles' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
                     </tr>
 
                     </thead>
@@ -420,31 +484,43 @@
                         <tr>
                             <td>img.</td>
                             <td>{{ object.product_type }}</td>
-                            <td>{{ object.inner_dim1 }}</td>
 
-                            <td>{{ object.inner_dim2 }}</td>
-
-                            <td>
+                            <td colspan="3">{{ object.inner_dim1 }} &times {{ object.inner_dim2 }}
                                 {% if object.inner_variable_dimension_MAX %}
-                                    {{ object.inner_variable_dimension_MIN }}
+                                    &times {{ object.inner_variable_dimension_MIN }}
                                     - {{ object.inner_variable_dimension_MAX }}
                                 {% elif object.inner_dim3 %}
-                                    {{ object.inner_dim3 }}
+                                    &times {{ object.inner_dim3 }}
                                 {% elif object.diameter %}
-                                    {{ object.diameter }}
+                                    &times &Oslash{{ object.diameter }}
                                 {% else %}-
                                 {% endif %}</td>
+
+                            {#                            <td>{{ object.inner_dim1 }}</td>#}
+                            {##}
+                            {#                            <td>{{ object.inner_dim2 }}</td>#}
+                            {##}
+                            {#                            <td>#}
+                            {#                                {% if object.inner_variable_dimension_MAX %}#}
+                            {#                                    {{ object.inner_variable_dimension_MIN }}#}
+                            {#                                    - {{ object.inner_variable_dimension_MAX }}#}
+                            {#                                {% elif object.inner_dim3 %}#}
+                            {#                                    {{ object.inner_dim3 }}#}
+                            {#                                {% elif object.diameter %}#}
+                            {#                                    {{ object.diameter }}#}
+                            {#                                {% else %}-#}
+                            {#                                {% endif %}</td>#}
 
                             <td>{{ object.max_match }}%</td>
                             <td>{{ object.wall_thickness }}</td>
                             <td>{{ object.color }}</td>
-                            <td>
+                            <td class="d-none d-sm-table-cell">
                                 {% if object.standard_size %}{{ object.standard_size }}{% elif object.bottles %}
                                     {% if object.bottles > 1 %}{{ object.bottles }} flessen
                                         {% else %}{{ object.bottles }} fles{% endif %}{% else %}-{% endif %}
                             </td>
                             <td>{{ object.price_ex_BTW }}</td>
-                            <td class="test">{{ object.lowest_price }}
+                            <td class="staffel">{{ object.lowest_price }}
                                 {% if object.popover_tierprices|length > 0 %}
                                     <span class="tooltiptext">{% for tierprice in object.popover_tierprices %}
                                         {{ tierprice }}<br/>{% endfor %}</span>
@@ -554,7 +630,6 @@
         });
 
     </script>
-
 
     {#    <script>#}
     {#        $(document).ready(function () {#}

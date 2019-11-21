@@ -194,12 +194,23 @@ table .content {
 td {
     position: relative;
     text-align: center;
+    overflow-wrap: normal;
+}
+
+table {
+    table-layout: auto;
+    width: 1200px;
 }
 
 th {
     text-align: center;
-    border: solid 1px;
+    /*border-style: solid;*/
+    /*border-width: thin;*/
+    /*border-color: #979797;*/
+    position: relative;
+    white-space: nowrap;
 }
+
 /*table {*/
 /*    border-collapse: collapse;*/
 /*    border-spacing: 0;*/
@@ -247,11 +258,11 @@ th {
 }
 
 
-.test {
+.staffel {
     color: #007bff;
 }
 
-.test:hover {
+.staffel:hover {
     text-decoration: underline;
     cursor: crosshair;
 }
@@ -302,24 +313,103 @@ input.chk {
     padding: 20px;
 }
 
-th.arrowUp {
-    /*background-color: #ec42f5;*/
-    position: relative;
-    padding-right:1em;
-    text-align: center;
-}
-
-th.arrowUp::after {
-    content: '';
+div.arrowDown {
     position: absolute;
-    top: 45%;
-    left: 82%;
+    margin: auto;
+    /*top: 70%;*/
+    left: 50%;
+    transform: translate(-50%, 0);
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 0 4px 6px 4px;
-    border-color: transparent transparent black transparent;
+    border-width: 5px 3px 0 3px;
+    border-color: grey transparent transparent transparent;
 }
+
+div.arrowUp {
+    position: absolute;
+    margin: auto;
+    /*top: 70%;*/
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 3px 5px 3px;
+    border-color: transparent transparent grey transparent;
+
+}
+
+th.header-flessen {
+    min-width: 110px;
+    max-width: 110px;
+    /*text-align: left;*/
+}
+
+th.header-flessen > div.arrowUp {
+    position: absolute;
+    margin: auto;
+    top: 50%;
+    right: -5%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 3px 5px 3px;
+    border-color: transparent transparent grey transparent;
+}
+
+th.header-flessen > div.arrowDown {
+    position: absolute;
+    margin: auto;
+    top: 50%;
+    right: -5%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 3px 0 3px;
+    border-color: grey transparent transparent transparent;
+}
+
+th.header-standard-size {
+    min-width: 110px;
+    max-width: 110px;
+    /*text-align: left;*/
+    transform: translate(-5%, 0);
+}
+
+th.header-standard-size > div.arrowUp {
+    position: absolute;
+    margin: auto;
+    top: 50%;
+    right: -52%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 3px 5px 3px;
+    border-color: transparent transparent grey transparent;
+}
+
+th.header-standard-size > div.arrowDown {
+    position: absolute;
+    margin: auto;
+    top: 50%;
+    right: -52%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 3px 0 3px;
+    border-color: grey transparent transparent transparent;
+}
+
+/*th.header-blh > a {*/
+/*    width: 200px;*/
+/*    white-space: nowrap;*/
+/*    float: none;*/
+/*}*/
 
 
 
