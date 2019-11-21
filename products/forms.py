@@ -92,21 +92,27 @@ class SearchBoxForm(forms.Form):
         super(SearchBoxForm, self).__init__(*args, **kwargs)
 
         # Q objects & queryset for all box main_categories
-        q_objects = (Q(category=category) for category in box_cat.values())
+        q_objects_main_categories = (Q(category=category) for category in box_cat.values())
+        main_category_qset = MainCategory.objects.filter(reduce(operator.or_, q_objects_main_categories))
 
-        main_category_queryset = MainCategory.objects.filter(reduce(operator.or_, q_objects))
+        # All sub categories:
+        product_type_qset = ProductType.objects.filter(main_category__in=main_category_qset)
 
-        # # Q objects to select products that exclude not box categories
-        # q_objects_exclude = (Q(product_type__main_category__catgory=category) for category in not_box.values())
-        # main_category_queryset = Product.objects.exclude(reduce(operator.or_, q_objects))
+        # Q objects & queryset for all box type products
+        q_objects_box = (Q(product_type=product_type) for product_type in product_type_qset.values_list('id', flat=True))
+        box_qset = Product.objects.filter(reduce(operator.or_, q_objects_box))
+
+        # Create wallthickness and color queryset
+        wall_thickness_qset = WallThickness.objects.filter(product__in=box_qset).distinct()
+        color_qset = Color.objects.filter(product__in=box_qset).distinct()
 
         # Load queryset choices here so db calls are not made during migrations
-        self.fields['main_categories'].queryset = main_category_queryset
-        self.fields['main_categories'].initial = [category for category in main_category_queryset]
-        self.fields['wall_thicknesses'].queryset = WallThickness.objects.all()
-        self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in WallThickness.objects.all()]
-        self.fields['colors'].queryset = Color.objects.all()
-        self.fields['colors'].initial = [color for color in Color.objects.all()]
+        self.fields['main_categories'].queryset = main_category_qset
+        self.fields['main_categories'].initial = [category for category in main_category_qset]
+        self.fields['wall_thicknesses'].queryset = wall_thickness_qset
+        self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in wall_thickness_qset]
+        self.fields['colors'].queryset = color_qset
+        self.fields['colors'].initial = [color for color in color_qset]
 
 
 class SearchTubeForm(forms.Form):

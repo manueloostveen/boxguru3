@@ -191,6 +191,15 @@ table .content {
     width: 100%;
 }
 
+td {
+    position: relative;
+    text-align: center;
+}
+
+th {
+    text-align: center;
+    border: solid 1px;
+}
 /*table {*/
 /*    border-collapse: collapse;*/
 /*    border-spacing: 0;*/
@@ -206,7 +215,8 @@ table .content {
     border-right: 5px solid transparent;
 
     border-bottom: 5px solid black;
-    position: relative;
+    position: absolute;
+    left: 100px;
 }
 
 .arrow-down {
@@ -236,15 +246,6 @@ table .content {
     border-right: 10px solid blue;
 }
 
-/*td .tooltip {*/
-/*    !*position: absolute;*!*/
-/*    !*display: inline-block;*!*/
-/*    !*border-bottom: 1px dotted black;*!*/
-/*}*/
-
-td {
-    position: relative;
-}
 
 .test {
     color: #007bff;
@@ -252,6 +253,7 @@ td {
 
 .test:hover {
     text-decoration: underline;
+    cursor: crosshair;
 }
 
 .tooltiptext {
@@ -264,8 +266,8 @@ td {
     border-radius: 6px 0 6px 6px;
     position: absolute;
     z-index: 1;
-    top: 2em;
-    right: 107%;
+    top: 1.4em;
+    right: 5em;
 }
 
 td:hover .tooltiptext {
@@ -279,7 +281,7 @@ td:hover .tooltiptext {
 
 input.chk {
     height: 12px;
-    padding:0;
+    padding: 0;
 }
 
 #filters div {
@@ -292,7 +294,7 @@ input.chk {
 
 #filters div label input {
     height: 12px;
-    padding:0;
+    padding: 0;
 }
 
 .filter-section {
@@ -300,6 +302,24 @@ input.chk {
     padding: 20px;
 }
 
+th.arrowUp {
+    /*background-color: #ec42f5;*/
+    position: relative;
+    padding-right:1em;
+    text-align: center;
+}
+
+th.arrowUp::after {
+    content: '';
+    position: absolute;
+    top: 45%;
+    left: 82%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 4px 6px 4px;
+    border-color: transparent transparent black transparent;
+}
 
 
 

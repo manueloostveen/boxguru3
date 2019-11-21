@@ -378,35 +378,41 @@
             </div>
 
 
+
             <div class="col mt-5">
-
-
                 <table class="table-hover table-condensed" id="productTable">
+
                     <thead>
+
+
                     <tr>
-                        <th>afb.</th>
-                        <th><a href="{{ category_header }}">Categorie</a></th>
-                        <th><a href="{{ width_header }}">Breedte</a></th>
+                        <th rowspan="2">afb.</th>
+                        <th rowspan="2"><a href="{{ category_header }}">Categorie</a></th>
+                        <th rowspan="2" class="arrowUp"><a href="{{ width_header }}">Breedte</a></th>
 
-                        <th><a href="{{ length_header }}">Lengte</a></th>
+                        <th rowspan="2" class="arrowUp"><a href="{{ length_header }}">Lengte</a></th>
 
-                        <th>{% if searched == 'tube' %}
+                        <th rowspan="2">{% if searched == 'tube' %}
                             <a href="{{ diameter_header }}">Diameter</a>{% else %}
                             <a href="{{ height_header }}">Hoogte</a>{% endif %}</th>
 
-                        <th><a href="{{ match_header }}">Zoekmatch</a></th>
-                        <th><a href="{{ wall_thickness_header }}">Kwaliteit</a></th>
-                        <th><a href="{{ color_header }}">Kleur</a></th>
-                        <th><a href="{{ bottles_header }}">Flessen</a> /<br><a href="{{ standard_size_header }}">Standaard
+                        <th rowspan="2" class="arrowUp"><a href="{{ match_header }}">Zoekmatch</a></th>
+                        <th rowspan="2"><a href="{{ wall_thickness_header }}">Kwaliteit</a></th>
+                        <th rowspan="2"><a href="{{ color_header }}">Kleur</a></th>
+                        <th><a href="{{ standard_size_header }}">Standaard
                             formaat</a></th>
-                        <th><a href="{{ price_header }}">Prijs ex. BTW</a></th>
-                        <th><a href="{{ lowest_price_header }}">Staffelkorting</a></th>
+                        <th rowspan="2"><a href="{{ price_header }}">Prijs ex. BTW</a></th>
+                        <th rowspan="2"><a href="{{ lowest_price_header }}">Staffelkorting</a></th>
                         {#                        <th>Producent/productlink</th>#}
                         {#                        <th>Bulk discount</th>#}
                         {#                        <th>Like/unlike</th>#}
-                        <th>Link</th>
+                        <th rowspan="2">Link</th>
 
                     </tr>
+                    <tr>
+                        <th><a href="{{ bottles_header }}">Flessen</a></th>
+                    </tr>
+
                     </thead>
                     <tbody>
 
@@ -524,7 +530,7 @@
             }
 
             // Iterate over every column row
-            for (i = 1; i < tr.length; i++) {
+            for (i = 2; i < tr.length; i++) {
                 passArray = [];
                 td = tr[i].getElementsByTagName('td');
                 for (const column of columnCheckArray) {
