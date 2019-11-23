@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 from django.views import generic
+from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from products.models import Product, WallThickness, Color, ProductType
@@ -11,7 +12,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalField, Avg, Func
 from django.db.models.functions import Greatest, Sqrt
-
+from products.product_categories import box_main_category_dict
 from math import pi
 
 
@@ -192,7 +193,7 @@ def unlike_product(request, pk):
         return HttpResponseRedirect(next)
 
 
-def search_product(request):
+def search_product_OLD(request):
     context = {}
     template_name = 'products/search_products.html'
 
@@ -203,7 +204,7 @@ def search_product(request):
 
         # Build current URL without sort parameter
         current_path = request.path
-        if len(request.GET) > 0:
+        if len(request.GET):
             current_path += '?'
 
         for key, values in request.GET.lists():
@@ -610,6 +611,384 @@ def search_product(request):
             context['order_by'] = order_by
 
     return render(request, template_name, context)
+
+
+def search_product(request):
+    context = {}
+    template_name = 'products/search_products.html'
+
+    if request.method == 'GET':
+
+        # Sorting headers
+        order_by = request.GET.get('sort')
+
+        # Build current URL without sort parameter
+        current_path = request.path
+        if len(request.GET):
+            current_path += '?'
+
+        for key, values in request.GET.lists():
+            if key != 'sort' and key != 'by':
+                for value in values:
+                    if current_path[-1] == '?':
+                        param_symbol = ''
+                    else:
+                        param_symbol = '&'
+                    current_path += param_symbol + key + "=" + value
+
+        # Swapper dictionary to set order to Ascending or Descending
+        ordering_swapper = {
+            'ASC': 'DESC',
+            'DESC': 'ASC'
+        }
+
+        # ordering dict to choose direction based on order_by ('sort') parameter
+        ordering_dict = {
+            order_by: ordering_swapper[request.GET.get('by', 'DESC')]
+        }
+
+        # Build sorting headers and add to context
+        if current_path[-1] == "/":
+            param_symbol = "?"
+        else:
+            param_symbol = "&"
+
+        context['category_header'] = current_path + param_symbol + "sort=product_type" + f'&by={ordering_dict.get("product_type", "DESC")}'
+        context['width_header'] = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
+        context['length_header'] = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
+        context['height_header'] = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
+        context['diameter_header'] = current_path + param_symbol + "sort=diameter" + f'&by={ordering_dict.get("diameter", "ASC")}'
+        context['match_header'] = current_path + param_symbol + "sort=max_match" + f'&by={ordering_dict.get("max_match", "ASC")}'
+        context['wall_thickness_header'] = current_path + param_symbol + "sort=wall_thickness" + f'&by={ordering_dict.get("wall_thickness", "ASC")}'
+        context['color_header'] = current_path + param_symbol + "sort=color" + f'&by={ordering_dict.get("color", "DESC")}'
+        context['standard_size_header'] = current_path + param_symbol + "sort=standard_size" + f'&by={ordering_dict.get("standard_size", "ASC")}'
+        context['bottles_header'] = current_path + param_symbol + "sort=bottles" + f'&by={ordering_dict.get("bottles", "ASC")}'
+
+        context['lowest_price_header'] = current_path + param_symbol + "sort=lowest_price" + f'&by={ordering_dict.get("lowest_price", "DESC")}'
+        context['price_header'] = current_path + param_symbol + "sort=price_ex_BTW" + f'&by={ordering_dict.get("price_ex_BTW", "DESC")}'
+
+
+        # Set  ordering
+        if order_by:
+            # Prepend "-" if order is Ascending
+            if request.GET.get('by') == "ASC":
+                order_by = "-" + order_by
+        else:
+            order_by = '-max_match'
+
+        # Check GET request if and what type of form is requested
+        if request.GET.get('box-form') or request.GET.get('tube-form') or request.GET.get('envelope-form'):
+            if request.GET.get('box-form'):
+                context['box_form'] = SearchBoxForm(request.GET)
+                context['tube_form'] = SearchTubeForm()
+                context['envelope_form'] = SearchEnvelopeBagForm()
+                context['searched'] = 'box'
+                form = context['box_form']
+
+
+            elif request.GET.get('tube-form'):
+                context['box_form'] = SearchBoxForm()
+                context['tube_form'] = SearchTubeForm(request.GET)
+                context['envelope_form'] = SearchEnvelopeBagForm()
+                context['searched'] = 'tube'
+                form = context['tube_form']
+
+
+            elif request.GET.get('envelope-form'):
+                context['box_form'] = SearchBoxForm()
+                context['tube_form'] = SearchTubeForm()
+                context['envelope_form'] = SearchEnvelopeBagForm(request.GET)
+                context['searched'] = 'envelope'
+                form = context['envelope_form']
+
+        else:
+            context['box_form'] = SearchBoxForm()
+            context['tube_form'] = SearchTubeForm()
+            context['envelope_form'] = SearchEnvelopeBagForm()
+            context['no_search'] = True
+            form = None
+
+
+    if form:
+        if form.is_valid():
+            width = form.cleaned_data.get('width')
+            length = form.cleaned_data.get('length')
+            height = form.cleaned_data.get('height')
+            diameter = form.cleaned_data.get('diameter')
+            colors = form.cleaned_data.get('colors')
+            wall_thicknesses = form.cleaned_data.get('wall_thicknesses')
+            main_categories = form.cleaned_data.get('main_categories')
+            categories = form.cleaned_data.get('categories')
+
+            # Q objects checkboxes
+            if colors:
+                qcolors = Q(color__in=colors)
+            else:
+                qcolors = Q()
+
+            if wall_thicknesses:
+                qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
+            else:
+                qwall_thicknesses = Q()
+
+            if main_categories:
+                qproduct_types = Q(product_type__main_category=main_categories)
+            elif categories:
+                print(categories, 'categories')
+                qproduct_types = Q(product_type=categories)
+
+            else:
+                # WARNING, BASED ON FIRST ENTRY OF MAIN CATEGORIES
+                if context['searched'] == 'box':
+                    qproduct_types = Q(product_type__main_category__in=range(1, 11))
+                elif context['searched'] == 'tube':
+                    qproduct_types = Q(product_type__main_category=14)
+                elif context['searched'] == 'envelope':
+                    qproduct_types = Q(product_type__main_category=13)
+
+            error_margin = 50
+            error_margin_diameter = 15
+
+            # Q objects search fields
+            qwidth_length = Q()
+            qheight = Q()
+            qdiameter = Q()
+
+            # Set maxmatch variable for template context
+            if width or length or height or diameter:
+                context['show_match_header'] = True
+
+            if width and not length:
+                width = float(width)
+                qwidth_length = Q(inner_dim1__range=(width - error_margin, width + error_margin)) | Q(
+                    inner_dim2__range=(width - error_margin, width + error_margin))
+
+            elif length and not width:
+                length = float(length)
+                qwidth_length = Q(inner_dim2__range=(length - error_margin, length + error_margin)) | Q(
+                    inner_dim1__range=(length - error_margin, length + error_margin))
+
+            elif width and length:
+                width = float(width)
+                length = float(length)
+                qwidth_length = (Q(inner_dim1__range=(width - error_margin, width + error_margin)) & Q(
+                    inner_dim2__range=(length - error_margin, length + error_margin))) | (
+                                        Q(inner_dim2__range=(width - error_margin, width + error_margin)) & Q(
+                                    inner_dim1__range=(length - error_margin, length + error_margin)))
+
+            if height:
+                height = float(height)
+                qheight = Q(inner_dim3__range=(height - error_margin, height + error_margin)) | (
+                    (Q(inner_variable_dimension_MAX__gte=height) & Q(inner_variable_dimension_MIN__lte=height)))
+
+            if diameter:
+                diameter = float(diameter)
+                qdiameter = Q(diameter__range=(diameter - error_margin_diameter, diameter + error_margin_diameter))
+
+            # list qobject for *args
+            qobjects = [qcolors,
+                        qwall_thicknesses,
+                        qproduct_types, qwidth_length,
+                        qheight, qdiameter
+                        ]
+
+            # Create round function, arity 1 so rounds to 0 decimals, no input needed
+            class Round(Func):
+                function = 'ROUND'
+                arity = 1
+
+            # Create absolute function
+            class Abs(Func):
+                function = 'ABS'
+
+            # Create Queryset
+            if width and not length and not height:
+                swidth_width_test = Case(
+                    When(inner_dim1__isnull=False,
+                         then=(100 - Abs((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                swidth_length_test = Case(
+                    When(inner_dim2__isnull=False,
+                         then=(100 - Abs((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                queryset_qobjects = Product.objects.filter(
+                    *qobjects
+                ).annotate(
+                    swidth_width_test=swidth_width_test).annotate(
+                    swidth_length_test=swidth_length_test).annotate(
+                    max_match=Round(Greatest('swidth_width_test', 'swidth_length_test'))).order_by(order_by)
+
+
+            elif length and not width and not height and not diameter:
+
+                slength_width_test = Case(
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_length_test = Case(
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+
+                queryset_qobjects = Product.objects.filter(
+                    *qobjects
+                ).annotate(
+                    slength_width_test=slength_width_test).annotate(
+                    slength_length_test=slength_length_test).annotate(
+                    max_match=Round(Greatest('slength_width_test', 'slength_length_test'))).order_by(order_by)
+
+
+            elif length and width and not height:
+
+                swidth_width_test = Case(
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                swidth_length_test = Case(
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_width_test = Case(
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_length_test = Case(
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+
+                queryset_qobjects = Product.objects.filter(
+                    *qobjects
+                ).annotate(
+                    slength_width_test=slength_width_test).annotate(
+                    slength_length_test=slength_length_test).annotate(
+                    swidth_width_test=swidth_width_test).annotate(
+                    swidth_length_test=swidth_length_test).annotate(
+                    sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2).annotate(
+                    swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
+                    max_match=Round(Greatest('sww_sll_match', 'swl_slw_match'))).order_by(order_by)
+
+
+            elif width and length and height:
+
+                swidth_width_test = Case(
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                swidth_length_test = Case(
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_width_test = Case(
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_length_test = Case(
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+
+                sheight_height_test = Case(
+                    When(inner_variable_dimension_MAX__isnull=False,
+                         then=100),
+                    When(inner_variable_dimension_MAX__isnull=True,
+                         then=(100 - (Abs(F('inner_dim3') - length) / F('inner_dim3')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+
+                queryset_qobjects = Product.objects.filter(
+                    *qobjects
+                ).annotate(
+                    slength_width_test=slength_width_test).annotate(
+                    slength_length_test=slength_length_test).annotate(
+                    swidth_width_test=swidth_width_test).annotate(
+                    swidth_length_test=swidth_length_test).annotate(
+                    sheight_height_test=sheight_height_test).annotate(
+                    sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2).annotate(
+                    swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
+                    wl_match=Greatest('sww_sll_match', 'swl_slw_match')).annotate(
+                    max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).order_by(order_by)
+
+            elif diameter and not length:
+                sdiameter_diameter_test = Case(
+                    When(diameter__isnull=False,
+                         then=(100 - (Abs(F('diameter') - diameter) / F('diameter')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                queryset_qobjects = Product.objects.filter(
+                    *qobjects
+                ).annotate(
+                    max_match=Round(sdiameter_diameter_test)).order_by(order_by)
+
+            elif length and diameter:
+                slength_width_test = Case(
+                    When(inner_dim1__isnull=False,
+                         then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+                slength_length_test = Case(
+                    When(inner_dim2__isnull=False,
+                         then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+
+                sdiameter_diameter_test = Case(
+                    When(diameter__isnull=False,
+                         then=(100 - (Abs(F('diameter') - diameter) / F('diameter')) * 100.0)),
+                    default=0, output_field=DecimalField()
+                )
+
+                queryset_qobjects = Product.objects.filter(
+                    *qobjects
+                ).annotate(
+                    slength_width_test=slength_width_test).annotate(
+                    slength_length_test=slength_length_test).annotate(
+                    sdiameter_diameter_test=sdiameter_diameter_test).annotate(
+                    slength_match=Greatest('slength_width_test', 'slength_length_test')).annotate(
+                    max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2)).order_by(order_by)
+
+
+            else:
+                if 'max_match' not in order_by:
+                    queryset_qobjects = Product.objects.filter(*qobjects).order_by(order_by)
+                else:
+                    queryset_qobjects = Product.objects.filter(*qobjects).order_by('product_type')
+
+            # Create  querysets for result filter
+            context['filter_producttypes'] = ProductType.objects.filter(product__in=queryset_qobjects).distinct()
+            context['filter_colors'] = Color.objects.filter(product__in=queryset_qobjects).distinct()
+            context['filter_wallthicknesses'] = WallThickness.objects.filter(product__in=queryset_qobjects).distinct()
+            context['filter_standard_size'] = queryset_qobjects.filter(standard_size__isnull=False).order_by(
+                'standard_size').values_list('standard_size', flat=True).distinct()
+            bottles_query = queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
+                                                                                                            flat=True).distinct()
+            context['filter_bottles'] = [str(bottles) + " fles" if bottles == 1 else str(bottles) + " flessen" for
+                                         bottles in bottles_query]
+
+            # Add search params to context
+            context['search_width'] = width
+            context['search_length'] = length
+            context['search_height'] = height
+            context['search_diameter'] = diameter
+            context['queryset'] = queryset_qobjects
+            context['products_found'] = len(queryset_qobjects)
+            context['model'] = Product
+            context['order_by'] = order_by
+
+    return render(request, template_name, context)
+
 
 
 class ProductCreate(PermissionRequiredMixin, CreateView):

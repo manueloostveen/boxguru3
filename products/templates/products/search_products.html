@@ -5,7 +5,6 @@
 
 {% block content %}
 
-
     <div class="row d-flex justify-content-left">
         <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5"></div>
         <div class="col-md-6 col-lg-5 col-sm-8">
@@ -31,20 +30,27 @@
                 <div class="tab-pane show active" id="nav-dozen" role="tabpanel" aria-labelledby="nav-home-tab">
                     <form action='' method="get">
 
-                        <div class="row info-block">
-
+                        <div class="row info-block p-2">
                             <div class="col">
-                                <h3 class="text-center text-white m-2">AFMETINGEN</h3>
+                                <h3 class="text-center text-white m-2">TYPE DOOS</h3>
 
+                                <div class="mb-2" style="text-align: center">
+                                    {{ box_form.main_categories }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row info-block-2 mt-2 p-2">
+                            <div class="col">
+
+                                <h3 class="text-center text-white m-2">AFMETINGEN</h3>
 
                                 <div class="col-lg">
                                     <div class="input-group mb-2 input-group-sm">
-                                        <input type="range" min="-50" max="0" value="-40">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">B</span>
                                         </div>
                                         {{ box_form.width }}
-                                        <input type="range" min="0" max="50" value="20">
                                     </div>
                                 </div>
 
@@ -68,60 +74,62 @@
                             </div>
                         </div>
 
-                        <div class="row info-block-2 mt-2 pb-2">
-
-                            <div class="col" id="accordion">
-                                <h3 class="text-center text-white m-2">VERFIJN</h3>
-                                <div class="col-lg">
-                                    <button type="button"
-                                            class="btn-sm btn-block mb-2"
-                                            data-toggle="collapse"
-                                            data-target="#main-categories">
-                                        Type doos
-                                    </button>
-                                    <div id="main-categories" class="collapse" data-parent="#accordion">
-                                        <div class="d-flex align-content-start flex-wrap pt-2">
-                                            {% for type in box_form.main_categories %}
-                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg">
-                                    <button type="button"
-                                            class="btn-sm btn-block mb-2"
-                                            data-toggle="collapse"
-                                            data-target="#wallthickness">
-                                        Kwaliteit
-                                    </button>
-                                    <div id="wallthickness" class="collapse" data-parent="#accordion">
-                                        <div class="d-flex align-content-start flex-wrap pt-2">
-                                            {% for wall_thickness in box_form.wall_thicknesses %}
-                                                <div class="small text-white p-1 checkbox-cell">{{ wall_thickness }}</div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg">
-                                    <button type="button"
-                                            class="btn-sm btn-block mb-2"
-                                            data-toggle="collapse"
-                                            data-target="#colors">
-                                        Kleuren
-                                    </button>
-                                    <div class="collapse" id="colors" data-parent="#accordion">
-                                        <div class="d-flex align-content-start flex-wrap pt-2">
-                                            {#{% for color in form.colors|slice:":4" %}#}
-                                            {% for color in box_form.colors %}
-                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {#                        <div class="row info-block-2 mt-2 pb-2">#}
+                        {##}
+                        {##}
+                        {#                            <div class="col" id="accordion">#}
+                        {##}
+                        {#                                <h3 class="text-center text-white m-2">VERFIJN</h3>#}
+                        {#                                <div class="col-lg">#}
+                        {#                                    <button type="button"#}
+                        {#                                            class="btn-sm btn-block mb-2"#}
+                        {#                                            data-toggle="collapse"#}
+                        {#                                            data-target="#main-categories">#}
+                        {#                                        Type doos#}
+                        {#                                    </button>#}
+                        {#                                    <div id="main-categories" class="collapse" data-parent="#accordion">#}
+                        {#                                        <div class="d-flex align-content-start flex-wrap pt-2">#}
+                        {#                                            {% for type in box_form.main_categories %}#}
+                        {#                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>#}
+                        {#                                            {% endfor %}#}
+                        {#                                        </div>#}
+                        {#                                    </div>#}
+                        {#                                </div>#}
+                        {##}
+                        {#                                <div class="col-lg">#}
+                        {#                                    <button type="button"#}
+                        {#                                            class="btn-sm btn-block mb-2"#}
+                        {#                                            data-toggle="collapse"#}
+                        {#                                            data-target="#wallthickness">#}
+                        {#                                        Kwaliteit#}
+                        {#                                    </button>#}
+                        {#                                    <div id="wallthickness" class="collapse" data-parent="#accordion">#}
+                        {#                                        <div class="d-flex align-content-start flex-wrap pt-2">#}
+                        {#                                            {% for wall_thickness in box_form.wall_thicknesses %}#}
+                        {#                                                <div class="small text-white p-1 checkbox-cell">{{ wall_thickness }}</div>#}
+                        {#                                            {% endfor %}#}
+                        {#                                        </div>#}
+                        {#                                    </div>#}
+                        {#                                </div>#}
+                        {##}
+                        {#                                <div class="col-lg">#}
+                        {#                                    <button type="button"#}
+                        {#                                            class="btn-sm btn-block mb-2"#}
+                        {#                                            data-toggle="collapse"#}
+                        {#                                            data-target="#colors">#}
+                        {#                                        Kleuren#}
+                        {#                                    </button>#}
+                        {#                                    <div class="collapse" id="colors" data-parent="#accordion">#}
+                        {#                                        <div class="d-flex align-content-start flex-wrap pt-2">#}
+                        {#{% for color in form.colors|slice:":4" %}#}
+                        {#                                            {% for color in box_form.colors %}#}
+                        {#                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>#}
+                        {#                                            {% endfor %}#}
+                        {#                                        </div>#}
+                        {#                                    </div>#}
+                        {#                                </div>#}
+                        {#                            </div>#}
+                        {#                        </div>#}
 
                         <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
                         <input type="hidden" name="box-form" value="True">
@@ -130,7 +138,17 @@
                 <div class="tab-pane" id="nav-verzendkokers" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <form action='' method="get">
 
-                        <div class="row info-block-middle">
+                        <div class="row info-block-right p-2">
+                            <div class="col">
+                                <h3 class="text-center text-white m-2">TYPE KOKER</h3>
+
+                                <div class="mb-2" style="text-align: center">
+                                    {{ tube_form.categories }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row info-block-2 mt-2 p-2">
 
                             <div class="col">
                                 <h3 class="text-center text-white m-2">AFMETINGEN</h3>
@@ -157,59 +175,59 @@
                             </div>
                         </div>
 
-                        <div class="row info-block-2 mt-2 pb-2">
-
-                            <div class="col" id="accordion-2">
-                                <h3 class=" text-center text-white m-2">VERFIJN</h3>
-                                <div class="col-lg">
-                                    <button type="button"
-                                            class="btn-sm btn-block mb-2"
-                                            data-toggle="collapse"
-                                            data-target="#main-categories">
-                                        Type koker
-                                    </button>
-                                    <div id="main-categories" class="collapse" data-parent="#accordion-2">
-                                        <div class="d-flex align-content-start flex-wrap pt-2">
-                                            {% for type in tube_form.categories %}
-                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg">
-                                    <button type="button"
-                                            class="btn-sm btn-block mb-2"
-                                            data-toggle="collapse"
-                                            data-target="#wallthickness">
-                                        Kwaliteit
-                                    </button>
-                                    <div id="wallthickness" class="collapse" data-parent="#accordion-2">
-                                        <div class="d-flex align-content-start flex-wrap pt-2">
-                                            {% for wall_thickness in tube_form.wall_thicknesses %}
-                                                <div class="small text-white p-1 checkbox-cell">{{ wall_thickness }}</div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg">
-                                    <button type="button"
-                                            class="btn-sm btn-block mb-2"
-                                            data-toggle="collapse"
-                                            data-target="#colors">
-                                        Kleuren
-                                    </button>
-                                    <div class="collapse" id="colors" data-parent="#accordion-2">
-                                        <div class="d-flex align-content-start flex-wrap pt-2">
-                                            {% for color in tube_form.colors %}
-                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+{#                        <div class="row info-block-2 mt-2 pb-2">#}
+{##}
+{#                            <div class="col" id="accordion-2">#}
+{#                                <h3 class=" text-center text-white m-2">VERFIJN</h3>#}
+{#                                <div class="col-lg">#}
+{#                                    <button type="button"#}
+{#                                            class="btn-sm btn-block mb-2"#}
+{#                                            data-toggle="collapse"#}
+{#                                            data-target="#main-categories">#}
+{#                                        Type koker#}
+{#                                    </button>#}
+{#                                    <div id="main-categories" class="collapse" data-parent="#accordion-2">#}
+{#                                        <div class="d-flex align-content-start flex-wrap pt-2">#}
+{#                                            {% for type in tube_form.categories %}#}
+{#                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>#}
+{#                                            {% endfor %}#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{##}
+{#                                <div class="col-lg">#}
+{#                                    <button type="button"#}
+{#                                            class="btn-sm btn-block mb-2"#}
+{#                                            data-toggle="collapse"#}
+{#                                            data-target="#wallthickness">#}
+{#                                        Kwaliteit#}
+{#                                    </button>#}
+{#                                    <div id="wallthickness" class="collapse" data-parent="#accordion-2">#}
+{#                                        <div class="d-flex align-content-start flex-wrap pt-2">#}
+{#                                            {% for wall_thickness in tube_form.wall_thicknesses %}#}
+{#                                                <div class="small text-white p-1 checkbox-cell">{{ wall_thickness }}</div>#}
+{#                                            {% endfor %}#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{##}
+{#                                <div class="col-lg">#}
+{#                                    <button type="button"#}
+{#                                            class="btn-sm btn-block mb-2"#}
+{#                                            data-toggle="collapse"#}
+{#                                            data-target="#colors">#}
+{#                                        Kleuren#}
+{#                                    </button>#}
+{#                                    <div class="collapse" id="colors" data-parent="#accordion-2">#}
+{#                                        <div class="d-flex align-content-start flex-wrap pt-2">#}
+{#                                            {% for color in tube_form.colors %}#}
+{#                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>#}
+{#                                            {% endfor %}#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
 
                         <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
                         <input type="hidden" name="tube-form" value="True">
@@ -219,11 +237,21 @@
 
                     <form action='' method="get">
 
-                        <div class="row info-block-right">
+
+                        <div class="row info-block-right p-2">
+                            <div class="col">
+                                <h3 class="text-center text-white m-2">TYPE PRODUCT</h3>
+
+                                <div class="mb-2" style="text-align: center">
+                                    {{ envelope_form.categories }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row info-block mt-2 p-2">
 
                             <div class="col">
                                 <h3 class="text-center text-white m-2">AFMETINGEN</h3>
-
 
                                 <div class="col-lg">
                                     <div class="input-group mb-2 input-group-sm">
@@ -246,43 +274,43 @@
                             </div>
                         </div>
 
-                        <div class="row info-block-2 mt-2 pb-2">
-
-                            <div class="col" id="accordion-3">
-                                <h3 class=" text-center text-white m-2">VERFIJN</h3>
-                                <div class="col-lg">
-                                    <button type="button"
-                                            class="btn-sm btn-block mb-2"
-                                            data-toggle="collapse"
-                                            data-target="#main-categories">
-                                        Type product
-                                    </button>
-                                    <div id="main-categories" class="collapse" data-parent="#accordion-3">
-                                        <div class="d-flex align-content-start flex-wrap pt-2">
-                                            {% for type in envelope_form.categories %}
-                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg">
-                                    <button type="button"
-                                            class="btn-sm btn-block mb-2"
-                                            data-toggle="collapse"
-                                            data-target="#colors">
-                                        Kleuren
-                                    </button>
-                                    <div class="collapse" id="colors" data-parent="#accordion-3">
-                                        <div class="d-flex align-content-start flex-wrap pt-2">
-                                            {% for color in envelope_form.colors %}
-                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+{#                        <div class="row info-block-2 mt-2 pb-2">#}
+{##}
+{#                            <div class="col" id="accordion-3">#}
+{#                                <h3 class=" text-center text-white m-2">VERFIJN</h3>#}
+{#                                <div class="col-lg">#}
+{#                                    <button type="button"#}
+{#                                            class="btn-sm btn-block mb-2"#}
+{#                                            data-toggle="collapse"#}
+{#                                            data-target="#main-categories">#}
+{#                                        Type product#}
+{#                                    </button>#}
+{#                                    <div id="main-categories" class="collapse" data-parent="#accordion-3">#}
+{#                                        <div class="d-flex align-content-start flex-wrap pt-2">#}
+{#                                            {% for type in envelope_form.categories %}#}
+{#                                                <div class="small text-white p-1 checkbox-cell">{{ type }}</div>#}
+{#                                            {% endfor %}#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{##}
+{#                                <div class="col-lg">#}
+{#                                    <button type="button"#}
+{#                                            class="btn-sm btn-block mb-2"#}
+{#                                            data-toggle="collapse"#}
+{#                                            data-target="#colors">#}
+{#                                        Kleuren#}
+{#                                    </button>#}
+{#                                    <div class="collapse" id="colors" data-parent="#accordion-3">#}
+{#                                        <div class="d-flex align-content-start flex-wrap pt-2">#}
+{#                                            {% for color in envelope_form.colors %}#}
+{#                                                <div class="p-1 text-white small checkbox-cell">{{ color }}</div>#}
+{#                                            {% endfor %}#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
 
                         <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
                         <input type="hidden" name="envelope-form" value="True">
@@ -290,22 +318,23 @@
                     </form>
                 </div>
             </div>
-            {% if no_search %}
-            {% else %}
-                {% if queryset %}
-                    <div class="alert alert-success alert-dismissible mt-3 small">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 
-                        <strong>Yes!</strong> {% if queryset|length > 1 %}Er zijn {{ queryset|length }} producten
-                        gevonden.{% else %}Er is {{ queryset|length }} product gevonden.{% endif %}
-                    </div>
-                {% else %}
-                    <div class="alert alert-danger alert-dismissible mt-3 small">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        <strong>Helaas!</strong> Er zijn met de huidige zoekopdracht geen producten gevonden.
-                    </div>
-                {% endif %}
+            {% if no_search %}
+        {% else %}
+            {% if queryset %}
+                <div class="alert alert-success alert-dismissible mt-3 small">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+                    <strong>Yes!</strong> {% if queryset|length > 1 %}Er zijn {{ queryset|length }} producten
+                    gevonden.{% else %}Er is {{ queryset|length }} product gevonden.{% endif %}
+                </div>
+            {% else %}
+                <div class="alert alert-danger alert-dismissible mt-3 small">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Helaas!</strong> Er zijn met de huidige zoekopdracht geen producten gevonden.
+                </div>
             {% endif %}
+        {% endif %}
         </div>
     </div>
 
@@ -408,7 +437,7 @@
                                  {% elif order_by == 'diameter' %}class="arrowUp"{% endif %}></div>
                         </th>
 
-                        {% if object.max_match %}
+                        {% if show_match_header %}
                             <th><a href="{{ match_header }}">Zoekmatch</a>
                                 <div {% if order_by == '-max_match' %}class="arrowDown"
                                      {% elif order_by == 'max_match' %}class="arrowUp"{% else %}{% endif %}></div>

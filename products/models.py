@@ -7,7 +7,7 @@ class MainCategory(models.Model):
     category = models.CharField(max_length=120, verbose_name='Hoofdcategorie', null=True)
 
     def __str__(self):
-        return self.category
+        return self.category + " " + str(self.pk)
 
     class Meta:
         ordering = ['category']
@@ -33,7 +33,7 @@ class ProductType(models.Model):
     main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return self.type
+        return self.type + ' ' + str(self.pk)
 
     def get_absolute_url(self):
         return reverse('producttype-detail', args=[str(self.id)])
