@@ -720,7 +720,7 @@ def search_product(request):
                 colors = request.GET.getlist('color')
                 wall_thicknesses = request.GET.getlist('wall_thickness')
                 main_category = request.GET.get('product_type__main_category')
-                product_types = request.GET.getlist('product_type')
+                product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
 
 
                 # Q objects checkboxes
@@ -743,6 +743,9 @@ def search_product(request):
                         qmain_category = Q(product_type__main_category=14)
                     elif context['searched'] == 'envelope':
                         qmain_category = Q(product_type__main_category=13)
+
+                print(len(product_types), 'LEN PRODUCT TYPES', product_types)
+                print(main_category, 'MAIN CATEGORY')
 
                 if len(product_types):
                     qproduct_types = Q(product_type__in=product_types)
@@ -971,14 +974,14 @@ def search_product(request):
                         queryset_qobjects = Product.objects.filter(*qobjects).order_by('price_ex_BTW')
 
                 # Create  querysets for result filter
-                # request.session['filter_producttypes'] = ProductType.objects.filter(product__in=queryset_qobjects).distinct()
-                request.session['filter_producttypes'] = list(ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'type'))
-                request.session['filter_colors'] = list(Color.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'color'))
-                request.session['filter_wallthicknesses'] = list(WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'wall_thickness'))
-                request.session['filter_standard_size'] = list(queryset_qobjects.filter(standard_size__isnull=False).order_by(
-                    'standard_size').values_list('standard_size', flat=True).distinct())
-                request.session['filter_bottles'] = list(queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
-                                                                                                                flat=True).distinct())
+                if request.GET.get('initial_search'):
+                    request.session['filter_producttypes'] = list(ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'type'))
+                    request.session['filter_colors'] = list(Color.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'color'))
+                    request.session['filter_wallthicknesses'] = list(WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'wall_thickness'))
+                    request.session['filter_standard_size'] = list(queryset_qobjects.filter(standard_size__isnull=False).order_by(
+                        'standard_size').values_list('standard_size', flat=True).distinct())
+                    request.session['filter_bottles'] = list(queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
+                                                                                                                    flat=True).distinct())
                 def build_filter_url(current_request, current_filter, current_value):
                     """
 
@@ -994,6 +997,8 @@ def search_product(request):
                         for value in values:
                             if key == current_filter and value == current_value:
                                 current_filter_searched = True
+                                continue
+                            elif key == 'initial_search':
                                 continue
 
                             if current_path[-1] == '?':

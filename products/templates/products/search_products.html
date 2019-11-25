@@ -76,6 +76,8 @@
 
                         <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
                         <input type="hidden" name="form" value="box">
+                        <input type="hidden" name="initial_search" value="1">
+
                     </form>
                 </div>
                 <div class="tab-pane" id="nav-verzendkokers" role="tabpanel" aria-labelledby="nav-profile-tab">
@@ -120,6 +122,7 @@
 
                         <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
                         <input type="hidden" name="form" value="tube">
+                        <input type="hidden" name="initial_search" value="1">
                     </form>
                 </div>
                 <div class="tab-pane" id="nav-overig" role="tabpanel" aria-labelledby="nav-contact-tab">
@@ -132,7 +135,7 @@
                                 <h3 class="text-center text-white m-2">TYPE PRODUCT</h3>
 
                                 <div class="mb-2" style="text-align: center">
-                                    {{ envelope_form.categories }}
+                                    {{ envelope_form.product_type }}
                                 </div>
                             </div>
                         </div>
@@ -165,6 +168,7 @@
 
                         <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
                         <input type="hidden" name="form" value="envelope">
+                        <input type="hidden" name="initial_search" value="1">
 
                     </form>
                 </div>
@@ -190,15 +194,16 @@
     </div>
 
     <div class="row flex-xl-nowrap">
-        {% if queryset %}
+        {% if no_search %}
+            {% else %}
             <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5 filter-section">
                 <div id="filters">
                     <h4>Filter resultaten</h4>
                     {% for filter_name, filters in filters.items %}
-                    <br><h6>{{ filter_name }}</h6>
+                        <br><h6>{{ filter_name }}</h6>
                         {% for filter in filters %}
                             <a class="small" href="{{ filter.0 }}">{{ filter.1 }}</a>
-                            {% endfor %}
+                        {% endfor %}
 
                     {% endfor %}
 

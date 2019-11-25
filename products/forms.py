@@ -178,18 +178,18 @@ class SearchEnvelopeBagForm(forms.Form):
         'placeholder': "Lengte in mm",
     }))
 
-    categories = forms.ChoiceField(
+    product_type = forms.ChoiceField(
         widget=forms.Select,
         required=False,
         initial=None
     )
-
-    colors = forms.ModelMultipleChoiceField(
-        queryset=None,
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        initial=None
-    )
+    #
+    # colors = forms.ModelMultipleChoiceField(
+    #     queryset=None,
+    #     widget=forms.CheckboxSelectMultiple,
+    #     required=False,
+    #     initial=None
+    # )
 
     def __init__(self, *args, **kwargs):
         super(SearchEnvelopeBagForm, self).__init__(*args, **kwargs)
@@ -197,11 +197,11 @@ class SearchEnvelopeBagForm(forms.Form):
         main_category_qset = MainCategory.objects.get(pk=13)
         category_qset = main_category_qset.producttype_set.all()
 
-        products_qset = Product.objects.filter(product_type__main_category__category=13)
-        color_qset = Color.objects.filter(product__in=products_qset).distinct()
+        # products_qset = Product.objects.filter(product_type__main_category__category=13)
+        # color_qset = Color.objects.filter(product__in=products_qset).distinct()
 
         # populate initial values and queryset for selectboxes
-        self.fields['categories'].choices = [(category.id, category.type) for category in category_qset] + [('', 'Alle zakken & enveloppen')]
+        self.fields['product_type'].choices = [(category.id, category.type) for category in category_qset] + [('', 'Alle zakken & enveloppen')]
         # self.fields['categories'].initial = [category for category in category_qset]
-        self.fields['colors'].queryset = color_qset
-        self.fields['colors'].initial = [color for color in color_qset]
+        # self.fields['colors'].queryset = color_qset
+        # self.fields['colors'].initial = [color for color in color_qset]
