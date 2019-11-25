@@ -69,25 +69,24 @@ class SearchBoxForm(forms.Form):
         'placeholder': "Hoogte in mm",
     }))
 
-
-    main_categories = forms.ChoiceField(
+    product_type__main_category = forms.ChoiceField(
         widget=forms.Select,
         required=False,
         initial=None,
         )
 
-    wall_thicknesses = forms.ModelMultipleChoiceField(
-        queryset=None,
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        initial=None
-    )
-    colors = forms.ModelMultipleChoiceField(
-        queryset=None,
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        initial=None
-    )
+    # wall_thicknesses = forms.ModelMultipleChoiceField(
+    #     queryset=None,
+    #     widget=forms.CheckboxSelectMultiple,
+    #     required=False,
+    #     initial=None
+    # )
+    # colors = forms.ModelMultipleChoiceField(
+    #     queryset=None,
+    #     widget=forms.CheckboxSelectMultiple,
+    #     required=False,
+    #     initial=None
+    # )
 
     def __init__(self, *args, **kwargs):
         super(SearchBoxForm, self).__init__(*args, **kwargs)
@@ -112,12 +111,12 @@ class SearchBoxForm(forms.Form):
         color_qset = Color.objects.filter(product__in=box_qset).distinct()
 
         # Load queryset choices here so db calls are not made during migrations
-        self.fields['main_categories'].choices = form_choices
+        self.fields['product_type__main_category'].choices = form_choices
         # self.fields['main_categories'].initial = [category for category in main_category_qset]
-        self.fields['wall_thicknesses'].queryset = wall_thickness_qset
-        self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in wall_thickness_qset]
-        self.fields['colors'].queryset = color_qset
-        self.fields['colors'].initial = [color for color in color_qset]
+        # self.fields['wall_thicknesses'].queryset = wall_thickness_qset
+        # self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in wall_thickness_qset]
+        # self.fields['colors'].queryset = color_qset
+        # self.fields['colors'].initial = [color for color in color_qset]
 
 
 class SearchTubeForm(forms.Form):
@@ -131,23 +130,23 @@ class SearchTubeForm(forms.Form):
         'placeholder': "Lengte in mm",
     }))
 
-    categories = forms.ChoiceField(
+    product_type = forms.ChoiceField(
         widget=forms.Select,
         required=False,
         initial=None
     )
-    wall_thicknesses = forms.ModelMultipleChoiceField(
-        queryset=None,
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        initial=None
-    )
-    colors = forms.ModelMultipleChoiceField(
-        queryset=None,
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        initial=None
-    )
+    # wall_thicknesses = forms.ModelMultipleChoiceField(
+    #     queryset=None,
+    #     widget=forms.CheckboxSelectMultiple,
+    #     required=False,
+    #     initial=None
+    # )
+    # colors = forms.ModelMultipleChoiceField(
+    #     queryset=None,
+    #     widget=forms.CheckboxSelectMultiple,
+    #     required=False,
+    #     initial=None
+    # )
 
     def __init__(self, *args, **kwargs):
         super(SearchTubeForm, self).__init__(*args, **kwargs)
@@ -155,17 +154,17 @@ class SearchTubeForm(forms.Form):
         main_category_qset = MainCategory.objects.get(id=14)
         category_qset = main_category_qset.producttype_set.all()
 
-        tubes_qset = Product.objects.filter(product_type__main_category__id=14)
-        wall_thickness_qset = WallThickness.objects.filter(product__in=tubes_qset).distinct()
-        color_qset = Color.objects.filter(product__in=tubes_qset).distinct()
+        # tubes_qset = Product.objects.filter(product_type__main_category__id=14)
+        # wall_thickness_qset = WallThickness.objects.filter(product__in=tubes_qset).distinct()
+        # color_qset = Color.objects.filter(product__in=tubes_qset).distinct()
 
         # populate initial values and queryset for selectboxes
-        self.fields['categories'].choices = [(category.id, category.type) for category in category_qset] + [('', 'Alle kokers')]
+        self.fields['product_type'].choices = [(category.id, category.type) for category in category_qset] + [('', 'Alle kokers')]
         # self.fields['categories'].initial = [category for category in category_qset]
-        self.fields['wall_thicknesses'].queryset = wall_thickness_qset
-        self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in wall_thickness_qset]
-        self.fields['colors'].queryset = color_qset
-        self.fields['colors'].initial = [color for color in color_qset]
+        # self.fields['wall_thicknesses'].queryset = wall_thickness_qset
+        # self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in wall_thickness_qset]
+        # self.fields['colors'].queryset = color_qset
+        # self.fields['colors'].initial = [color for color in color_qset]
 
 
 class SearchEnvelopeBagForm(forms.Form):

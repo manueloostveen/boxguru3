@@ -719,9 +719,9 @@ def search_product(request):
                 diameter = form.cleaned_data.get('diameter')
                 colors = request.GET.getlist('color')
                 wall_thicknesses = request.GET.getlist('wall_thickness')
-                main_categories = form.cleaned_data.get('main_categories')
-                categories = form.cleaned_data.get('categories')
-                print(main_categories)
+                main_category = request.GET.get('product_type__main_category')
+                product_types = request.GET.getlist('product_type')
+
 
                 # Q objects checkboxes
                 if colors:
@@ -734,19 +734,21 @@ def search_product(request):
                 else:
                     qwall_thicknesses = Q()
 
-                if main_categories:
-                    qproduct_types = Q(product_type__main_category=main_categories)
-                elif categories:
-                    qproduct_types = Q(product_type=categories)
-
+                if main_category:
+                    qmain_category = Q(product_type__main_category=main_category)
                 else:
-                    # WARNING, BASED ON FIRST ENTRY OF MAIN CATEGORIES
                     if context['searched'] == 'box':
-                        qproduct_types = Q(product_type__main_category__in=range(1, 11))
+                        qmain_category = Q(product_type__main_category__in=range(1, 11))
                     elif context['searched'] == 'tube':
-                        qproduct_types = Q(product_type__main_category=14)
+                        qmain_category = Q(product_type__main_category=14)
                     elif context['searched'] == 'envelope':
-                        qproduct_types = Q(product_type__main_category=13)
+                        qmain_category = Q(product_type__main_category=13)
+
+                if len(product_types):
+                    qproduct_types = Q(product_type__in=product_types)
+                else:
+                    qproduct_types = Q()
+
 
                 error_margin = 50
                 error_margin_diameter = 15
@@ -789,7 +791,7 @@ def search_product(request):
 
                 # list qobject for *args
                 qobjects = [qcolors,
-                            qwall_thicknesses,
+                            qwall_thicknesses, qmain_category,
                             qproduct_types, qwidth_length,
                             qheight, qdiameter
                             ]
