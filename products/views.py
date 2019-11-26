@@ -233,20 +233,31 @@ def search_product_OLD(request):
         else:
             param_symbol = "&"
 
-        context['category_header'] = current_path + param_symbol + "sort=product_type" + f'&by={ordering_dict.get("product_type", "DESC")}'
-        context['width_header'] = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
-        context['length_header'] = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
-        context['height_header'] = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
-        context['diameter_header'] = current_path + param_symbol + "sort=diameter" + f'&by={ordering_dict.get("diameter", "ASC")}'
-        context['match_header'] = current_path + param_symbol + "sort=max_match" + f'&by={ordering_dict.get("max_match", "ASC")}'
-        context['wall_thickness_header'] = current_path + param_symbol + "sort=wall_thickness" + f'&by={ordering_dict.get("wall_thickness", "ASC")}'
-        context['color_header'] = current_path + param_symbol + "sort=color" + f'&by={ordering_dict.get("color", "DESC")}'
-        context['standard_size_header'] = current_path + param_symbol + "sort=standard_size" + f'&by={ordering_dict.get("standard_size", "ASC")}'
-        context['bottles_header'] = current_path + param_symbol + "sort=bottles" + f'&by={ordering_dict.get("bottles", "ASC")}'
+        context[
+            'category_header'] = current_path + param_symbol + "sort=product_type" + f'&by={ordering_dict.get("product_type", "DESC")}'
+        context[
+            'width_header'] = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
+        context[
+            'length_header'] = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
+        context[
+            'height_header'] = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
+        context[
+            'diameter_header'] = current_path + param_symbol + "sort=diameter" + f'&by={ordering_dict.get("diameter", "ASC")}'
+        context[
+            'match_header'] = current_path + param_symbol + "sort=max_match" + f'&by={ordering_dict.get("max_match", "ASC")}'
+        context[
+            'wall_thickness_header'] = current_path + param_symbol + "sort=wall_thickness" + f'&by={ordering_dict.get("wall_thickness", "ASC")}'
+        context[
+            'color_header'] = current_path + param_symbol + "sort=color" + f'&by={ordering_dict.get("color", "DESC")}'
+        context[
+            'standard_size_header'] = current_path + param_symbol + "sort=standard_size" + f'&by={ordering_dict.get("standard_size", "ASC")}'
+        context[
+            'bottles_header'] = current_path + param_symbol + "sort=bottles" + f'&by={ordering_dict.get("bottles", "ASC")}'
 
-        context['lowest_price_header'] = current_path + param_symbol + "sort=lowest_price" + f'&by={ordering_dict.get("lowest_price", "DESC")}'
-        context['price_header'] = current_path + param_symbol + "sort=price_ex_BTW" + f'&by={ordering_dict.get("price_ex_BTW", "DESC")}'
-
+        context[
+            'lowest_price_header'] = current_path + param_symbol + "sort=lowest_price" + f'&by={ordering_dict.get("lowest_price", "DESC")}'
+        context[
+            'price_header'] = current_path + param_symbol + "sort=price_ex_BTW" + f'&by={ordering_dict.get("price_ex_BTW", "DESC")}'
 
         # Set  ordering
         if order_by:
@@ -636,7 +647,6 @@ def search_product(request):
                         param_symbol = '&'
                     current_path += param_symbol + key + "=" + value
 
-
         # Swapper dictionary to set order to Ascending or Descending
         ordering_swapper = {
             'ASC': 'DESC',
@@ -654,20 +664,31 @@ def search_product(request):
         else:
             param_symbol = "&"
 
-        context['category_header'] = current_path + param_symbol + "sort=product_type" + f'&by={ordering_dict.get("product_type", "DESC")}'
-        context['width_header'] = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
-        context['length_header'] = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
-        context['height_header'] = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
-        context['diameter_header'] = current_path + param_symbol + "sort=diameter" + f'&by={ordering_dict.get("diameter", "ASC")}'
-        context['match_header'] = current_path + param_symbol + "sort=max_match" + f'&by={ordering_dict.get("max_match", "ASC")}'
-        context['wall_thickness_header'] = current_path + param_symbol + "sort=wall_thickness" + f'&by={ordering_dict.get("wall_thickness", "ASC")}'
-        context['color_header'] = current_path + param_symbol + "sort=color" + f'&by={ordering_dict.get("color", "DESC")}'
-        context['standard_size_header'] = current_path + param_symbol + "sort=standard_size" + f'&by={ordering_dict.get("standard_size", "ASC")}'
-        context['bottles_header'] = current_path + param_symbol + "sort=bottles" + f'&by={ordering_dict.get("bottles", "ASC")}'
+        context[
+            'category_header'] = current_path + param_symbol + "sort=product_type" + f'&by={ordering_dict.get("product_type", "DESC")}'
+        context[
+            'width_header'] = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
+        context[
+            'length_header'] = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
+        context[
+            'height_header'] = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
+        context[
+            'diameter_header'] = current_path + param_symbol + "sort=diameter" + f'&by={ordering_dict.get("diameter", "ASC")}'
+        context[
+            'match_header'] = current_path + param_symbol + "sort=max_match" + f'&by={ordering_dict.get("max_match", "ASC")}'
+        context[
+            'wall_thickness_header'] = current_path + param_symbol + "sort=wall_thickness" + f'&by={ordering_dict.get("wall_thickness", "ASC")}'
+        context[
+            'color_header'] = current_path + param_symbol + "sort=color" + f'&by={ordering_dict.get("color", "DESC")}'
+        context[
+            'standard_size_header'] = current_path + param_symbol + "sort=standard_size" + f'&by={ordering_dict.get("standard_size", "ASC")}'
+        context[
+            'bottles_header'] = current_path + param_symbol + "sort=bottles" + f'&by={ordering_dict.get("bottles", "ASC")}'
 
-        context['lowest_price_header'] = current_path + param_symbol + "sort=lowest_price" + f'&by={ordering_dict.get("lowest_price", "DESC")}'
-        context['price_header'] = current_path + param_symbol + "sort=price_ex_BTW" + f'&by={ordering_dict.get("price_ex_BTW", "DESC")}'
-
+        context[
+            'lowest_price_header'] = current_path + param_symbol + "sort=lowest_price" + f'&by={ordering_dict.get("lowest_price", "DESC")}'
+        context[
+            'price_header'] = current_path + param_symbol + "sort=price_ex_BTW" + f'&by={ordering_dict.get("price_ex_BTW", "DESC")}'
 
         # Set  ordering
         if order_by:
@@ -710,7 +731,6 @@ def search_product(request):
             context['no_search'] = True
             form = None
 
-
         if form:
             if form.is_valid():
                 width = form.cleaned_data.get('width')
@@ -721,9 +741,10 @@ def search_product(request):
                 wall_thicknesses = request.GET.getlist('wall_thickness')
                 main_category = request.GET.get('product_type__main_category')
                 product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
+                standard_size = request.GET.getlist('standard_size')
+                bottles = request.GET.getlist('bottles')
 
-
-                # Q objects checkboxes
+                # Q objects query
                 if colors:
                     qcolors = Q(color__in=colors)
                 else:
@@ -744,14 +765,20 @@ def search_product(request):
                     elif context['searched'] == 'envelope':
                         qmain_category = Q(product_type__main_category=13)
 
-                print(len(product_types), 'LEN PRODUCT TYPES', product_types)
-                print(main_category, 'MAIN CATEGORY')
-
                 if len(product_types):
                     qproduct_types = Q(product_type__in=product_types)
                 else:
                     qproduct_types = Q()
 
+                if len(standard_size):
+                    qstandard_size = Q(standard_size__in=standard_size)
+                else:
+                    qstandard_size = Q()
+
+                if len(bottles):
+                    qbottles = Q(bottles__in=bottles)
+                else:
+                    qbottles = Q()
 
                 error_margin = 50
                 error_margin_diameter = 15
@@ -796,7 +823,7 @@ def search_product(request):
                 qobjects = [qcolors,
                             qwall_thicknesses, qmain_category,
                             qproduct_types, qwidth_length,
-                            qheight, qdiameter
+                            qheight, qdiameter, qstandard_size, qbottles,
                             ]
 
                 # Create round function, arity 1 so rounds to 0 decimals, no input needed
@@ -975,13 +1002,60 @@ def search_product(request):
 
                 # Create  querysets for result filter
                 if request.GET.get('initial_search'):
-                    request.session['filter_producttypes'] = list(ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'type'))
-                    request.session['filter_colors'] = list(Color.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'color'))
-                    request.session['filter_wallthicknesses'] = list(WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'wall_thickness'))
-                    request.session['filter_standard_size'] = list(queryset_qobjects.filter(standard_size__isnull=False).order_by(
-                        'standard_size').values_list('standard_size', flat=True).distinct())
-                    request.session['filter_bottles'] = list(queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
-                                                                                                                    flat=True).distinct())
+                    request.session['filter_producttypes'] = list(
+                        ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'type'))
+                    request.session['filter_colors'] = list(
+                        Color.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'color'))
+                    request.session['filter_wallthicknesses'] = list(
+                        WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id',
+                                                                                                           'wall_thickness'))
+                    request.session['filter_standard_size'] = list(
+                        queryset_qobjects.filter(standard_size__isnull=False).order_by(
+                            'standard_size').values_list('standard_size', flat=True).distinct())
+                    request.session['filter_bottles'] = list(
+                        queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
+                                                                                                        flat=True).distinct())
+
+                class Filter:
+                    def __init__(self, request, current_filter, filter):
+
+                        if type(filter) == tuple or type(filter) == list:
+                            current_value = str(filter[0])
+                            self.filter_name = filter[1]
+                        else:
+                            current_value = str(filter)
+                            self.filter_name = filter
+
+                        self.current_path = request.path + '?'
+                        self.current_filter_searched = False
+
+                        for key, values in request.GET.lists():
+                            for value in values:
+
+                                if key == current_filter and value == current_value:
+                                    self.current_filter_searched = True
+                                    continue
+                                elif key == 'initial_search':
+                                    continue
+
+                                if self.current_path[-1] == '?':
+                                    param_symbol = ''
+                                else:
+                                    param_symbol = '&'
+
+                                self.current_path += param_symbol + key + "=" + value
+
+                        if self.current_filter_searched:
+                            self.url = self.current_path.replace('+', "%2B")
+                            self.css_class = 'active'
+
+                        else:
+                            self.current_path += '&' + current_filter + '=' + current_value
+                            self.url = self.current_path.replace('+', "%2B")
+                            self.css_class = ''
+                            print(self.url, "SELF.URL")
+                            print(self.css_class, 'SELF.CSS')
+
                 def build_filter_url(current_request, current_filter, current_value):
                     """
 
@@ -993,8 +1067,9 @@ def search_product(request):
                     current_path = current_request.path + '?'
                     current_filter_searched = False
 
-                    for key, values in request.GET.lists():
+                    for key, values in current_request.GET.lists():
                         for value in values:
+
                             if key == current_filter and value == current_value:
                                 current_filter_searched = True
                                 continue
@@ -1009,19 +1084,19 @@ def search_product(request):
                             current_path += param_symbol + key + "=" + value
 
                     if current_filter_searched:
-                        return current_path
+                        return current_path.replace('+', "%2B"), 'active'
 
                     else:
                         current_path += '&' + current_filter + '=' + current_value
-                        return current_path
+                        return current_path.replace('+', "%2B"), ''
 
 
                 context['filters'] = {
-                    'Product types': [(build_filter_url(request, 'product_type', str(filter[0])), filter[1]) for filter in request.session['filter_producttypes']],
-                    'Kwaliteit': [(build_filter_url(request, 'wall_thickness', str(filter[0])), filter[1]) for filter in request.session['filter_wallthicknesses']],
-                    'Kleuren': [(build_filter_url(request, 'color', str(filter[0])), filter[1]) for filter in request.session['filter_colors']],
-                    'Standaard formaat': [(build_filter_url(request, 'standard_size', str(filter)), filter) for filter in request.session['filter_standard_size']],
-                    'Aantal flessen': [(build_filter_url(request, 'standard_size', str(filter)), filter) for filter in request.session['filter_bottles']]
+                    'Product types': [Filter(request, 'product_type', filter) for filter in request.session['filter_producttypes']],
+                    'Kwaliteit': [Filter(request, 'wall_thickness', filter) for filter in request.session['filter_wallthicknesses']],
+                    'Kleuren': [Filter(request, 'color', filter) for filter in request.session['filter_colors']],
+                    'Standaard formaat': [Filter(request, 'standard_size', filter) for filter in request.session['filter_standard_size']],
+                    'Aantal flessen': [Filter(request, 'bottles', filter) for filter in request.session['filter_bottles']]
                 }
 
                 # Add to context
@@ -1034,7 +1109,6 @@ def search_product(request):
                 context['test_session'] = request.session['test_list']
 
     return render(request, template_name, context)
-
 
 
 class ProductCreate(PermissionRequiredMixin, CreateView):

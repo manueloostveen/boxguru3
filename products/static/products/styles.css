@@ -107,6 +107,14 @@ h3 {
     color: #5e008b;
 }
 
+h4 {
+    font-family: 'Alfa Slab One', Charcoal, sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: #5e008b;
+    margin: 20px 0.25rem 0.1rem 0.25rem;
+}
+
 h6 {
     font-size: 15px;
 }
@@ -290,7 +298,7 @@ input.chk {
 }
 
 .filter-section {
-    background-color: #d4edda;
+    background-color: #eeeeee;
     padding: 20px;
 }
 

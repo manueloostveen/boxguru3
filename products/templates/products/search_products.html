@@ -4,7 +4,6 @@
 
 
 {% block content %}
-    <h1>{{ test_session }}</h1>
     <div class="row d-flex justify-content-left">
         <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5"></div>
         <div class="col-md-6 col-lg-5 col-sm-8">
@@ -195,84 +194,18 @@
 
     <div class="row flex-xl-nowrap">
         {% if no_search %}
-            {% else %}
+        {% else %}
             <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5 filter-section">
-                <div id="filters">
-                    <h4>Filter resultaten</h4>
                     {% for filter_name, filters in filters.items %}
-                        <br><h6>{{ filter_name }}</h6>
-                        {% for filter in filters %}
-                            <a class="small" href="{{ filter.0 }}">{{ filter.1 }}</a>
-                        {% endfor %}
+                        {% if filters|length %}
+                            <h4>{{ filter_name }}</h4>
+                            {% for filter in filters %}
+                                <a class="btn btn-success btn-sm small m-1 {{ filter.css_class }}"
+                                   href="{{ filter.url }}">{{ filter.filter_name }}</a>
+                            {% endfor %}
+                        {% endif %}
 
                     {% endfor %}
-
-
-
-
-
-                    {% if filter_producttypes %}
-                        <br><h6>Product types</h6>
-                        {% for producttype in filter_producttypes %}
-                            <div>
-                                <label for="checkbox-producttype-{{ forloop.counter }}">
-                                    <input class="chk" type="checkbox" value="1" name="filter-checkbox"
-                                           id="checkbox-producttype-{{ forloop.counter }}">
-                                    <span>{{ producttype }}</span>
-                                </label>
-                            </div>
-
-                        {% endfor %}
-                    {% endif %}
-                    {% if filter_standard_size %}
-                        <br><h6>Standaard formaat</h6>
-                        {% for size in filter_standard_size %}
-                            <div>
-                                <label for="checkbox-size-{{ forloop.counter }}">
-                                    <input type="checkbox" value="8" name="filter-checkbox"
-                                           id="checkbox-size-{{ forloop.counter }}">
-                                    <span>{{ size }}</span>
-                                </label>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    {% if filter_bottles %}
-                        <br><h6>Aantal flessen</h6>
-                        {% for bottles in filter_bottles %}
-                            <div>
-                                <label for="checkbox-bottles-{{ forloop.counter }}">
-                                    <input type="checkbox" value="8" name="filter-checkbox"
-                                           id="checkbox-bottles-{{ forloop.counter }}">
-                                    <span>{{ bottles }}</span>
-                                </label>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    {% if filter_colors %}
-                        <br><h6>Kwaliteit</h6>
-                        {% for wall_thickness in filter_wallthicknesses %}
-                            <div>
-                                <label for="checkbox-quality-{{ forloop.counter }}">
-                                    <input type="checkbox" value="6" name="filter-checkbox"
-                                           id="checkbox-quality-{{ forloop.counter }}">
-                                    <span>{{ wall_thickness }}</span>
-                                </label>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    {% if filter_colors %}
-                        <br><h6>Kleuren</h6>
-                        {% for color in filter_colors %}
-                            <div>
-                                <label for="checkbox-color-{{ forloop.counter }}">
-                                    <input type="checkbox" value="7" name="filter-checkbox"
-                                           id="checkbox-color-{{ forloop.counter }}">
-                                    <span>{{ color }}</span>
-                                </label>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
             </div>
 
             <div class="col-sm-8 col-md-9 mt-5">
