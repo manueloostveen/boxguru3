@@ -73,7 +73,7 @@
                             </div>
                         </div>
 
-                        <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
+                        <input class="searchButton" type="submit" value="ZOEK">
                         <input type="hidden" name="form" value="box">
                         <input type="hidden" name="initial_search" value="1">
 
@@ -175,19 +175,21 @@
 
             {% if no_search %}
             {% else %}
-                {% if queryset %}
+                {% if products %}
                     <div class="alert alert-success alert-dismissible mt-3 small">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 
-                        <strong>Yes!</strong> {% if queryset|length > 1 %}Er zijn {{ queryset|length }} producten
-                        gevonden.{% else %}Er is {{ queryset|length }} product gevonden.{% endif %}
+                        <strong>Yes!</strong> {% if products_found > 1 %}Er zijn {{ products_found }} producten
+                        gevonden.{% else %}Er is {{ products_found }} product gevonden.{% endif %}
                     </div>
                 {% else %}
                     <div class="alert alert-danger alert-dismissible mt-3 small">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                         <strong>Helaas!</strong> Er zijn met de huidige zoekopdracht geen producten gevonden.
                     </div>
+
                 {% endif %}
+
             {% endif %}
         </div>
     </div>
@@ -196,19 +198,45 @@
         {% if no_search %}
         {% else %}
             <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5 filter-section">
-                    {% for filter_name, filters in filters.items %}
-                        {% if filters|length %}
-                            <h4>{{ filter_name }}</h4>
-                            {% for filter in filters %}
-                                <a class="btn btn-success btn-sm small m-1 {{ filter.css_class }}"
-                                   href="{{ filter.url }}">{{ filter.filter_name }}</a>
-                            {% endfor %}
-                        {% endif %}
+                {% for filter_name, filters in filters.items %}
+                    {% if filters|length %}
+                        <h4>{{ filter_name }}</h4>
+                        {% for filter in filters %}
+                            <a class="{{ filter.css_class }}"
+                               href="{{ filter.url }}">{{ filter.filter_name }}</a>
+                        {% endfor %}
+                    {% endif %}
 
-                    {% endfor %}
+                {% endfor %}
             </div>
 
             <div class="col-sm-8 col-md-9 mt-5">
+                <div>
+                    <div class="orderOps">
+                        <button class="orderbtn small">SORTEER RESULTATEN OP:</button>
+                        <div class="orderOps-content">
+                            <a href="{{ category_header }}">Product type</a>
+                            <a href="{{ width_header }}">Breedte</a>
+                            <a href="{{ length_header }}">Lengte</a>
+                            {% if searched == 'tube' %}
+                                <a href="{{ diameter_header }}">Diameter</a>{% else %}
+                                <a href="{{ height_header }}">Hoogte</a>{% endif %}
+                            {% if show_match_header %}
+                                <a href="{{ match_header }}">Zoekmatch</a>{% endif %}
+                            <a href="{{ wall_thickness_header }}">Kwaliteit</a>
+                            <a href="{{ color_header }}">Kleur</a>
+                            <a href="{{ bottles_header }}">Aantal flesen</a>
+                            <a href="{{ standard_size_header }}">Standaard formaat</a>
+                            <a href="{{ price_header }}">Prijs ex. BTW</a>
+                            <a href="{{ lowest_price_header }}">Staffelkorting</a>
+                        </div>
+                    </div>
+                    <a class="sortOrder" href="{{ sort_order_link }}">
+                        <div class="sortOrder">
+                            <div {% if sort == "DESC" %}class="sortDown"{% else %}class="sortUp"{% endif %}></div>
+                        </div>
+                    </a>
+                </div>
                 <table class="table table-hover table-condensed" id="productTable">
                     <thead>
                     <tr>
@@ -253,7 +281,7 @@
                         </th>
                         <th class="d-none d-sm-table-cell"><a href="{{ bottles_header }}">Flessen</a> /
                             <a href="{{ standard_size_header }}">Formaat</a>
-                            <div {% if order_by == '-bottles' or order_bey == '-standard_size' %}class="arrowDown"
+                            <div {% if order_by == '-bottles' or order_by == '-standard_size' %}class="arrowDown"
                                  {% elif order_by == 'bottles' or order_by == 'standard_size' %}class="arrowUp"{% else %}{% endif %}></div>
                         </th>
                         <th><a href="{{ price_header }}">Prijs ex. BTW</a>
@@ -275,7 +303,7 @@
                     </thead>
                     <tbody>
 
-                    {% for object in queryset %}
+                    {% for object in products %}
                         <tr>
                             <td>img.</td>
                             <td>{{ object.product_type }}</td>
@@ -319,6 +347,7 @@
             </div>
         {% endif %}
     </div>
+
 
 
     <script>
@@ -434,4 +463,53 @@
     {#    </script>#}
 
 
+{% endblock %}
+
+{% block pagination %}
+    <nav aria-label="...">
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active">
+                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+    {% if products.has_other_pages %}
+        {% load pagination_url %}
+        <ul class="pagination">
+            {% if products.has_previous %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=products.previous_page_number %}">&laquo;</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1"><span>&laquo;</span></a>
+                </li>
+            {% endif %}
+
+            {% for i in products.paginator.page_range %}
+                {% if products.number == i %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+                    </li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?{% url_replace page=i %}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if products.has_next %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=products.next_page_number %}">&raquo;</a>
+                </li>
+
+            {% else %}
+                <li class="page-item disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
 {% endblock %}
