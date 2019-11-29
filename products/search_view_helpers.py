@@ -78,17 +78,61 @@ class Abs(Func):
     function = 'ABS'
 
 
-def create_sort_order_link(request):
-    current_order = request.GET.get('by')
-    full_path = request.get_full_path()
+def create_sort_order_link(request, order):
+    GET_copy = request.GET.copy()
+    order = order.replace('-', '')
 
-    if current_order == 'ASC':
-        full_path = full_path.replace('ASC', 'DESC')
+    if 'sort' not in GET_copy:
+        GET_copy['sort'] = order
 
+    if 'by' in GET_copy:
+        if GET_copy['by'] == 'ASC':
+            GET_copy['by'] = 'DESC'
+        else:
+            GET_copy['by'] = 'ASC'
     else:
-        full_path = full_path.replace('DESC', 'ASC')
+        GET_copy['by'] = 'ASC'
 
-    return full_path, current_order
+    full_path = request.path + "?" + GET_copy.urlencode()
+
+    return full_path, GET_copy['by']
+
+def create_sort_headers(request, context):
+    # copy GET
+    GET_copy = request.GET.copy()
+
+    ordering_swapper = {
+            'ASC': 'DESC',
+            'DESC': 'ASC'
+        }
+
+    # {header: query} dictionary
+    header_dict = {
+        'category_header': 'product_type',
+        'width_header': 'inner_dim1',
+        'length_header': 'inner_dim2',
+        'height_header': 'inner_dim3',
+        'diameter_header': 'diameter',
+        'match_header': 'max_match',
+        'wall_thickness_header': 'wall_thickness',
+        'color_header': 'color',
+        'standard_size_header': 'standard_size',
+        'bottles_header': 'bottles',
+        'lowest_price_header': 'lowest_price',
+        'price_header': 'price_ex_BTW',
+    }
+
+    for header, query in header_dict.items():
+        if GET_copy.get('sort') == query:
+            GET_copy['by'] = ordering_swapper[GET_copy['by']]
+
+        else:
+            GET_copy['sort'] = query
+            GET_copy['by'] = 'ASC'
+        context[header] = request.path + '?' + GET_copy.urlencode()
+
+    return context
+
 
 def create_queryset(request, form, context, order_by):
 
@@ -343,8 +387,14 @@ def create_queryset(request, form, context, order_by):
 
     else:
         if 'max_match' not in order_by:
-            queryset_qobjects = Product.objects.filter(*qobjects).order_by(order_by)
+            queryset_qobjects = Product.objects.filter(*qobjects).order_by(order_by )
         else:
+            order_by = 'price_ex_BTW'
             queryset_qobjects = Product.objects.filter(*qobjects).order_by('price_ex_BTW')
+
+    # Sort link for order button
+    context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)
+    # Add sorting headers to context
+    context = create_sort_headers(request, context)
 
     return context, queryset_qobjects

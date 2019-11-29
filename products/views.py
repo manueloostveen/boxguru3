@@ -14,7 +14,8 @@ from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalFi
 from django.db.models.functions import Greatest, Sqrt
 from products.product_categories import box_main_category_dict
 from math import pi
-from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_sort_order_link, create_queryset
+from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_sort_order_link, \
+    create_queryset, create_sort_headers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -631,77 +632,6 @@ def search_product(request):
     template_name = 'products/search_products.html'
 
     if request.method == 'GET':
-
-        # Sorting headers
-        order_by = request.GET.get('sort')
-
-        # Sort link for order button
-        context['sort_order_link'], context['sort'] = create_sort_order_link(request)
-
-        # Build current URL without sort parameter
-        current_path = request.path
-        if len(request.GET):
-            current_path += '?'
-
-        for key, values in request.GET.lists():
-            if key != 'sort' and key != 'by':
-                for value in values:
-                    if current_path[-1] == '?':
-                        param_symbol = ''
-                    else:
-                        param_symbol = '&'
-                    current_path += param_symbol + key + "=" + value
-
-        # Swapper dictionary to set order to Ascending or Descending
-        ordering_swapper = {
-            'ASC': 'DESC',
-            'DESC': 'ASC'
-        }
-
-        # ordering dict to choose direction based on order_by ('sort') parameter
-        ordering_dict = {
-            order_by: ordering_swapper[request.GET.get('by', 'DESC')]
-        }
-
-        # Build sorting headers and add to context
-        if current_path[-1] == "/":
-            param_symbol = "?"
-        else:
-            param_symbol = "&"
-
-        context[
-            'category_header'] = current_path + param_symbol + "sort=product_type" + f'&by={ordering_dict.get("product_type", "DESC")}'
-        context[
-            'width_header'] = current_path + param_symbol + "sort=inner_dim1" + f'&by={ordering_dict.get("inner_dim1", "ASC")}'
-        context[
-            'length_header'] = current_path + param_symbol + "sort=inner_dim2" + f'&by={ordering_dict.get("inner_dim2", "ASC")}'
-        context[
-            'height_header'] = current_path + param_symbol + "sort=inner_dim3" + f'&by={ordering_dict.get("inner_dim3", "ASC")}'
-        context[
-            'diameter_header'] = current_path + param_symbol + "sort=diameter" + f'&by={ordering_dict.get("diameter", "ASC")}'
-        context[
-            'match_header'] = current_path + param_symbol + "sort=max_match" + f'&by={ordering_dict.get("max_match", "ASC")}'
-        context[
-            'wall_thickness_header'] = current_path + param_symbol + "sort=wall_thickness" + f'&by={ordering_dict.get("wall_thickness", "ASC")}'
-        context[
-            'color_header'] = current_path + param_symbol + "sort=color" + f'&by={ordering_dict.get("color", "DESC")}'
-        context[
-            'standard_size_header'] = current_path + param_symbol + "sort=standard_size" + f'&by={ordering_dict.get("standard_size", "ASC")}'
-        context[
-            'bottles_header'] = current_path + param_symbol + "sort=bottles" + f'&by={ordering_dict.get("bottles", "ASC")}'
-        context[
-            'lowest_price_header'] = current_path + param_symbol + "sort=lowest_price" + f'&by={ordering_dict.get("lowest_price", "DESC")}'
-        context[
-            'price_header'] = current_path + param_symbol + "sort=price_ex_BTW" + f'&by={ordering_dict.get("price_ex_BTW", "DESC")}'
-
-        # Set  ordering
-        if order_by:
-            # Prepend "-" if order is Ascending
-            if request.GET.get('by') == "ASC":
-                order_by = "-" + order_by
-        else:
-            order_by = '-max_match'
-
         # Check GET request if and what type of form is requested
         if 'form' in request.GET:
             if request.GET['form'] == 'box':
@@ -736,6 +666,16 @@ def search_product(request):
 
         if form:
             if form.is_valid():
+
+                # Set  ordering
+                order_by = request.GET.get('sort')
+                if order_by:
+                    # Prepend "-" if order is Ascending
+                    if request.GET.get('by') == "ASC":
+                        order_by = "-" + order_by
+                else:
+                    order_by = '-max_match'
+
                 context, queryset_qobjects = create_queryset(request, form, context, order_by)
 
                 # Create  querysets for result filter
@@ -755,22 +695,25 @@ def search_product(request):
                                                                                                         flat=True).distinct())
 
                 context['filters'] = {
-                    'Product types': create_filter_list(Filter2, request, 'product_type', request.session['filter_producttypes']),
-                    'Kwaliteit': create_filter_list(Filter2, request, 'wall_thickness', request.session['filter_wallthicknesses']),
+                    'Product types': create_filter_list(Filter2, request, 'product_type',
+                                                        request.session['filter_producttypes']),
+                    'Kwaliteit': create_filter_list(Filter2, request, 'wall_thickness',
+                                                    request.session['filter_wallthicknesses']),
                     'Kleuren': create_filter_list(Filter2, request, 'color', request.session['filter_colors']),
-                    'Standaard formaat': create_filter_list(Filter2, request, 'standard_size', request.session['filter_standard_size']),
+                    'Standaard formaat': create_filter_list(Filter2, request, 'standard_size',
+                                                            request.session['filter_standard_size']),
                     'Aantal flessen': create_filter_list(Filter2, request, 'bottles', request.session['filter_bottles'])
                 }
 
                 # Pagination
                 page = request.GET.get('page', 1)
 
-                paginator = Paginator(queryset_qobjects, 10)
+                paginator = Paginator(queryset_qobjects, 20)
 
                 try:
                     products = paginator.page(page)
                 except PageNotAnInteger:
-                     products = paginator.page(1)
+                    products = paginator.page(1)
                 except EmptyPage:
                     products = paginator.page(paginator.num_pages)
 

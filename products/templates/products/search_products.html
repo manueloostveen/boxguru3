@@ -6,7 +6,7 @@
 {% block content %}
     <div class="row d-flex justify-content-left">
         <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5"></div>
-        <div class="col-md-6 col-lg-5 col-sm-8">
+        <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
 
             <h1 class="pt-3">..zoekkk..</h1>
             <nav>
@@ -32,9 +32,10 @@
                         <div class="row info-block p-2">
                             <div class="col">
                                 <h3 class="text-center text-white m-2">TYPE DOOS</h3>
-
-                                <div class="mb-2" style="text-align: center">
-                                    {{ box_form.product_type__main_category }}
+                                <div class="col-lg">
+                                    <div class="mb-2">
+                                        {{ box_form.product_type__main_category }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -86,8 +87,10 @@
                             <div class="col">
                                 <h3 class="text-center text-white m-2">TYPE KOKER</h3>
 
-                                <div class="mb-2" style="text-align: center">
-                                    {{ tube_form.product_type }}
+                                <div class="col-lg">
+                                    <div class="mb-2">
+                                        {{ tube_form.product_type }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +122,7 @@
                             </div>
                         </div>
 
-                        <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
+                        <input class="searchButton" type="submit" value="ZOEK">
                         <input type="hidden" name="form" value="tube">
                         <input type="hidden" name="initial_search" value="1">
                     </form>
@@ -132,9 +135,10 @@
                         <div class="row info-block-right p-2">
                             <div class="col">
                                 <h3 class="text-center text-white m-2">TYPE PRODUCT</h3>
-
-                                <div class="mb-2" style="text-align: center">
-                                    {{ envelope_form.product_type }}
+                                <div class="col-lg">
+                                    <div class="mb-2">
+                                        {{ envelope_form.product_type }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +169,7 @@
                             </div>
                         </div>
 
-                        <input class="btn-sm btn-block btn-info mt-2" type="submit" value="Zoek">
+                        <input class="searchButton" type="submit" value="ZOEK">
                         <input type="hidden" name="form" value="envelope">
                         <input type="hidden" name="initial_search" value="1">
 
@@ -209,8 +213,9 @@
 
                 {% endfor %}
             </div>
+            {% if products %}
 
-            <div class="col-sm-8 col-md-9 mt-5">
+                <div class="col-sm-8 col-md-9 mt-5">
                 <div>
                     <div class="orderOps">
                         <button class="orderbtn small">SORTEER RESULTATEN OP:</button>
@@ -233,7 +238,8 @@
                     </div>
                     <a class="sortOrder" href="{{ sort_order_link }}">
                         <div class="sortOrder">
-                            <div {% if sort == "DESC" %}class="sortDown"{% else %}class="sortUp"{% endif %}></div>
+{#                            <i class="fas fa-sort-amount-up"></i>#}
+                            <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"{% else %}class="fas fa-sort-amount-up"{% endif %}></i>
                         </div>
                     </a>
                 </div>
@@ -344,12 +350,50 @@
                     {% endfor %}
                     </tbody>
                 </table>
-            </div>
+            {% endif %}
+        {% if products.has_other_pages %}
+            {% load pagination_url %}
+            <ul class="pagination">
+                {% if products.has_previous %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?{% url_replace page=products.previous_page_number %}">&laquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1"><span>&laquo;</span></a>
+                    </li>
+                {% endif %}
+
+                {% for i in products.paginator.page_range %}
+                    {% if products.number == i %}
+                        <li class="page-item active">
+                            <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+                        </li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?{% url_replace page=i %}">{{ i }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if products.has_next %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?{% url_replace page=products.next_page_number %}">&raquo;</a>
+                    </li>
+
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1"><span>&raquo;</span></a></li>
+
+                {% endif %}
+            </ul>
+        {% endif %}
+        </div>
         {% endif %}
     </div>
 
+{% endblock %}
 
-
+{% block js %}
     <script>
         // Script to store selected tab when refreshing
 
@@ -443,73 +487,5 @@
 
     </script>
 
-    {#    <script>#}
-    {#        $(document).ready(function () {#}
-    {#            $('#productTable').DataTable(#}
-    {#                {#}
-    {#"scrollY": "400px",#}
-    {#"scrollX": true,#}
-    {#                    "order": [[5, "desc"]],#}
-    {#                    "paging": false,#}
-    {#                    "bFilter": false,#}
-    {#                    "columnDefs": [#}
-    {#                        {"orderSequence": ['desc', "asc"], "targets": '_all'},#}
-    {#                        {"type": "natural", "targets": '_all'}#}
-    {##}
-    {#                    ]#}
-    {#                }#}
-    {#            );#}
-    {#        });#}
-    {#    </script>#}
 
-
-{% endblock %}
-
-{% block pagination %}
-    <nav aria-label="...">
-        <ul class="pagination">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item active">
-                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
-    {% if products.has_other_pages %}
-        {% load pagination_url %}
-        <ul class="pagination">
-            {% if products.has_previous %}
-                <li class="page-item"><a class="page-link" href="?{% url_replace page=products.previous_page_number %}">&laquo;</a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1"><span>&laquo;</span></a>
-                </li>
-            {% endif %}
-
-            {% for i in products.paginator.page_range %}
-                {% if products.number == i %}
-                    <li class="page-item active">
-                        <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
-                    </li>
-                {% else %}
-                    <li class="page-item"><a class="page-link" href="?{% url_replace page=i %}">{{ i }}</a></li>
-                {% endif %}
-            {% endfor %}
-
-            {% if products.has_next %}
-                <li class="page-item"><a class="page-link" href="?{% url_replace page=products.next_page_number %}">&raquo;</a>
-                </li>
-
-            {% else %}
-                <li class="page-item disabled"><span>&raquo;</span></li>
-            {% endif %}
-        </ul>
-    {% endif %}
 {% endblock %}

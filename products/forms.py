@@ -70,7 +70,9 @@ class SearchBoxForm(forms.Form):
     }))
 
     product_type__main_category = forms.ChoiceField(
-        widget=forms.Select,
+        widget=forms.Select(attrs={
+            'class': 'custom-select mb-3',
+        }),
         required=False,
         initial=None,
         )
@@ -131,7 +133,9 @@ class SearchTubeForm(forms.Form):
     }))
 
     product_type = forms.ChoiceField(
-        widget=forms.Select,
+        widget=forms.Select(attrs={
+            'class': 'custom-select mb-3',
+        }),
         required=False,
         initial=None
     )
@@ -179,7 +183,9 @@ class SearchEnvelopeBagForm(forms.Form):
     }))
 
     product_type = forms.ChoiceField(
-        widget=forms.Select,
+        widget=forms.Select(attrs={
+            'class': 'custom-select mb-3',
+        }),
         required=False,
         initial=None
     )

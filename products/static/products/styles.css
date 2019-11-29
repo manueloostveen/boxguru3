@@ -68,6 +68,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     margin: 0;
+    position: relative;
 }
 
 .searchButton {
@@ -478,6 +479,16 @@ a.sortOrder {
     background-color: #568219;
 }
 
+a.sortOrder i {
+    color: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+
 
 div.sortDown {
     position: absolute;
@@ -505,6 +516,7 @@ div.sortUp {
     border-color: transparent transparent white transparent;
 
 }
+
 
 
 
