@@ -667,16 +667,30 @@ def search_product(request):
         if form:
             if form.is_valid():
 
+                context, queryset_qobjects, max_match_possible = create_queryset(request, form, context)
+
                 # Set  ordering
+                print(max_match_possible)
+
                 order_by = request.GET.get('sort')
                 if order_by:
                     # Prepend "-" if order is Ascending
                     if request.GET.get('by') == "ASC":
                         order_by = "-" + order_by
                 else:
-                    order_by = '-max_match'
+                    print(order_by)
+                    if max_match_possible:
+                        order_by = '-max_match'
+                    else:
+                        order_by = 'price_ex_BTW'
 
-                context, queryset_qobjects = create_queryset(request, form, context, order_by)
+                queryset_qobjects = queryset_qobjects.order_by(order_by)
+
+                # Add sort link for order button and sort direction variable
+                context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)
+
+                # Add sorting headers to context
+                context = create_sort_headers(request, context)
 
                 # Create  querysets for result filter
                 if request.GET.get('initial_search'):

@@ -85,13 +85,17 @@ def create_sort_order_link(request, order):
     if 'sort' not in GET_copy:
         GET_copy['sort'] = order
 
+
     if 'by' in GET_copy:
         if GET_copy['by'] == 'ASC':
             GET_copy['by'] = 'DESC'
         else:
             GET_copy['by'] = 'ASC'
     else:
-        GET_copy['by'] = 'ASC'
+        if GET_copy.get('initial_search') and order == 'max_match':
+            GET_copy['by'] = 'DESC'
+        else:
+            GET_copy['by'] = 'ASC'
 
     full_path = request.path + "?" + GET_copy.urlencode()
 
@@ -134,7 +138,7 @@ def create_sort_headers(request, context):
     return context
 
 
-def create_queryset(request, form, context, order_by):
+def create_queryset(request, form, context):
 
     width = form.cleaned_data.get('width')
     length = form.cleaned_data.get('length')
@@ -192,6 +196,9 @@ def create_queryset(request, form, context, order_by):
     # Set maxmatch variable for template context
     if width or length or height or diameter:
         context['show_match_header'] = True
+        max_match = True
+    else:
+        max_match = False
 
     if width and not length:
         width = float(width)
@@ -243,7 +250,7 @@ def create_queryset(request, form, context, order_by):
         ).annotate(
             swidth_width_test=swidth_width_test).annotate(
             swidth_length_test=swidth_length_test).annotate(
-            max_match=Round(Greatest('swidth_width_test', 'swidth_length_test'))).order_by(order_by)
+            max_match=Round(Greatest('swidth_width_test', 'swidth_length_test')))
 
 
     elif length and not width and not height and not diameter:
@@ -264,7 +271,7 @@ def create_queryset(request, form, context, order_by):
         ).annotate(
             slength_width_test=slength_width_test).annotate(
             slength_length_test=slength_length_test).annotate(
-            max_match=Round(Greatest('slength_width_test', 'slength_length_test'))).order_by(order_by)
+            max_match=Round(Greatest('slength_width_test', 'slength_length_test')))
 
 
     elif length and width and not height:
@@ -299,7 +306,7 @@ def create_queryset(request, form, context, order_by):
             swidth_length_test=swidth_length_test).annotate(
             sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2).annotate(
             swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
-            max_match=Round(Greatest('sww_sll_match', 'swl_slw_match'))).order_by(order_by)
+            max_match=Round(Greatest('sww_sll_match', 'swl_slw_match')))
 
 
     elif width and length and height:
@@ -344,7 +351,7 @@ def create_queryset(request, form, context, order_by):
             sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2).annotate(
             swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
             wl_match=Greatest('sww_sll_match', 'swl_slw_match')).annotate(
-            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).order_by(order_by)
+            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3))
 
     elif diameter and not length:
         sdiameter_diameter_test = Case(
@@ -355,7 +362,7 @@ def create_queryset(request, form, context, order_by):
         queryset_qobjects = Product.objects.filter(
             *qobjects
         ).annotate(
-            max_match=Round(sdiameter_diameter_test)).order_by(order_by)
+            max_match=Round(sdiameter_diameter_test))
 
     elif length and diameter:
         slength_width_test = Case(
@@ -382,19 +389,16 @@ def create_queryset(request, form, context, order_by):
             slength_length_test=slength_length_test).annotate(
             sdiameter_diameter_test=sdiameter_diameter_test).annotate(
             slength_match=Greatest('slength_width_test', 'slength_length_test')).annotate(
-            max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2)).order_by(order_by)
+            max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2))
 
 
     else:
-        if 'max_match' not in order_by:
-            queryset_qobjects = Product.objects.filter(*qobjects).order_by(order_by )
-        else:
-            order_by = 'price_ex_BTW'
-            queryset_qobjects = Product.objects.filter(*qobjects).order_by('price_ex_BTW')
+        queryset_qobjects = Product.objects.filter(*qobjects)
+        # if 'max_match' not in order_by:
+        #     queryset_qobjects = Product.objects.filter(*qobjects).order_by(order_by )
+        # else:
+        #     order_by = 'price_ex_BTW'
+        #     queryset_qobjects = Product.objects.filter(*qobjects).order_by('price_ex_BTW')
 
-    # Sort link for order button
-    context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)
-    # Add sorting headers to context
-    context = create_sort_headers(request, context)
 
-    return context, queryset_qobjects
+    return context, queryset_qobjects, max_match

@@ -238,8 +238,9 @@
                     </div>
                     <a class="sortOrder" href="{{ sort_order_link }}">
                         <div class="sortOrder">
-{#                            <i class="fas fa-sort-amount-up"></i>#}
-                            <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"{% else %}class="fas fa-sort-amount-up"{% endif %}></i>
+                            {#                            <i class="fas fa-sort-amount-up"></i>#}
+                            <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"
+                               {% else %}class="fas fa-sort-amount-up"{% endif %}></i>
                         </div>
                     </a>
                 </div>
