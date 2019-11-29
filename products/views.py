@@ -721,7 +721,7 @@ def search_product(request):
 
                 # Pagination
                 page = request.GET.get('page', 1)
-
+                page = int(page)
                 paginator = Paginator(queryset_qobjects, 20)
 
                 try:
@@ -730,6 +730,30 @@ def search_product(request):
                     products = paginator.page(1)
                 except EmptyPage:
                     products = paginator.page(paginator.num_pages)
+
+                if paginator.num_pages > 5:
+                    index = paginator.page_range.index(products.number)
+                    if page > 2 and page < paginator.num_pages -2:
+                        max_index = len(paginator.page_range)
+                    else:
+                        max_index = len(paginator.page_range) - 1
+
+                    if page > 4:
+                        context['broken_start_pagination'] = True
+                    if page < (paginator.num_pages - 3):
+                        print(paginator.num_pages - 3, 'num page calc')
+                        print(page, 'page')
+                        context['broken_end_pagination'] = True
+
+
+                    start_index = index - 2 if index >= 3 else 1
+                    end_index = index + 3 if index <= max_index - 3 else max_index
+                    page_range = paginator.page_range[start_index:end_index]
+                else:
+                    page_range = paginator.page_range[1:len(paginator.page_range)-1]
+
+                print(products.paginator.num_pages)
+                context['page_range'] = page_range
 
                 # Add to context
                 context['products'] = products
