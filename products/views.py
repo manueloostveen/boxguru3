@@ -670,15 +670,12 @@ def search_product(request):
                 context, queryset_qobjects, max_match_possible = create_queryset(request, form, context)
 
                 # Set  ordering
-                print(max_match_possible)
-
                 order_by = request.GET.get('sort')
                 if order_by:
                     # Prepend "-" if order is Ascending
                     if request.GET.get('by') == "ASC":
                         order_by = "-" + order_by
                 else:
-                    print(order_by)
                     if max_match_possible:
                         order_by = '-max_match'
                     else:
@@ -686,7 +683,7 @@ def search_product(request):
 
                 queryset_qobjects = queryset_qobjects.order_by(order_by)
 
-                # Add sort link for order button and sort direction variable
+                # Add sort link for order button and sort direction variable to context
                 context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)
 
                 # Add sorting headers to context
@@ -708,16 +705,18 @@ def search_product(request):
                         queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
                                                                                                         flat=True).distinct())
 
-                context['filters'] = {
-                    'Product types': create_filter_list(Filter2, request, 'product_type',
-                                                        request.session['filter_producttypes']),
-                    'Kwaliteit': create_filter_list(Filter2, request, 'wall_thickness',
-                                                    request.session['filter_wallthicknesses']),
-                    'Kleuren': create_filter_list(Filter2, request, 'color', request.session['filter_colors']),
-                    'Standaard formaat': create_filter_list(Filter2, request, 'standard_size',
-                                                            request.session['filter_standard_size']),
-                    'Aantal flessen': create_filter_list(Filter2, request, 'bottles', request.session['filter_bottles'])
-                }
+                # Add filters to context, first check if filter keys are still in session
+                if 'filter_producttypes' in request.session:
+                    context['filters'] = {
+                        'Product types': create_filter_list(Filter2, request, 'product_type',
+                                                            request.session['filter_producttypes']),
+                        'Kwaliteit': create_filter_list(Filter2, request, 'wall_thickness',
+                                                        request.session['filter_wallthicknesses']),
+                        'Kleuren': create_filter_list(Filter2, request, 'color', request.session['filter_colors']),
+                        'Standaard formaat': create_filter_list(Filter2, request, 'standard_size',
+                                                                request.session['filter_standard_size']),
+                        'Aantal flessen': create_filter_list(Filter2, request, 'bottles', request.session['filter_bottles'])
+                    }
 
                 # Pagination
                 page = request.GET.get('page', 1)
@@ -741,8 +740,6 @@ def search_product(request):
                     if page > 4:
                         context['broken_start_pagination'] = True
                     if page < (paginator.num_pages - 3):
-                        print(paginator.num_pages - 3, 'num page calc')
-                        print(page, 'page')
                         context['broken_end_pagination'] = True
 
 
@@ -752,7 +749,6 @@ def search_product(request):
                 else:
                     page_range = paginator.page_range[1:len(paginator.page_range)-1]
 
-                print(products.paginator.num_pages)
                 context['page_range'] = page_range
 
                 # Add to context

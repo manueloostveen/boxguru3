@@ -213,37 +213,38 @@
 
                 {% endfor %}
             </div>
-            {% if products %}
 
+            {% if products %}
                 <div class="col-sm-8 col-md-9 mt-5">
-                <div>
-                    <div class="orderOps">
-                        <button class="orderbtn small">SORTEER RESULTATEN OP:</button>
-                        <div class="orderOps-content">
-                            <a href="{{ category_header }}">Product type</a>
-                            <a href="{{ width_header }}">Breedte</a>
-                            <a href="{{ length_header }}">Lengte</a>
-                            {% if searched == 'tube' %}
-                                <a href="{{ diameter_header }}">Diameter</a>{% else %}
-                                <a href="{{ height_header }}">Hoogte</a>{% endif %}
-                            {% if show_match_header %}
-                                <a href="{{ match_header }}">Zoekmatch</a>{% endif %}
-                            <a href="{{ wall_thickness_header }}">Kwaliteit</a>
-                            <a href="{{ color_header }}">Kleur</a>
-                            <a href="{{ bottles_header }}">Aantal flesen</a>
-                            <a href="{{ standard_size_header }}">Standaard formaat</a>
-                            <a href="{{ price_header }}">Prijs ex. BTW</a>
-                            <a href="{{ lowest_price_header }}">Staffelkorting</a>
-                        </div>
-                    </div>
-                    <a class="sortOrder" href="{{ sort_order_link }}">
-                        <div class="sortOrder">
-                            {#                            <i class="fas fa-sort-amount-up"></i>#}
-                            <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"
-                               {% else %}class="fas fa-sort-amount-up"{% endif %}></i>
-                        </div>
-                    </a>
-                </div>
+                {#            <div class="col d-flex justify-content-end">#}
+                {#                <div class="orderOps">#}
+                {#                    <button class="orderbtn small">SORTEER RESULTATEN OP:</button>#}
+                {#                    <div class="orderOps-content">#}
+                {#                        <a href="{{ category_header }}">Product type</a>#}
+                {#                        <a href="{{ width_header }}">Breedte</a>#}
+                {#                        <a href="{{ length_header }}">Lengte</a>#}
+                {#                        {% if searched == 'tube' %}#}
+                {#                            <a href="{{ diameter_header }}">Diameter</a>{% else %}#}
+                {#                            <a href="{{ height_header }}">Hoogte</a>{% endif %}#}
+                {#                        {% if show_match_header %}#}
+                {#                            <a href="{{ match_header }}">Zoekmatch</a>{% endif %}#}
+                {#                        <a href="{{ wall_thickness_header }}">Kwaliteit</a>#}
+                {#                        <a href="{{ color_header }}">Kleur</a>#}
+                {#                        <a href="{{ bottles_header }}">Aantal flesen</a>#}
+                {#                        <a href="{{ standard_size_header }}">Standaard formaat</a>#}
+                {#                        <a href="{{ price_header }}">Prijs ex. BTW</a>#}
+                {#                        <a href="{{ lowest_price_header }}">Staffelkorting</a>#}
+                {#                    </div>#}
+                {#                </div>#}
+                {#                <a class="sortOrder" href="{{ sort_order_link }}">#}
+                {#                    <div>#}
+                {#                        <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"#}
+                {#                           {% else %}class="fas fa-sort-amount-down-alt"{% endif %}></i>#}
+                {#                    </div>#}
+                {#                </a>#}
+                {#            </div>#}
+
+
                 <table class="table table-hover table-condensed" id="productTable">
                     <thead>
                     <tr>
@@ -286,7 +287,7 @@
                             <div {% if order_by == '-color' %}class="arrowDown"
                                  {% elif order_by == 'color' %}class="arrowUp"{% else %}{% endif %}></div>
                         </th>
-                        <th class="d-none d-sm-table-cell"><a href="{{ bottles_header }}">Flessen</a> /
+                        <th class="d-none d-sm-table-cell"><a href="{{ bottles_header }}">Flessen</a> / <br>
                             <a href="{{ standard_size_header }}">Formaat</a>
                             <div {% if order_by == '-bottles' or order_by == '-standard_size' %}class="arrowDown"
                                  {% elif order_by == 'bottles' or order_by == 'standard_size' %}class="arrowUp"{% else %}{% endif %}></div>
@@ -301,8 +302,9 @@
                         </th>
                         {#                        <th>Producent/productlink</th>#}
                         {#                        <th>Bulk discount</th>#}
-                        {#                        <th>Like/unlike</th>#}
                         <th>Link</th>
+                        <th>Bewaar</th>
+
 
                     </tr>
 
@@ -337,119 +339,27 @@
                             <td>{{ object.price_ex_BTW }}</td>
                             {% if object.popover_tierprices|length > 0 %}
                                 <td class="staffel">{{ object.lowest_price }}
-                                    <span class="tooltiptext">{% for tierprice in object.popover_tierprices %}
-                                        {{ tierprice }}<br/>{% endfor %}</span>
+
+                                    <span class="tooltiptext"><span class="staffel-header">Aantal | Prijs</span><br>{% for tierprice in object.popover_tierprices %}
+                                        {{ tierprice }}<br>{% endfor %}</span>
                                 </td>
                             {% else %}
                                 <td>{{ object.lowest_price }} </td>
 
                             {% endif %}
-                            <td><a href="{{ object.url }}" target="_blank" rel="noopener noreferrer">linkje</a></td>
-                            {#                                <td>{% include 'products/like_unlike_product_form.html' %}</td>#}
+                            <td><a href="{{ object.url }}" target="_blank" rel="noopener noreferrer">Bekijk hier</a></td>
+                            <td>{% include 'products/like_unlike_product_form.html' %}</td>
 
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             {% endif %}
-        {% if products.has_other_pages %}
-            {% load pagination_url %}
+        <div class="row">
+            <div class="col">{% include "products/pagination.html" %}</div>
+        </div>
 
-            <ul class="pagination">
-                {% if products.has_previous %}
-                    <li class="page-item"><a class="page-link"
-                                             href="?{% url_replace page=products.previous_page_number %}">&laquo;</a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1"><span>&laquo;</span></a>
-                    </li>
-                {% endif %}
 
-                {% if products.number == 1 %}
-                    <li class="page-item active">
-                        <a class="page-link" href="#">1 <span class="sr-only">(current)</span></a></li>
-
-                {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% url_replace page=1 %}">1 <span
-                                class="sr-only">(current)</span></a></li>
-
-                {% endif %}
-
-                {% if broken_start_pagination %}
-                    <span>...</span>
-                {% endif %}
-                {% for i in page_range %}
-                    {% if products.number == i %}
-                        <li class="page-item active">
-                            <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
-                        </li>
-                    {% else %}
-
-                        <li class="page-item">
-                            <a class="page-link" href="?{% url_replace page=i %}">{{ i }}</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-                {% if broken_end_pagination %}
-                    <span>...</span>
-                {% endif %}
-                <li class="page-item {% if products.number == products.paginator.num_pages %}active{% endif %}">
-                    <a class="page-link"
-                       href="?{% url_replace page=products.paginator.num_pages %}">{{ products.paginator.num_pages }}
-                        <span class="sr-only">(current)</span></a>
-                </li>
-                {% if products.has_next %}
-                    <li class="page-item"><a class="page-link"
-                                             href="?{% url_replace page=products.next_page_number %}">&raquo;</a>
-                    </li>
-
-                {% else %}
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1"><span>&raquo;</span></a></li>
-
-                {% endif %}
-            </ul>
-
-            {#            {% load pagination_url %}#}
-            {#            <ul class="pagination">#}
-            {#                {% if products.has_previous %}#}
-            {#                    <li class="page-item"><a class="page-link"#}
-            {#                                             href="?{% url_replace page=products.previous_page_number %}">&laquo;</a>#}
-            {#                    </li>#}
-            {#                {% else %}#}
-            {#                    <li class="page-item disabled">#}
-            {#                        <a class="page-link" href="#" tabindex="-1"><span>&laquo;</span></a>#}
-            {#                    </li>#}
-            {#                {% endif %}#}
-            {##}
-            {##}
-            {##}
-            {##}
-            {#                {% for i in products.paginator.page_range %}#}
-            {#                    {% if products.number == i %}#}
-            {#                        <li class="page-item active">#}
-            {#                            <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>#}
-            {#                        </li>#}
-            {#                    {% else %}#}
-            {#                        <li class="page-item"><a class="page-link" href="?{% url_replace page=i %}">{{ i }}</a>#}
-            {#                        </li>#}
-            {#                    {% endif %}#}
-            {#                {% endfor %}#}
-            {##}
-            {#                {% if products.has_next %}#}
-            {#                    <li class="page-item"><a class="page-link"#}
-            {#                                             href="?{% url_replace page=products.next_page_number %}">&raquo;</a>#}
-            {#                    </li>#}
-            {##}
-            {#                {% else %}#}
-            {#                    <li class="page-item disabled">#}
-            {#                        <a class="page-link" href="#" tabindex="-1"><span>&raquo;</span></a></li>#}
-            {##}
-            {#                {% endif %}#}
-            {#            </ul>#}
-        {% endif %}
         </div>
         {% endif %}
     </div>
@@ -548,6 +458,17 @@
             refreshData(checkedBoxes);
         });
 
+    </script>
+
+
+    <script>
+        $('.product-wrapper').click(function () {
+            if ($(this).hasClass('unfold')) {
+                $(this).removeClass('unfold');
+            } else {
+                $(this).addClass('unfold');
+            }
+        })
     </script>
 
 

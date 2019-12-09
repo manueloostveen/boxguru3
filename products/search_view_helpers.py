@@ -127,13 +127,20 @@ def create_sort_headers(request, context):
     }
 
     for header, query in header_dict.items():
-        if GET_copy.get('sort') == query:
-            GET_copy['by'] = ordering_swapper[GET_copy['by']]
+        if request.GET.get('sort') == query:
+            # print(GET_copy.get('sort'), 'sort')
+            # print(GET_copy.get('by'), 'by')
+
+            GET_copy['by'] = ordering_swapper[request.GET['by']]
+            GET_copy['sort'] = query
 
         else:
             GET_copy['sort'] = query
             GET_copy['by'] = 'ASC'
+
         context[header] = request.path + '?' + GET_copy.urlencode()
+        print(context[header])
+
 
     return context
 

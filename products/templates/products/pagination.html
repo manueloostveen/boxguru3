@@ -1,0 +1,66 @@
+{% if products.has_other_pages %}
+    {% load pagination_url %}
+
+    <ul class="pagination">
+        {% if products.has_previous %}
+            <li class="page-item"><a class="page-link"
+                                     href="?{% url_replace page=products.previous_page_number %}">&laquo;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1"><span>&laquo;</span></a>
+            </li>
+        {% endif %}
+
+        {% if products.number == 1 %}
+            <li class="page-item active">
+                <a class="page-link" href="#">1 <span class="sr-only">(current)</span></a></li>
+
+        {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?{% url_replace page=1 %}">1 <span
+                        class="sr-only">(current)</span></a></li>
+
+        {% endif %}
+
+        {% if broken_start_pagination %}
+            <li class="pagination-break">
+                {#                        <span> . . . </span>#}
+            </li>
+        {% endif %}
+        {% for i in page_range %}
+            {% if products.number == i %}
+                <li class="page-item active">
+                    <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+                </li>
+            {% else %}
+
+                <li class="page-item">
+                    <a class="page-link" href="?{% url_replace page=i %}">{{ i }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if broken_end_pagination %}
+            <li class="pagination-break">
+                <div></div>
+            </li>
+
+        {% endif %}
+        <li class="page-item {% if products.number == products.paginator.num_pages %}active{% endif %}">
+            <a class="page-link"
+               href="?{% url_replace page=products.paginator.num_pages %}">{{ products.paginator.num_pages }}
+                <span class="sr-only">(current)</span></a>
+        </li>
+        {% if products.has_next %}
+            <li class="page-item"><a class="page-link"
+                                     href="?{% url_replace page=products.next_page_number %}">&raquo;</a>
+            </li>
+
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1"><span>&raquo;</span></a></li>
+
+        {% endif %}
+    </ul>
+
+{% endif %}
