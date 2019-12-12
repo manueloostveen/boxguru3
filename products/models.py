@@ -33,7 +33,7 @@ class ProductType(models.Model):
     main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return self.type + ' ' + str(self.pk)
+        return self.type
 
     def get_absolute_url(self):
         return reverse('producttype-detail', args=[str(self.id)])
@@ -116,6 +116,9 @@ class Product(models.Model):
     tags = models.ManyToManyField(Tag)
 
     users = models.ManyToManyField(User, verbose_name='Liked by', blank=True)
+
+    product_image = models.CharField(max_length=200, blank=True, null=True)
+
 
     inner_dimensions = ['inner_dim1', 'inner_dim2', 'inner_dim3', 'inner_variable_dimension_MIN',
                         'inner_variable_dimension_MAX', 'diameter']

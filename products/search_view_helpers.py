@@ -124,6 +124,7 @@ def create_sort_headers(request, context):
         'bottles_header': 'bottles',
         'lowest_price_header': 'lowest_price',
         'price_header': 'price_ex_BTW',
+        'company_header': 'company',
     }
 
     for header, query in header_dict.items():

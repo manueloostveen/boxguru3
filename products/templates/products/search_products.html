@@ -1,6 +1,7 @@
 {% extends "base_generic.html" %}
 {% load verbose_names %}
 {% load field_values %}
+{% load static %}
 
 
 {% block content %}
@@ -300,12 +301,11 @@
                             <div {% if order_by == '-lowest_price' %}class="arrowDown"
                                  {% elif order_by == 'lowest_price' %}class="arrowUp"{% else %}{% endif %}></div>
                         </th>
-                        {#                        <th>Producent/productlink</th>#}
-                        {#                        <th>Bulk discount</th>#}
-                        <th>Link</th>
+                        <th><a href="{{ company_header }}">Producent / Productlink</a>
+                            <div {% if order_by == '-company' %}class="arrowDown"
+                                 {% elif order_by == 'company' %}class="arrowUp"{% else %}{% endif %}></div>
+                        </th>
                         <th>Bewaar</th>
-
-
                     </tr>
 
 
@@ -314,7 +314,13 @@
 
                     {% for object in products %}
                         <tr>
-                            <td>img.</td>
+                            <td>
+                                <a class="product-thumb" data-toggle="popover-hover"
+                                   {% with 'products/images/'|add:object.product_image as image_static %}
+                                   data-img="{% static image_static %}"><img class="product-thumb"
+                                                                                        src="{% static image_static %}"
+                                                                                        alt="product">{% endwith %}</a>
+                            </td>
                             <td>{{ object.product_type }}</td>
 
                             <td>{{ object.inner_dim1 }}</td>
@@ -340,14 +346,16 @@
                             {% if object.popover_tierprices|length > 0 %}
                                 <td class="staffel">{{ object.lowest_price }}
 
-                                    <span class="tooltiptext"><span class="staffel-header">Aantal | Prijs</span><br>{% for tierprice in object.popover_tierprices %}
-                                        {{ tierprice }}<br>{% endfor %}</span>
+                                    <span class="tooltiptext"><span class="staffel-header">Aantal | Prijs</span><br>
+                                        {% for tierprice in object.popover_tierprices %}
+                                            {{ tierprice }}<br>{% endfor %}</span>
                                 </td>
                             {% else %}
                                 <td>{{ object.lowest_price }} </td>
 
                             {% endif %}
-                            <td><a href="{{ object.url }}" target="_blank" rel="noopener noreferrer">Bekijk hier</a></td>
+                            <td><a class="lowercase" href="{{ object.url }}" target="_blank"
+                                   rel="noopener noreferrer">{{ object.company }}<i class="fas fa-external-link-alt"></i></a></td>
                             <td>{% include 'products/like_unlike_product_form.html' %}</td>
 
                         </tr>
@@ -469,6 +477,27 @@
                 $(this).addClass('unfold');
             }
         })
+    </script>
+
+    <script>
+        // popovers initialization - on hover
+        $('[data-toggle="popover-hover"]').popover({
+            html: true,
+            trigger: 'click',
+            placement: 'bottom',
+            content: function () {
+                return '<img src="' + $(this).data('img') + '"' + '/>';
+            }
+        });
+
+        $("html").on("mouseup", function (e) {
+            var l = $(e.target);
+            if (l[0].className.indexOf("popover") === -1) {
+                $(".popover").each(function () {
+                    $(this).popover("hide");
+                });
+            }
+        });
     </script>
 
 

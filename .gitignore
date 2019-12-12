@@ -38,3 +38,21 @@ Temporary Items
 
 # Database
 /db.sqlite3
+/products/static/products/images/
+products/migrations/0002_auto_20191104_1729.py
+products/migrations/0003_maincategory.py
+products/migrations/0004_producttype_main_category.py
+products/migrations/0005_remove_producttype_main_category.py
+products/migrations/0006_producttype_main_category.py
+products/migrations/0007_auto_20191104_1905.py
+products/migrations/0008_auto_20191104_1908.py
+products/migrations/0009_product_product_image.py
+products/migrations/0010_auto_20191211_1104.py
+products/migrations/0011_auto_20191211_1509.py
+products/static/products/DataTables/DataTables-1.10.20/
+products/static/products/DataTables/datatables.css
+products/static/products/DataTables/datatables.js
+products/static/products/DataTables/datatables.min.css
+products/static/products/DataTables/datatables.min.js
+products/static/products/Schermafdruk 2019-11-12 23.05.36.png
+products/static/products/css/

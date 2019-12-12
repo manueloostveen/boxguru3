@@ -228,6 +228,10 @@ th {
     text-transform: capitalize;
 }
 
+.table td .lowercase, .table td .tooltiptext {
+    text-transform: none;
+}
+
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
     background-color: #d4edda;
 }
@@ -235,6 +239,20 @@ th {
 .table-condensed {
     font-size: 12px;
 }
+
+img.product-thumb {
+    width: 30px;
+    height: 30px;
+}
+
+img.product-thumb:hover {
+    cursor: pointer;
+}
+
+.popover {
+    max-width: 1000px;
+}
+
 
 /*STAFFELDISCOUNT*/
 .staffel {
@@ -265,10 +283,8 @@ td.staffel:hover .tooltiptext {
 }
 
 td.staffel .staffel-header {
-    font-family: 'Alfa Slab One', Charcoal, sans-serif;
+    font-weight: bold;
     letter-spacing: 1px;
-
-
 }
 
 /*arrow*/
@@ -739,4 +755,8 @@ div.card-body {
 
 .btn-sm {
     font-size: 11px;
+}
+
+.fas.fa-external-link-alt {
+    margin-left: 0.25rem;
 }
