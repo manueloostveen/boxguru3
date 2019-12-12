@@ -129,9 +129,6 @@ def create_sort_headers(request, context):
 
     for header, query in header_dict.items():
         if request.GET.get('sort') == query:
-            # print(GET_copy.get('sort'), 'sort')
-            # print(GET_copy.get('by'), 'by')
-
             GET_copy['by'] = ordering_swapper[request.GET['by']]
             GET_copy['sort'] = query
 
@@ -140,8 +137,6 @@ def create_sort_headers(request, context):
             GET_copy['by'] = 'ASC'
 
         context[header] = request.path + '?' + GET_copy.urlencode()
-        print(context[header])
-
 
     return context
 
@@ -173,6 +168,7 @@ def create_queryset(request, form, context):
     if main_category:
         qmain_category = Q(product_type__main_category=main_category)
         qobjects.append(qmain_category)
+
     else:
         if context['searched'] == 'box':
             qmain_category = Q(product_type__main_category__in=range(1, 11))
@@ -408,5 +404,5 @@ def create_queryset(request, form, context):
         #     order_by = 'price_ex_BTW'
         #     queryset_qobjects = Product.objects.filter(*qobjects).order_by('price_ex_BTW')
 
-
+    print(qobjects, 'QOBJECTS')
     return context, queryset_qobjects, max_match

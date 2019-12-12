@@ -33,7 +33,7 @@ class ProductType(models.Model):
     main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return self.type
+        return self.type + ' ' + str(self.id)
 
     def get_absolute_url(self):
         return reverse('producttype-detail', args=[str(self.id)])
@@ -131,7 +131,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
-        ordering = ['product_type', 'inner_dim1']
+        ordering = ['inner_dim1']
         permissions = (
             ('can_see_all_liked_products', 'Get list of liked products'),
             ('create_update_delete', 'Create/update/delete products'),
@@ -144,6 +144,9 @@ class Product(models.Model):
     def display_tierprices(self):
         """Create string for TierPrice's. This is required to display the tier-prices in Admin"""
         return ' | '.join(str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all())
+
+    def display_product_types(self):
+        return ' - '.join(str(product_type.type) for product_type in self.product_type.all())
 
     def popover_tierprices(self):
         return [str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all()]
