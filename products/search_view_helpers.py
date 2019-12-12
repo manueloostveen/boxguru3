@@ -150,9 +150,16 @@ def create_queryset(request, form, context):
     colors = request.GET.getlist('color')
     wall_thicknesses = request.GET.getlist('wall_thickness')
     main_category = request.GET.get('product_type__main_category')
-    product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
     standard_size = request.GET.getlist('standard_size')
     bottles = request.GET.getlist('bottles')
+    product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
+
+    # Deal with variable height
+    variable_height = {}
+    if '115' in product_types:
+        product_types.remove('115')
+        variable_height = {'product_type': 115}
+
 
     qobjects = []
 
@@ -166,8 +173,11 @@ def create_queryset(request, form, context):
         qobjects.append(qwall_thicknesses)
 
     if main_category:
-        qmain_category = Q(product_type__main_category=main_category)
-        qobjects.append(qmain_category)
+        if main_category == '6': #(Variable_height)
+            variable_height = {'product_type': 115}
+        else:
+            qmain_category = Q(product_type__main_category=main_category)
+            qobjects.append(qmain_category)
 
     else:
         if context['searched'] == 'box':
@@ -251,7 +261,7 @@ def create_queryset(request, form, context):
         )
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).annotate(
+        ).filter(**variable_height).distinct().annotate(
             swidth_width_test=swidth_width_test).annotate(
             swidth_length_test=swidth_length_test).annotate(
             max_match=Round(Greatest('swidth_width_test', 'swidth_length_test')))
@@ -272,11 +282,25 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).annotate(
+        ).filter(**variable_height).distinct().annotate(
             slength_width_test=slength_width_test).annotate(
             slength_length_test=slength_length_test).annotate(
             max_match=Round(Greatest('slength_width_test', 'slength_length_test')))
 
+    elif height and not width and not length and not diameter:
+
+        sheight_height_test = Case(
+            When(inner_variable_dimension_MAX__isnull=False,
+                 then=100),
+            When(inner_variable_dimension_MAX__isnull=True,
+                 then=(100 - (Abs(F('inner_dim3') - height) / F('inner_dim3')) * 100.0)),
+            default=0, output_field=DecimalField()
+        )
+
+        queryset_qobjects = Product.objects.filter(
+            *qobjects
+        ).filter(**variable_height).distinct().annotate(
+            max_match=Round(sheight_height_test))
 
     elif length and width and not height:
 
@@ -303,7 +327,7 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).annotate(
+        ).filter(**variable_height).distinct().annotate(
             slength_width_test=slength_width_test).annotate(
             slength_length_test=slength_length_test).annotate(
             swidth_width_test=swidth_width_test).annotate(
@@ -346,7 +370,7 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).annotate(
+        ).filter(**variable_height).distinct().annotate(
             slength_width_test=slength_width_test).annotate(
             slength_length_test=slength_length_test).annotate(
             swidth_width_test=swidth_width_test).annotate(
@@ -365,7 +389,7 @@ def create_queryset(request, form, context):
         )
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).annotate(
+        ).filter(**variable_height).distinct().annotate(
             max_match=Round(sdiameter_diameter_test))
 
     elif length and diameter:
@@ -388,7 +412,7 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).annotate(
+        ).filter(**variable_height).distinct().annotate(
             slength_width_test=slength_width_test).annotate(
             slength_length_test=slength_length_test).annotate(
             sdiameter_diameter_test=sdiameter_diameter_test).annotate(
@@ -397,12 +421,7 @@ def create_queryset(request, form, context):
 
 
     else:
-        queryset_qobjects = Product.objects.filter(*qobjects)
-        # if 'max_match' not in order_by:
-        #     queryset_qobjects = Product.objects.filter(*qobjects).order_by(order_by )
-        # else:
-        #     order_by = 'price_ex_BTW'
-        #     queryset_qobjects = Product.objects.filter(*qobjects).order_by('price_ex_BTW')
+        queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).distinct()
 
-    print(qobjects, 'QOBJECTS')
+    print(queryset_qobjects.query, 'QUERY')
     return context, queryset_qobjects, max_match

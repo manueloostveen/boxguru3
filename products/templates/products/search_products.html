@@ -254,7 +254,9 @@
                             <div {% if order_by == '-product_type' %}class="arrowDown"
                                  {% elif order_by == 'product_type' %}class="arrowUp"{% else %}{% endif %}></div>
                         </th>
-
+                        <th>
+                            Omschrijving
+                        </th>
                         <th>
                             <a href="{{ width_header }}">Breedte</a>
                             <div {% if order_by == '-inner_dim1' %}class="arrowDown"
@@ -322,7 +324,7 @@
                                                                                         alt="product">{% endwith %}</a>
                             </td>
                             <td>{{ object.display_product_types }}</td>
-
+                            <td>{{ object.description }}</td>
                             <td>{{ object.inner_dim1 }}</td>
                             <td>{{ object.inner_dim2 }}</td>
                             <td>{% if object.inner_variable_dimension_MAX %}
