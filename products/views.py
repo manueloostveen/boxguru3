@@ -6,7 +6,7 @@ from django.views import generic
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from products.models import Product, WallThickness, Color, ProductType
+from products.models import Product, WallThickness, Color, ProductType, Company
 from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -698,7 +698,7 @@ def search_product(request):
                 context = create_sort_headers(request, context)
 
                 # Create  querysets for result filter
-                no_filter = [('', '&times')]
+                no_filter = [('', 'x')]
                 if request.GET.get('initial_search'):
                     request.session['filter_producttypes'] = no_filter + list(
                         ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'type'))
@@ -713,7 +713,9 @@ def search_product(request):
                     request.session['filter_bottles'] = no_filter + list(
                         queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
                                                                                                         flat=True).distinct())
-
+                    request.session['filter_companies'] = no_filter + list(
+                        Company.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'company'))
+                    print(request.session['filter_companies'], 'companies filter')
                 # Add filters to context, first check if filter keys are still in session
                 if 'filter_producttypes' in request.session:
                     context['filters'] = {
@@ -724,7 +726,8 @@ def search_product(request):
                         'Kleuren': create_filter_list(Filter2, request, 'color', request.session['filter_colors']),
                         'Standaard formaat': create_filter_list(Filter2, request, 'standard_size',
                                                                 request.session['filter_standard_size']),
-                        'Aantal flessen': create_filter_list(Filter2, request, 'bottles', request.session['filter_bottles'])
+                        'Aantal flessen': create_filter_list(Filter2, request, 'bottles', request.session['filter_bottles']),
+                        'Producenten': create_filter_list(Filter2, request, 'company', request.session['filter_companies']),
                     }
 
                 # Pagination

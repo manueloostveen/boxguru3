@@ -453,7 +453,7 @@ input.chk {
     color: white;
 }
 
-.filter-section div {
+.filter-section div.title {
     position: relative;
 }
 
@@ -464,7 +464,6 @@ input.chk {
 .filter-section div a {
     display: inline-block;
     position: absolute;
-    top: 70%;
     /*transform: translate(0, -50%);*/
 
 }

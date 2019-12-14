@@ -157,6 +157,7 @@ def create_queryset(request, form, context):
     standard_size = request.GET.getlist('standard_size')
     bottles = request.GET.getlist('bottles')
     product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
+    companies = request.GET.getlist('company')
 
     # Deal with variable height
     variable_height = {}
@@ -205,6 +206,10 @@ def create_queryset(request, form, context):
     if len(bottles):
         qbottles = Q(bottles__in=bottles)
         qobjects.append(qbottles)
+
+    if len(companies):
+        qcompanies = Q(company__in=companies)
+        qobjects.append(qcompanies)
 
     # Set error margin for query search range
     error_margin = 50
