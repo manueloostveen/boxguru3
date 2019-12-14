@@ -383,6 +383,7 @@ input.chk {
     /*background-color: #eeeeee;*/
     padding: 20px;
     min-width: 200px;
+    z-index: 10;
 }
 
 .filter-section a {
@@ -445,8 +446,6 @@ input.chk {
     transform: translate(-50%, -50%);
 }
 
-
-
 .filter-section a.deactivate-all:hover {
     background-color: #73AD21;
     border: 1px solid #73AD21;
@@ -465,8 +464,37 @@ input.chk {
     display: inline-block;
     position: absolute;
     /*transform: translate(0, -50%);*/
-
 }
+
+/*.filter-section div, .filter-section a {*/
+/*    display: none;*/
+/*}*/
+
+/*input[type=checkbox].filter-toggle {*/
+/*   position: absolute;*/
+/*   display: none;*/
+/*}*/
+
+/*label {*/
+/*  -webkit-appearance: push-button;*/
+/*  -moz-appearance: button;*/
+/*  display: block;*/
+/*  !*margin: 60px 0 10px 0;*!*/
+/*  cursor: pointer;*/
+/*}*/
+
+/*input[type=checkbox].filter-toggle:checked ~ .filter-section div a,*/
+/*input[type=checkbox].filter-toggle:checked ~ .filter-section a.deactivate-all {*/
+/*   display: inline-block;*/
+/*}*/
+
+/*input[type=checkbox].filter-toggle:checked ~ .filter-section a {*/
+/*    display: inline-flex;*/
+/*}*/
+
+/*input[type=checkbox].filter-toggle:checked ~ .filter-section div {*/
+/*    display: block;*/
+/*}*/
 
 
 /*SORTING DROPDOWN MENU*/

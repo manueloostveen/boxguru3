@@ -689,7 +689,19 @@ def search_product(request):
                     else:
                         order_by = 'price_ex_BTW'
 
-                queryset_qobjects = queryset_qobjects.order_by(order_by)
+                if 'max_match' in order_by:
+                    queryset_qobjects = queryset_qobjects.order_by(order_by, 'price_ex_BTW')
+                elif max_match_possible:
+                    if 'price_ex_BTW' in order_by:
+                        queryset_qobjects = queryset_qobjects.order_by(order_by, '-max_match')
+                    else:
+                        queryset_qobjects = queryset_qobjects.order_by(order_by, '-max_match', 'price_ex_BTW')
+                else:
+                    if 'price_ex_BTW' in order_by:
+                        queryset_qobjects = queryset_qobjects.order_by(order_by)
+                    else:
+                        queryset_qobjects = queryset_qobjects.order_by(order_by, 'price_ex_BTW')
+
 
                 # Add sort link for order button and sort direction variable to context
                 context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)

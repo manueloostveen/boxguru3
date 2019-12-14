@@ -204,7 +204,7 @@
         {% else %}
             <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-4 col-sm-5 mt-5 filter-section">
                 {% for filter_name, filters in filters.items %}
-                    {% if filters|length %}
+                    {% if filters|length > 1 %}
                         {% with filters|first as clear_all %}
                             <div>
                                 <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"

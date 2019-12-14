@@ -64,6 +64,9 @@ class Filter2:
                 GET_copy[current_filter] = current_value
             self.css_class = ''
 
+        #Set page to first page
+        GET_copy['page'] = 1
+
         self.url = request.path + '?' + GET_copy.urlencode()
 
 
@@ -101,6 +104,9 @@ def create_sort_order_link(request, order):
         else:
             GET_copy['by'] = 'ASC'
 
+    #Set page to first page
+    GET_copy['page'] = 1
+
     full_path = request.path + "?" + GET_copy.urlencode()
 
     return full_path, GET_copy['by']
@@ -116,29 +122,31 @@ def create_sort_headers(request, context):
 
     # {header: query} dictionary
     header_dict = {
-        'category_header': 'product_type',
-        'width_header': 'inner_dim1',
-        'length_header': 'inner_dim2',
-        'height_header': 'inner_dim3',
-        'diameter_header': 'diameter',
-        'match_header': 'max_match',
-        'wall_thickness_header': 'wall_thickness',
-        'color_header': 'color',
-        'standard_size_header': 'standard_size',
-        'bottles_header': 'bottles',
-        'lowest_price_header': 'lowest_price',
-        'price_header': 'price_ex_BTW',
-        'company_header': 'company',
+        'category_header': ('product_type', 'DESC'),
+        'width_header': ('inner_dim1', 'ASC'),
+        'length_header': ('inner_dim2', 'ASC'),
+        'height_header': ('inner_dim3', 'ASC'),
+        'diameter_header': ('diameter', 'ASC'),
+        'match_header': ('max_match', 'ASC'),
+        'wall_thickness_header': ('wall_thickness', 'DESC'),
+        'color_header': ('color', 'DESC'),
+        'standard_size_header': ('standard_size', 'ASC'),
+        'bottles_header': ('bottles', 'DESC'),
+        'lowest_price_header': ('lowest_price', 'DESC'),
+        'price_header': ('price_ex_BTW', 'DESC'),
+        'company_header': ('company', 'DESC'),
     }
 
     for header, query in header_dict.items():
-        if request.GET.get('sort') == query:
+        if request.GET.get('sort') == query[0]:
             GET_copy['by'] = ordering_swapper[request.GET['by']]
-            GET_copy['sort'] = query
+            GET_copy['sort'] = query[0]
 
         else:
-            GET_copy['sort'] = query
-            GET_copy['by'] = 'ASC'
+            GET_copy['sort'] = query[0]
+            GET_copy['by'] = query[1]
+
+        GET_copy['page'] = 1
 
         context[header] = request.path + '?' + GET_copy.urlencode()
 
@@ -345,6 +353,63 @@ def create_queryset(request, form, context):
             swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
             max_match=Round(Greatest('sww_sll_match', 'swl_slw_match')))
 
+    elif length and height and not width:
+        slength_width_test = Case(
+            When(inner_dim1__isnull=False,
+                 then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+            default=0, output_field=DecimalField()
+        )
+        slength_length_test = Case(
+            When(inner_dim2__isnull=False,
+                 then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+            default=0, output_field=DecimalField()
+        )
+        sheight_height_test = Case(
+            When(inner_variable_dimension_MAX__isnull=False,
+                 then=100),
+            When(inner_variable_dimension_MAX__isnull=True,
+                 then=(100 - (Abs(F('inner_dim3') - length) / F('inner_dim3')) * 100.0)),
+            default=0, output_field=DecimalField()
+        )
+
+        queryset_qobjects = Product.objects.filter(
+            *qobjects
+        ).filter(**variable_height).distinct().annotate(
+            slength_width_test=slength_width_test).annotate(
+            slength_length_test=slength_length_test).annotate(
+            sheight_height_test=sheight_height_test).annotate(
+            wl_match=Greatest('slength_width_test', 'slength_length_test')).annotate(
+            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3))
+
+    elif width and height and not length:
+        swidth_width_test = Case(
+            When(inner_dim1__isnull=False,
+                 then=(100 - (Abs(F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
+            default=0, output_field=DecimalField()
+        )
+        swidth_length_test = Case(
+            When(inner_dim2__isnull=False,
+                 then=(100 - (Abs(F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
+            default=0, output_field=DecimalField()
+        )
+
+        sheight_height_test = Case(
+            When(inner_variable_dimension_MAX__isnull=False,
+                 then=100),
+            When(inner_variable_dimension_MAX__isnull=True,
+                 then=(100 - (Abs(F('inner_dim3') - height) / F('inner_dim3')) * 100.0)),
+            default=0, output_field=DecimalField()
+        )
+
+        queryset_qobjects = Product.objects.filter(
+            *qobjects
+        ).filter(**variable_height).distinct().annotate(
+            swidth_width_test=swidth_width_test).annotate(
+            swidth_length_test=swidth_length_test).annotate(
+            sheight_height_test=sheight_height_test).annotate(
+            wl_match=Greatest('swidth_width_test', 'swidth_length_test')).annotate(
+            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)
+        )
 
     elif width and length and height:
 
@@ -373,7 +438,7 @@ def create_queryset(request, form, context):
             When(inner_variable_dimension_MAX__isnull=False,
                  then=100),
             When(inner_variable_dimension_MAX__isnull=True,
-                 then=(100 - (Abs(F('inner_dim3') - length) / F('inner_dim3')) * 100.0)),
+                 then=(100 - (Abs(F('inner_dim3') - height) / F('inner_dim3')) * 100.0)),
             default=0, output_field=DecimalField()
         )
 
@@ -432,6 +497,4 @@ def create_queryset(request, form, context):
     else:
         queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).distinct()
 
-    print(variable_height, '**variable_height')
-    print(qobjects, 'qobjects')
     return context, queryset_qobjects, max_match
