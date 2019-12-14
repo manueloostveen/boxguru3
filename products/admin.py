@@ -15,7 +15,7 @@ admin.site.register(MainCategory)
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('company', 'price_ex_BTW', 'display_users', 'display_tierprices')
-    list_filter = ('product_type', 'wall_thickness', 'color', 'tags')
+    list_filter = ('company', 'product_type', 'wall_thickness', 'color', 'tags')
     ## Use 'fields = ' to show only specific fields, change order, show them horizontally
     # fields = [('inner_dim1', 'inner_dim2', 'inner_dim3'),
     #           ('inner_variable_dim_MIN', 'inner_variable_dim_MAX')]

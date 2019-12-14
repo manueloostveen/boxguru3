@@ -202,11 +202,16 @@
     <div class="row flex-xl-nowrap">
         {% if no_search %}
         {% else %}
-            <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5 filter-section">
+            <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-4 col-sm-5 mt-5 filter-section">
                 {% for filter_name, filters in filters.items %}
                     {% if filters|length %}
-                        <h4>{{ filter_name }}</h4>
-                        {% for filter in filters %}
+                        {% with filters|first as clear_all %}
+                            <div>
+                                <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"
+                                                             href="{{ clear_all.url }}"></a>
+                            </div>
+                        {% endwith %}
+                        {% for filter in filters|slice:"1:" %}
                             <a class="{{ filter.css_class }}"
                                href="{{ filter.url }}">{{ filter.filter_name }}</a>
                         {% endfor %}
@@ -318,23 +323,25 @@
                         <tr>
                             <td>
                                 <a class="product-thumb" data-toggle="popover-hover"
-                                   {% with 'products/images/'|add:object.product_image as image_static %}
+                                        {% with 'products/images/'|add:object.product_image as image_static %}
                                    data-img="{% static image_static %}"><img class="product-thumb"
-                                                                                        src="{% static image_static %}"
-                                                                                        alt="product">{% endwith %}</a>
+                                                                             src="{% static image_static %}"
+                                                                             alt="product">{% endwith %}</a>
                             </td>
                             <td>{{ object.display_product_types }}</td>
                             <td>{{ object.description }}</td>
                             <td>{{ object.inner_dim1 }}</td>
-                            <td>{{ object.inner_dim2 }}</td>
-                            <td>{% if object.inner_variable_dimension_MAX %}
-                                {{ object.inner_variable_dimension_MIN }}-{{ object.inner_variable_dimension_MAX }}
-                            {% elif object.inner_dim3 %}
-                                {{ object.inner_dim3 }}
-                            {% elif object.diameter %}
-                                &Oslash{{ object.diameter }}
-                            {% else %}-
-                            {% endif %}</td>
+                            <td>{% if searched == 'tube' %}{{ object.inner_dim2 }}
+                                {{ object.inner_variable_dimension_MIN }}-
+                                {{ object.inner_variable_dimension_MAX }}{% else %}
+                                {{ object.inner_dim2 }}{% endif %}</td>
+                            <td>{% if searched == 'tube' %}&Oslash{{ object.diameter }}{% else %}
+                                {% if object.inner_variable_dimension_MAX %}
+                                    {{ object.inner_variable_dimension_MIN }}-{{ object.inner_variable_dimension_MAX }}
+                                {% elif object.inner_dim3 %}
+                                    {{ object.inner_dim3 }}
+                                {% else %}-
+                                {% endif %}{% endif %}</td>
                             {% if object.max_match %}
                                 <td>{{ object.max_match }}%</td>{% endif %}
                             <td>{{ object.wall_thickness }}</td>
@@ -357,7 +364,8 @@
 
                             {% endif %}
                             <td><a class="lowercase" href="{{ object.url }}" target="_blank"
-                                   rel="noopener noreferrer">{{ object.company }}<i class="fas fa-external-link-alt"></i></a></td>
+                                   rel="noopener noreferrer">{{ object.company }}<i
+                                    class="fas fa-external-link-alt"></i></a></td>
                             <td>{% include 'products/like_unlike_product_form.html' %}</td>
 
                         </tr>

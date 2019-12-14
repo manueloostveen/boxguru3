@@ -17,6 +17,7 @@ from math import pi
 from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_sort_order_link, \
     create_queryset, create_sort_headers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from products.models import MainCategory
 
 
 # Create your views here.
@@ -126,16 +127,16 @@ class WallThicknessDetailView(generic.DetailView, generic.list.MultipleObjectMix
 class GenericListView(generic.ListView):
     model = None
     template_name = 'products/generic_list.html'
-    paginate_by = 12
+    # paginate_by = 12
 
     def get_context_data(self, **kwargs):
         context = super(GenericListView, self).get_context_data(
             category_name=self.model._meta.verbose_name_plural.title(), **kwargs)
         context['clsname'] = self.model.__name__
-        current_page = self.request.GET.get('page', 1)
-        if current_page != 1:
-            current_page = f"?page={current_page}"
-            context['current_page'] = current_page
+        # current_page = self.request.GET.get('page', 1)
+        # if current_page != 1:
+        #     current_page = f"?page={current_page}"
+        #     context['current_page'] = current_page
 
         return context
 
@@ -148,8 +149,15 @@ class GenericDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
     def get_context_data(self, **kwargs):
         instance = self.get_object()
 
-        object_list = instance.product_set.all()
-        context = super(GenericDetailView, self).get_context_data(object_list=object_list, **kwargs)
+        if isinstance(instance, MainCategory):
+            object_list = instance.producttype_set.all()
+            category = 'main_category'
+        elif isinstance(instance, ProductType):
+            object_list = instance.product_set.all()
+            category = 'product_type'
+
+        context = super(GenericDetailView, self).get_context_data(object_list=object_list,
+                                                                  category=category, **kwargs)
         return context
 
 
@@ -690,18 +698,19 @@ def search_product(request):
                 context = create_sort_headers(request, context)
 
                 # Create  querysets for result filter
+                no_filter = [('', '&times')]
                 if request.GET.get('initial_search'):
-                    request.session['filter_producttypes'] = list(
+                    request.session['filter_producttypes'] = no_filter + list(
                         ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'type'))
-                    request.session['filter_colors'] = list(
+                    request.session['filter_colors'] = no_filter + list(
                         Color.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'color'))
-                    request.session['filter_wallthicknesses'] = list(
+                    request.session['filter_wallthicknesses'] = no_filter + list(
                         WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id',
                                                                                                            'wall_thickness'))
-                    request.session['filter_standard_size'] = list(
+                    request.session['filter_standard_size'] = no_filter + list(
                         queryset_qobjects.filter(standard_size__isnull=False).order_by(
                             'standard_size').values_list('standard_size', flat=True).distinct())
-                    request.session['filter_bottles'] = list(
+                    request.session['filter_bottles'] = no_filter + list(
                         queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
                                                                                                         flat=True).distinct())
 

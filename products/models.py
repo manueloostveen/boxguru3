@@ -9,10 +9,14 @@ class MainCategory(models.Model):
     def __str__(self):
         return self.category + " " + str(self.pk)
 
+    def get_absolute_url(self):
+        return reverse('categories-detail', args=[str(self.id)])
+
     class Meta:
         ordering = ['category']
         verbose_name = 'Hoofdcategorie'
         verbose_name_plural = 'Hoofdcategoriën'
+
 
 class Color(models.Model):
     color = models.CharField(max_length=120, verbose_name='Color', null=True)
@@ -149,7 +153,7 @@ class Product(models.Model):
         return ' - '.join(str(product_type.type) for product_type in self.product_type.all())
 
     def popover_tierprices(self):
-        return [str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all()]
+        return [str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.order_by('-price').all()]
 
     def display_users(self):
         """Create string for Users that liked this product."""

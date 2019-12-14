@@ -3,14 +3,25 @@
 {% block content %}
     <h1>{{ object|title }}</h1>
 
-    {% for object in object_list %}
-        <li>
-            <a href="{% url 'product-detail' object.pk %}" >{{ object|title }}</a>
-            {% include 'products/like_unlike_product_form.html' %}
+    {% if category == 'product_type' %}
 
-        </li>
+        {% for object in object_list %}
+            <li>
 
-    {% endfor %}
+                <a href="{% url 'product-detail' object.pk %}">{{ object|title }}</a>
+                {% include 'products/like_unlike_product_form.html' %}</li>
+        {% endfor %}
+
+    {% elif category == 'main_category' %}
+        {% for object in object_list %}
+            <li>
+            <a href="{% url 'producttype-detail' object.pk %}">{{ object|title }}</a>
+        {% endfor %}
+    </li>
+
+    {% endif %}
+
+
 
 
 {% endblock %}

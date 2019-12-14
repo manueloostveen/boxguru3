@@ -48,7 +48,11 @@ class Filter2:
         GET_copy.pop('initial_search', None)
         value_list = GET_copy.getlist(current_filter, None)
 
-        if current_value in value_list:
+        if current_value == '':
+            GET_copy.setlist(current_filter, [])
+            self.css_class = 'deactivate-all'
+
+        elif current_value in value_list:
             value_list.remove(current_value)
             GET_copy.setlist(current_filter, value_list)
             self.css_class = 'active'
@@ -423,5 +427,6 @@ def create_queryset(request, form, context):
     else:
         queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).distinct()
 
-    print(queryset_qobjects.query, 'QUERY')
+    print(variable_height, '**variable_height')
+    print(qobjects, 'qobjects')
     return context, queryset_qobjects, max_match

@@ -428,6 +428,48 @@ input.chk {
 
 }
 
+.filter-section a.deactivate-all {
+    background-color: #5e008b;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+}
+.filter-section a.deactivate-all::after {
+    content: '×';
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+
+.filter-section a.deactivate-all:hover {
+    background-color: #73AD21;
+    border: 1px solid #73AD21;
+    color: white;
+}
+
+.filter-section div {
+    position: relative;
+}
+
+.filter-section div h4 {
+    display: inline-block;
+}
+
+.filter-section div a {
+    display: inline-block;
+    position: absolute;
+    top: 70%;
+    /*transform: translate(0, -50%);*/
+
+}
+
+
 /*SORTING DROPDOWN MENU*/
 .orderbtn {
     background-color: #73AD21;

@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .models import Product, WallThickness, Color, ProductType
+from .models import Product, WallThickness, Color, ProductType, MainCategory
 
 
 urlpatterns = [
@@ -13,6 +13,9 @@ urlpatterns = [
     path('producttype/<int:pk>', views.GenericDetailView.as_view(
         model=ProductType
     ), name='producttype-detail'),
+
+    path('categories', views.GenericListView.as_view(model=MainCategory), name='categories'),
+    path('categories/<int:pk>', views.GenericDetailView.as_view(model=MainCategory), name='categories-detail'),
 
     path('colors/', views.GenericListView.as_view(
         model=Color
