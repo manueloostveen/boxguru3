@@ -265,6 +265,8 @@ def create_queryset(request, form, context):
         qobjects.append(qdiameter)
 
     # Create Queryset
+
+
     if width and not length and not height:
         swidth_width_test = Case(
             When(inner_dim1__isnull=False,
