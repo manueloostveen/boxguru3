@@ -69,6 +69,46 @@ class Filter2:
 
         self.url = request.path + '?' + GET_copy.urlencode()
 
+class Filter3:
+    def __init__(self, request, current_filter, filter):
+
+        if type(filter) == tuple or type(filter) == list:
+            # Filter can either be a tuple or list, depending on request.session (somehow): (value, id)
+            current_value = str(filter[0])
+            self.filter_name = filter[1]
+            self.value = current_value
+        else:
+            # bottles and standard size filters are from value_list, not a queryobject
+            current_value = str(filter)
+            self.filter_name = filter
+            self.value = current_value
+
+        self.filter_query = current_filter
+
+
+        GET_copy = request.GET.copy()
+        GET_copy.pop('initial_search', None)
+        value_list = GET_copy.getlist(current_filter, None)
+
+        if current_value == '':
+            GET_copy.setlist(current_filter, [])
+            self.css_class = 'deactivate-all'
+
+        elif current_value in value_list:
+            value_list.remove(current_value)
+            GET_copy.setlist(current_filter, value_list)
+            self.checked = True
+
+        else:
+            if current_filter in GET_copy:
+                GET_copy.update({current_filter: current_value})
+            else:
+                GET_copy[current_filter] = current_value
+
+        #Set page to first page
+        GET_copy['page'] = 1
+
+        self.url = request.path + '?' + GET_copy.urlencode()
 
 
 def create_filter_list(filter_class, request, filter_type, filter_list):
@@ -265,238 +305,138 @@ def create_queryset(request, form, context):
         qobjects.append(qdiameter)
 
     # Create Queryset
+    swidth_width_test = Case(
+        When(inner_dim1__isnull=False,
+             then=(100 - Abs((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
+        default=0, output_field=DecimalField()
+    )
+    swidth_length_test = Case(
+        When(inner_dim2__isnull=False,
+             then=(100 - Abs((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
+        default=0, output_field=DecimalField()
+    )
 
+    slength_width_test = Case(
+        When(inner_dim1__isnull=False,
+             then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
+        default=0, output_field=DecimalField()
+    )
+    slength_length_test = Case(
+        When(inner_dim2__isnull=False,
+             then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
+        default=0, output_field=DecimalField()
+    )
+
+    sheight_height_test = Case(
+        When(inner_variable_dimension_MAX__isnull=False,
+             then=100),
+        When(inner_variable_dimension_MAX__isnull=True,
+             then=(100 - (Abs(F('inner_dim3') - height) / F('inner_dim3')) * 100.0)),
+        default=0, output_field=DecimalField()
+    )
+
+    sdiameter_diameter_test = Case(
+        When(diameter__isnull=False,
+             then=(100 - (Abs(F('diameter') - diameter) / F('diameter')) * 100.0)),
+        default=0, output_field=DecimalField()
+    )
 
     if width and not length and not height:
-        swidth_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - Abs((F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        swidth_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - Abs((F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
+
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            swidth_width_test=swidth_width_test).annotate(
-            swidth_length_test=swidth_length_test).annotate(
-            max_match=Round(Greatest('swidth_width_test', 'swidth_length_test')))
+        ).filter(**variable_height).order_by().annotate(
+            swidth_width_test=swidth_width_test,
+            swidth_length_test=swidth_length_test,
+            max_match=Round(Greatest('swidth_width_test', 'swidth_length_test'))).distinct()
 
 
     elif length and not width and not height and not diameter:
 
-        slength_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        slength_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            slength_width_test=slength_width_test).annotate(
-            slength_length_test=slength_length_test).annotate(
-            max_match=Round(Greatest('slength_width_test', 'slength_length_test')))
+        ).filter(**variable_height).order_by().annotate(
+            slength_width_test=slength_width_test,
+            slength_length_test=slength_length_test,
+            max_match=Round(Greatest('slength_width_test', 'slength_length_test'))).distinct()
 
     elif height and not width and not length and not diameter:
 
-        sheight_height_test = Case(
-            When(inner_variable_dimension_MAX__isnull=False,
-                 then=100),
-            When(inner_variable_dimension_MAX__isnull=True,
-                 then=(100 - (Abs(F('inner_dim3') - height) / F('inner_dim3')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            max_match=Round(sheight_height_test))
+        ).filter(**variable_height).order_by().annotate(
+            max_match=Round(sheight_height_test)).distinct()
 
     elif length and width and not height:
 
-        swidth_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - (Abs(F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        swidth_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - (Abs(F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        slength_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        slength_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            slength_width_test=slength_width_test).annotate(
-            slength_length_test=slength_length_test).annotate(
-            swidth_width_test=swidth_width_test).annotate(
-            swidth_length_test=swidth_length_test).annotate(
-            sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2).annotate(
-            swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
-            max_match=Round(Greatest('sww_sll_match', 'swl_slw_match')))
+        ).filter(**variable_height).order_by().annotate(
+            slength_width_test=slength_width_test,
+            slength_length_test=slength_length_test,
+            swidth_width_test=swidth_width_test,
+            swidth_length_test=swidth_length_test,
+            sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2,
+            swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2,
+            max_match=Round(Greatest('sww_sll_match', 'swl_slw_match'))).distinct()
 
     elif length and height and not width:
-        slength_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        slength_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        sheight_height_test = Case(
-            When(inner_variable_dimension_MAX__isnull=False,
-                 then=100),
-            When(inner_variable_dimension_MAX__isnull=True,
-                 then=(100 - (Abs(F('inner_dim3') - length) / F('inner_dim3')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            slength_width_test=slength_width_test).annotate(
-            slength_length_test=slength_length_test).annotate(
-            sheight_height_test=sheight_height_test).annotate(
-            wl_match=Greatest('slength_width_test', 'slength_length_test')).annotate(
-            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3))
+        ).filter(**variable_height).order_by().annotate(
+            slength_width_test=slength_width_test,
+            slength_length_test=slength_length_test,
+            sheight_height_test=sheight_height_test,
+            wl_match=Greatest('slength_width_test', 'slength_length_test'),
+            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).distinct()
 
     elif width and height and not length:
-        swidth_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - (Abs(F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        swidth_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - (Abs(F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-
-        sheight_height_test = Case(
-            When(inner_variable_dimension_MAX__isnull=False,
-                 then=100),
-            When(inner_variable_dimension_MAX__isnull=True,
-                 then=(100 - (Abs(F('inner_dim3') - height) / F('inner_dim3')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            swidth_width_test=swidth_width_test).annotate(
-            swidth_length_test=swidth_length_test).annotate(
-            sheight_height_test=sheight_height_test).annotate(
-            wl_match=Greatest('swidth_width_test', 'swidth_length_test')).annotate(
-            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)
+        ).filter(**variable_height).order_by().annotate(
+            swidth_width_test=swidth_width_test,
+            swidth_length_test=swidth_length_test,
+            sheight_height_test=sheight_height_test,
+            wl_match=Greatest('swidth_width_test', 'swidth_length_test'),
+            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3).distinct()
         )
 
     elif width and length and height:
 
-        swidth_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - (Abs(F('inner_dim1') - width) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        swidth_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - (Abs(F('inner_dim2') - width) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        slength_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        slength_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-
-        sheight_height_test = Case(
-            When(inner_variable_dimension_MAX__isnull=False,
-                 then=100),
-            When(inner_variable_dimension_MAX__isnull=True,
-                 then=(100 - (Abs(F('inner_dim3') - height) / F('inner_dim3')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            slength_width_test=slength_width_test).annotate(
-            slength_length_test=slength_length_test).annotate(
-            swidth_width_test=swidth_width_test).annotate(
-            swidth_length_test=swidth_length_test).annotate(
-            sheight_height_test=sheight_height_test).annotate(
-            sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2).annotate(
-            swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2).annotate(
-            wl_match=Greatest('sww_sll_match', 'swl_slw_match')).annotate(
-            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3))
+        ).filter(**variable_height).order_by().annotate(
+            slength_width_test=slength_width_test,
+            slength_length_test=slength_length_test,
+            swidth_width_test=swidth_width_test,
+            swidth_length_test=swidth_length_test,
+            sheight_height_test=sheight_height_test,
+            sww_sll_match=(F('swidth_width_test') + F('slength_length_test')) / 2,
+            swl_slw_match=(F('swidth_length_test') + F('slength_width_test')) / 2,
+            wl_match=Greatest('sww_sll_match', 'swl_slw_match'),
+            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).distinct()
 
     elif diameter and not length:
-        sdiameter_diameter_test = Case(
-            When(diameter__isnull=False,
-                 then=(100 - (Abs(F('diameter') - diameter) / F('diameter')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
+
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            max_match=Round(sdiameter_diameter_test))
+        ).filter(**variable_height).order_by().annotate(
+            max_match=Round(sdiameter_diameter_test)).distinct()
 
     elif length and diameter:
-        slength_width_test = Case(
-            When(inner_dim1__isnull=False,
-                 then=(100 - (Abs(F('inner_dim1') - length) / F('inner_dim1')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-        slength_length_test = Case(
-            When(inner_dim2__isnull=False,
-                 then=(100 - (Abs(F('inner_dim2') - length) / F('inner_dim2')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
-
-        sdiameter_diameter_test = Case(
-            When(diameter__isnull=False,
-                 then=(100 - (Abs(F('diameter') - diameter) / F('diameter')) * 100.0)),
-            default=0, output_field=DecimalField()
-        )
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).distinct().annotate(
-            slength_width_test=slength_width_test).annotate(
-            slength_length_test=slength_length_test).annotate(
-            sdiameter_diameter_test=sdiameter_diameter_test).annotate(
-            slength_match=Greatest('slength_width_test', 'slength_length_test')).annotate(
-            max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2))
-
+        ).filter(**variable_height).order_by().annotate(
+            slength_width_test=slength_width_test,
+            slength_length_test=slength_length_test,
+            sdiameter_diameter_test=sdiameter_diameter_test,
+            slength_match=Greatest('slength_width_test', 'slength_length_test'),
+            max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2)).distinct()
 
     else:
-        queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).distinct()
+        queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).order_by().distinct()
 
     return context, queryset_qobjects, max_match

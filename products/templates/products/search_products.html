@@ -187,6 +187,7 @@
                         <strong>Yes!</strong> {% if products_found > 1 %}Er zijn {{ products_found }} producten
                         gevonden.{% else %}Er is {{ products_found }} product gevonden.{% endif %}
                     </div>
+                    <button class="searchButton" id="showfilter">FILTER RESULTATEN</button>
                 {% else %}
                     <div class="alert alert-danger alert-dismissible mt-3 small">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -198,6 +199,53 @@
             {% endif %}
         </div>
     </div>
+
+    <div class="filter-background" id="filter-pop-up">
+        <div class="filter-pop-up">
+            <form action='' method="get">
+                <div class="row">
+                    <div class="col">
+                        <button type="button" class="close-filters btn-primary btn-sm">&times</button>
+                    </div>
+                </div>
+                <div class="filter-section row">
+                    {% for filter_name, filters in filters_popup.items %}
+                        {% if filters|length > 1 %}
+                            <div class="col">
+                                {% with filters|first as clear_all %}
+                                    <div>
+                                        <h4>{{ filter_name }}</h4>
+                                        <button type="button" class="{{ clear_all.css_class }} uncheck-test"></button>
+                                    </div>
+                                {% endwith %}
+                                <div>
+                                    {% for filter in filters|slice:"1:" %}
+                                        <input {% if filter.checked %}checked=""{% endif %} type="checkbox"
+                                               id="{{ filter_name }}-{{ forloop.counter }}"
+                                               name="{{ filter.filter_query }}" value="{{ filter.value }}">
+                                        <label class="{{ filter.css_class }}"
+                                               for="{{ filter_name }}-{{ forloop.counter }}">
+                                            {{ filter.filter_name }}
+                                        </label>
+
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col filterButton">
+                        {% for query, value in initial_search_data.items %}
+                            <input type="hidden" name="{{ query }}" value="{{ value }}">
+                        {% endfor %}
+                        <input class="searchButton" type="submit" value="Pas filters toe">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <div class="row flex-xl-nowrap">
         {% if no_search %}
@@ -509,6 +557,37 @@
             }
         });
     </script>
+
+    <script>
+        $('#showfilter').click(function () {
+                $('.filter-background').show();
+            }
+        );
+
+        $('.close-filters').click(function () {
+                $('.filter-background').hide();
+            }
+        )
+    </script>
+
+    <script>
+        $('#uncheck-test').click(function () {
+            $('input[type="checkbox"]:checked').prop('checked', false)
+        });
+
+        $('button.uncheck-test').click(function () {
+
+            $(this).parent().next().children('input').prop('checked', false);
+
+            var all_checkboxes = $(this).parent().next().children('input:checked');
+            console.log(all_checkboxes);
+
+            console.log($(all_checkboxes));
+
+            {#console.log(direct_sibling.children('input'), 'poep')#}
+        })
+    </script>
+
 
 
 {% endblock %}

@@ -15,7 +15,7 @@ from django.db.models.functions import Greatest, Sqrt
 from products.product_categories import box_main_category_dict
 from math import pi
 from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_sort_order_link, \
-    create_queryset, create_sort_headers
+    create_queryset, create_sort_headers, Filter3
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 
@@ -727,7 +727,10 @@ def search_product(request):
                                                                                                         flat=True).distinct())
                     request.session['filter_companies'] = no_filter + list(
                         Company.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'company'))
-                    print(request.session['filter_companies'], 'companies filter')
+
+                    # Add initial search data to context
+                    request.session['initial_search_data'] = {query: value for query, value in request.GET.items() if not query == 'initial_search'}
+
                 # Add filters to context, first check if filter keys are still in session
                 if 'filter_producttypes' in request.session:
                     context['filters'] = {
@@ -741,6 +744,23 @@ def search_product(request):
                         'Aantal flessen': create_filter_list(Filter2, request, 'bottles', request.session['filter_bottles']),
                         'Producenten': create_filter_list(Filter2, request, 'company', request.session['filter_companies']),
                     }
+
+                if 'filter_producttypes' in request.session:
+                    context['filters_popup'] = {
+                        'Product types': create_filter_list(Filter3, request, 'product_type',
+                                                            request.session['filter_producttypes']),
+                        'Kwaliteit': create_filter_list(Filter3, request, 'wall_thickness',
+                                                        request.session['filter_wallthicknesses']),
+                        'Kleuren': create_filter_list(Filter3, request, 'color', request.session['filter_colors']),
+                        'Standaard formaat': create_filter_list(Filter3, request, 'standard_size',
+                                                                request.session['filter_standard_size']),
+                        'Aantal flessen': create_filter_list(Filter3, request, 'bottles',
+                                                             request.session['filter_bottles']),
+                        'Producenten': create_filter_list(Filter3, request, 'company',
+                                                          request.session['filter_companies']),
+                    }
+
+                    context['initial_search_data'] = request.session['initial_search_data']
 
                 # Pagination
                 page = request.GET.get('page', 1)
