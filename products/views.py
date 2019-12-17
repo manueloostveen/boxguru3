@@ -14,8 +14,8 @@ from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalFi
 from django.db.models.functions import Greatest, Sqrt
 from products.product_categories import box_main_category_dict
 from math import pi
-from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_sort_order_link, \
-    create_queryset, create_sort_headers, Filter3
+from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_filter_list2, \
+    create_queryset, create_sort_headers, Filter3, make_pagination, order_queryset
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 
@@ -127,6 +127,7 @@ class WallThicknessDetailView(generic.DetailView, generic.list.MultipleObjectMix
 class GenericListView(generic.ListView):
     model = None
     template_name = 'products/generic_list.html'
+
     # paginate_by = 12
 
     def get_context_data(self, **kwargs):
@@ -139,6 +140,40 @@ class GenericListView(generic.ListView):
         #     context['current_page'] = current_page
 
         return context
+
+
+def main_category_view(request):
+    context = {}
+    template_name = 'products/main_categories.html'
+    context['categories'] = MainCategory.objects.all()
+    return render(request, template_name, context)
+
+
+def main_category_detail_view(request, pk):
+    context = {}
+    template_name = 'products/product_categories.html'
+    product_categories = ProductType.objects.filter(main_category__id__exact=pk)
+
+    print(len(product_categories), "LEN PRODUCT CATEGORIES")
+    if len(product_categories) == 1:
+        return redirect(product_categories[0])
+
+    context['product_categories'] = product_categories
+
+    return render(request, template_name, context)
+
+
+def product_type_detail_view(request, pk):
+    context = {}
+    template_name = 'products/product_type_detail.html'
+    queryset = Product.objects.filter(product_type__id__exact=pk)
+
+    context = create_sort_headers(request, context)
+    queryset, context = order_queryset(request, context, queryset)
+    context = make_pagination(request, context, queryset)
+
+    context['product_type'] = ProductType.objects.get(id=pk)
+    return render(request, template_name, context)
 
 
 class GenericDetailView(generic.DetailView, generic.list.MultipleObjectMixin):
@@ -678,35 +713,13 @@ def search_product(request):
                 context, queryset_qobjects, max_match_possible = create_queryset(request, form, context)
 
                 # Set  ordering
-                order_by = request.GET.get('sort')
-                if order_by:
-                    # Prepend "-" if order is Ascending
-                    if request.GET.get('by') == "ASC":
-                        order_by = "-" + order_by
-                else:
-                    if max_match_possible:
-                        order_by = '-max_match'
-                    else:
-                        order_by = 'price_ex_BTW'
+                queryset_qobjects, context = order_queryset(request, context, queryset_qobjects,
+                                                            max_match_possible=max_match_possible)
 
-                if 'max_match' in order_by:
-                    queryset_qobjects = queryset_qobjects.order_by(order_by, 'price_ex_BTW')
-                elif max_match_possible:
-                    if 'price_ex_BTW' in order_by:
-                        queryset_qobjects = queryset_qobjects.order_by(order_by, '-max_match')
-                    else:
-                        queryset_qobjects = queryset_qobjects.order_by(order_by, '-max_match', 'price_ex_BTW')
-                else:
-                    if 'price_ex_BTW' in order_by:
-                        queryset_qobjects = queryset_qobjects.order_by(order_by)
-                    else:
-                        queryset_qobjects = queryset_qobjects.order_by(order_by, 'price_ex_BTW')
-
-
-                # Add sort link for order button and sort direction variable to context
-                context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)
-
-                # Add sorting headers to context
+                # # Add sort link for order button and sort direction variable to context
+                # context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)
+                #
+                # # Add sorting headers to context
                 context = create_sort_headers(request, context)
 
                 # Create  querysets for result filter
@@ -719,86 +732,75 @@ def search_product(request):
                     request.session['filter_wallthicknesses'] = no_filter + list(
                         WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id',
                                                                                                            'wall_thickness'))
-                    request.session['filter_standard_size'] = no_filter + list(
-                        queryset_qobjects.filter(standard_size__isnull=False).order_by(
-                            'standard_size').values_list('standard_size', flat=True).distinct())
-                    request.session['filter_bottles'] = no_filter + list(
-                        queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles',
-                                                                                                        flat=True).distinct())
+                    request.session['filter_standard_size'] = no_filter + [(value, value) for value in
+                                                                           queryset_qobjects.filter(
+                                                                               standard_size__isnull=False).order_by(
+                                                                               'standard_size').values_list(
+                                                                               'standard_size', flat=True).distinct()]
+                    request.session['filter_bottles'] = no_filter + [(value, value) for value in
+                                                                     queryset_qobjects.filter(
+                                                                         bottles__isnull=False).order_by(
+                                                                         'bottles').values_list('bottles',
+                                                                                                flat=True).distinct()]
                     request.session['filter_companies'] = no_filter + list(
                         Company.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'company'))
 
                     # Add initial search data to context
-                    request.session['initial_search_data'] = {query: value for query, value in request.GET.items() if not query == 'initial_search'}
+                    request.session['initial_search_data'] = {query: value for query, value in request.GET.items() if
+                                                              not query == 'initial_search'}
+
+                # Create remaining possible filters
+                remaining_filters = [(value, 'product_type') for value in  ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', flat=True)] + \
+                                    [(value, 'color') for value in Color.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', flat=True)] + \
+                                    [(value, 'wall_thickness') for value in WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', flat=True)] + \
+                                    [(value, 'standard_size') for value in queryset_qobjects.filter(standard_size__isnull=False).order_by('standard_size').values_list('standard_size', flat=True).distinct()] + \
+                                    [(value, 'bottles') for value in queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles', flat=True).distinct()] + \
+                                    [(value, 'company') for value in Company.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', flat=True)]
 
                 # Add filters to context, first check if filter keys are still in session
                 if 'filter_producttypes' in request.session:
                     context['filters'] = {
-                        'Product types': create_filter_list(Filter2, request, 'product_type',
-                                                            request.session['filter_producttypes']),
-                        'Kwaliteit': create_filter_list(Filter2, request, 'wall_thickness',
-                                                        request.session['filter_wallthicknesses']),
-                        'Kleuren': create_filter_list(Filter2, request, 'color', request.session['filter_colors']),
-                        'Standaard formaat': create_filter_list(Filter2, request, 'standard_size',
-                                                                request.session['filter_standard_size']),
-                        'Aantal flessen': create_filter_list(Filter2, request, 'bottles', request.session['filter_bottles']),
-                        'Producenten': create_filter_list(Filter2, request, 'company', request.session['filter_companies']),
+                        'Product types': create_filter_list2(Filter2, request, 'product_type',
+                                                             request.session['filter_producttypes'], remaining_filters),
+                        'Kwaliteit': create_filter_list2(Filter2, request, 'wall_thickness',
+                                                         request.session['filter_wallthicknesses'], remaining_filters),
+                        'Kleuren': create_filter_list2(Filter2, request, 'color', request.session['filter_colors'],
+                                                       remaining_filters),
+                        'Standaard formaat': create_filter_list2(Filter2, request, 'standard_size',
+                                                                 request.session['filter_standard_size'],
+                                                                 remaining_filters),
+                        'Aantal flessen': create_filter_list2(Filter2, request, 'bottles',
+                                                              request.session['filter_bottles'], remaining_filters),
+                        'Producenten': create_filter_list2(Filter2, request, 'company',
+                                                           request.session['filter_companies'], remaining_filters),
                     }
 
-                if 'filter_producttypes' in request.session:
-                    context['filters_popup'] = {
-                        'Product types': create_filter_list(Filter3, request, 'product_type',
-                                                            request.session['filter_producttypes']),
-                        'Kwaliteit': create_filter_list(Filter3, request, 'wall_thickness',
-                                                        request.session['filter_wallthicknesses']),
-                        'Kleuren': create_filter_list(Filter3, request, 'color', request.session['filter_colors']),
-                        'Standaard formaat': create_filter_list(Filter3, request, 'standard_size',
-                                                                request.session['filter_standard_size']),
-                        'Aantal flessen': create_filter_list(Filter3, request, 'bottles',
-                                                             request.session['filter_bottles']),
-                        'Producenten': create_filter_list(Filter3, request, 'company',
-                                                          request.session['filter_companies']),
-                    }
+                # if 'filter_producttypes' in request.session:
+                #     context['filters_popup'] = {
+                #         'Product types': create_filter_list(Filter3, request, 'product_type',
+                #                                             request.session['filter_producttypes']),
+                #         'Kwaliteit': create_filter_list(Filter3, request, 'wall_thickness',
+                #                                         request.session['filter_wallthicknesses']),
+                #         'Kleuren': create_filter_list(Filter3, request, 'color', request.session['filter_colors']),
+                #         'Standaard formaat': create_filter_list(Filter3, request, 'standard_size',
+                #                                                 request.session['filter_standard_size']),
+                #         'Aantal flessen': create_filter_list(Filter3, request, 'bottles',
+                #                                              request.session['filter_bottles']),
+                #         'Producenten': create_filter_list(Filter3, request, 'company',
+                #                                           request.session['filter_companies']),
+                #     }
 
-                    context['initial_search_data'] = request.session['initial_search_data']
+                    # context['initial_search_data'] = request.session['initial_search_data']
+                    # context['filter_count'] = 0
+                    # for filter_list in context['filters_popup'].values():
+                    #     for filter in filter_list:
+                    #         if filter.checked == True:
+                    #             context['filter_count'] += 1
 
                 # Pagination
-                page = request.GET.get('page', 1)
-                page = int(page)
-                paginator = Paginator(queryset_qobjects, 20)
+                context = make_pagination(request, context, queryset_qobjects)
 
-                try:
-                    products = paginator.page(page)
-                except PageNotAnInteger:
-                    products = paginator.page(1)
-                except EmptyPage:
-                    products = paginator.page(paginator.num_pages)
-
-                if paginator.num_pages > 5:
-                    index = paginator.page_range.index(products.number)
-                    if page > 2 and page < paginator.num_pages -2:
-                        max_index = len(paginator.page_range)
-                    else:
-                        max_index = len(paginator.page_range) - 1
-
-                    if page > 4:
-                        context['broken_start_pagination'] = True
-                    if page < (paginator.num_pages - 3):
-                        context['broken_end_pagination'] = True
-
-
-                    start_index = index - 2 if index >= 3 else 1
-                    end_index = index + 3 if index <= max_index - 3 else max_index
-                    page_range = paginator.page_range[start_index:end_index]
-                else:
-                    page_range = paginator.page_range[1:len(paginator.page_range)-1]
-
-                context['page_range'] = page_range
-
-                # Add to context
-                context['products'] = products
                 context['products_found'] = len(queryset_qobjects)
-                context['order_by'] = order_by
 
     return render(request, template_name, context)
 

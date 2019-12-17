@@ -9,13 +9,11 @@ urlpatterns = [
     path('products/', views.GenericListView.as_view(model=Product), name='products'),
     path('products/<int:pk>', views.ProductDetailView.as_view(), name='product-detail'),
 
-    path('producttypes', views.GenericListView.as_view(model=ProductType), name='producttypes'),
-    path('producttype/<int:pk>', views.GenericDetailView.as_view(
-        model=ProductType
-    ), name='producttype-detail'),
+    path('categories/product-types', views.GenericListView.as_view(model=ProductType), name='producttypes'),
+    path('categories/product-type/<int:pk>', views.product_type_detail_view, name='producttype-detail'),
 
-    path('categories', views.GenericListView.as_view(model=MainCategory), name='categories'),
-    path('categories/<int:pk>', views.GenericDetailView.as_view(model=MainCategory), name='categories-detail'),
+    path('categories', views.main_category_view, name='categories'),
+    path('categories/<int:pk>', views.main_category_detail_view, name='categories-detail'),
 
     path('colors/', views.GenericListView.as_view(
         model=Color

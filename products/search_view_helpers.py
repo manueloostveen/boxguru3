@@ -10,6 +10,8 @@ from django.utils.datastructures import MultiValueDict
 
 from products.models import Product
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 class Filter:
     def __init__(self, request, current_filter, full_path, filter):
@@ -33,20 +35,24 @@ class Filter:
 
 
 class Filter2:
-    def __init__(self, request, current_filter, filter):
+    def __init__(self, request, current_filter, filter, remaining_filters):
 
-        if type(filter) == tuple or type(filter) == list:
-            # Filter can either be a tuple or list, depending on request.session (somehow): (value, id)
-            current_value = str(filter[0])
-            self.filter_name = filter[1]
-        else:
-            # bottles and standard size filters are from value_list, not a queryobject
-            current_value = str(filter)
-            self.filter_name = filter
+
+        # Filter can either be a tuple or list, depending on request.session (somehow): (value, id)
+        # Value into string because GET.getlist() returns list of strings
+        current_value = str(filter[0])
+        self.filter_name = filter[1]
 
         GET_copy = request.GET.copy()
+        # remove initial search parameter
         GET_copy.pop('initial_search', None)
+
         value_list = GET_copy.getlist(current_filter, None)
+
+
+            # print((current_value, current_filter), remaining_filters)
+
+        print(value_list)
 
         if current_value == '':
             GET_copy.setlist(current_filter, [])
@@ -64,10 +70,15 @@ class Filter2:
                 GET_copy[current_filter] = current_value
             self.css_class = ''
 
-        #Set page to first page
+        # Set disabled class
+        if (filter[0], current_filter) not in remaining_filters:
+            self.css_class += ' disabled'
+
+        # Set page to first page
         GET_copy['page'] = 1
 
         self.url = request.path + '?' + GET_copy.urlencode()
+
 
 class Filter3:
     def __init__(self, request, current_filter, filter):
@@ -85,34 +96,24 @@ class Filter3:
 
         self.filter_query = current_filter
 
-
-        GET_copy = request.GET.copy()
-        GET_copy.pop('initial_search', None)
-        value_list = GET_copy.getlist(current_filter, None)
-
+        value_list = request.GET.getlist(current_filter, None)
+        self.checked = False
         if current_value == '':
-            GET_copy.setlist(current_filter, [])
             self.css_class = 'deactivate-all'
 
         elif current_value in value_list:
             value_list.remove(current_value)
-            GET_copy.setlist(current_filter, value_list)
             self.checked = True
 
-        else:
-            if current_filter in GET_copy:
-                GET_copy.update({current_filter: current_value})
-            else:
-                GET_copy[current_filter] = current_value
 
-        #Set page to first page
-        GET_copy['page'] = 1
-
-        self.url = request.path + '?' + GET_copy.urlencode()
-
+def create_filter_list2(filter_class, request, filter_type, filter_list, remaining_filters):
+    return [filter_class(request, filter_type, filter, remaining_filters) for filter in filter_list]
 
 def create_filter_list(filter_class, request, filter_type, filter_list):
     return [filter_class(request, filter_type, filter) for filter in filter_list]
+
+
+
 
 # Create round function, arity 1 so rounds to 0 decimals, no input needed
 class Round(Func):
@@ -132,7 +133,6 @@ def create_sort_order_link(request, order):
     if 'sort' not in GET_copy:
         GET_copy['sort'] = order
 
-
     if 'by' in GET_copy:
         if GET_copy['by'] == 'ASC':
             GET_copy['by'] = 'DESC'
@@ -144,21 +144,22 @@ def create_sort_order_link(request, order):
         else:
             GET_copy['by'] = 'ASC'
 
-    #Set page to first page
+    # Set page to first page
     GET_copy['page'] = 1
 
     full_path = request.path + "?" + GET_copy.urlencode()
 
     return full_path, GET_copy['by']
 
+
 def create_sort_headers(request, context):
     # copy GET
     GET_copy = request.GET.copy()
 
     ordering_swapper = {
-            'ASC': 'DESC',
-            'DESC': 'ASC'
-        }
+        'ASC': 'DESC',
+        'DESC': 'ASC'
+    }
 
     # {header: query} dictionary
     header_dict = {
@@ -194,7 +195,6 @@ def create_sort_headers(request, context):
 
 
 def create_queryset(request, form, context):
-
     width = form.cleaned_data.get('width')
     length = form.cleaned_data.get('length')
     height = form.cleaned_data.get('height')
@@ -213,7 +213,6 @@ def create_queryset(request, form, context):
         product_types.remove('115')
         variable_height = {'product_type': 115}
 
-
     qobjects = []
 
     # Q objects query
@@ -226,7 +225,7 @@ def create_queryset(request, form, context):
         qobjects.append(qwall_thicknesses)
 
     if main_category:
-        if main_category == '6': #(Variable_height)
+        if main_category == '6':  # (Variable_height)
             variable_height = {'product_type': 115}
         else:
             qmain_category = Q(product_type__main_category=main_category)
@@ -440,3 +439,67 @@ def create_queryset(request, form, context):
         queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).order_by().distinct()
 
     return context, queryset_qobjects, max_match
+
+
+def make_pagination(request, context, queryset):
+    page = request.GET.get('page', 1)
+    page = int(page)
+    paginator = Paginator(queryset, 20)
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    if paginator.num_pages > 5:
+        index = paginator.page_range.index(products.number)
+        if page > 2 and page < paginator.num_pages - 2:
+            max_index = len(paginator.page_range)
+        else:
+            max_index = len(paginator.page_range) - 1
+
+        if page > 4:
+            context['broken_start_pagination'] = True
+        if page < (paginator.num_pages - 3):
+            context['broken_end_pagination'] = True
+
+        start_index = index - 2 if index >= 3 else 1
+        end_index = index + 3 if index <= max_index - 3 else max_index
+        page_range = paginator.page_range[start_index:end_index]
+    else:
+        page_range = paginator.page_range[1:len(paginator.page_range) - 1]
+
+    context['products'] = products
+    context['page_range'] = page_range
+    return context
+
+def order_queryset(request, context, queryset, max_match_possible=False):
+    order_by = request.GET.get('sort')
+    if order_by:
+        # Prepend "-" if order is Ascending
+        if request.GET.get('by') == "ASC":
+            order_by = "-" + order_by
+    else:
+        if max_match_possible:
+            order_by = '-max_match'
+        else:
+            order_by = 'price_ex_BTW'
+
+    if 'max_match' in order_by:
+        queryset = queryset.order_by(order_by, 'price_ex_BTW')
+    elif max_match_possible:
+        if 'price_ex_BTW' in order_by:
+            queryset = queryset.order_by(order_by, '-max_match')
+        else:
+            queryset = queryset.order_by(order_by, '-max_match', 'price_ex_BTW')
+    else:
+        if 'price_ex_BTW' in order_by:
+            queryset = queryset.order_by(order_by)
+        else:
+            queryset = queryset.order_by(order_by, 'price_ex_BTW')
+
+    context['order_by'] = order_by
+
+    return queryset, context
