@@ -29,9 +29,6 @@
     width: 28px;
 }
 
-.table-condensed {
-    font-size: 10px;
-}
 
 .info-block {
     border-bottom-left-radius: 0.2rem;
@@ -197,15 +194,54 @@ h6 {
 }
 
 /*Table style*/
+.table-condensed {
+    font-size: 10px;
+}
+
+table.table-center {
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    margin-top: 20px;
+}
+
 td {
-    position: relative;
-    text-align: center;
-    overflow-wrap: normal;
+    /*position: relative;*/
+    /*text-align: center;*/
+    /*overflow-wrap: normal;*/
+    /*border-radius: 10px;*/
+    vertical-align: middle !important;
+
 }
 
 table {
     table-layout: auto;
     width: 1200px;
+    border-collapse: separate;
+}
+
+
+tr:not(:first-child) {
+    background-color: white;
+    border-radius: 10px;
+    border-top: #2b2b2b;
+    border-left: #2b2b2b;
+    border-bottom: #0c0c0c;
+    border-right: transparent;
+
+
+}
+
+td:first-child {
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border: 1px solid black;
+}
+
+tr.row-spacer {
+    height: 20px;
+    background-color: transparent;
+    border: none;
 }
 
 th {
@@ -253,10 +289,246 @@ img.product-thumb:hover {
     max-width: 1000px;
 }
 
+/*RESULTLIST*/
+.resultlist li {
+    list-style-type: none;
+}
+
+.box {
+    /*background-color: #ececec;*/
+    margin-bottom: 1rem;
+    /*width: 100%;*/
+    padding: 5px;
+    box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
+    border-radius: 5px;
+
+
+}
+
+.box span {
+    padding: 5px;
+}
+
+.box a.cover {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: start;
+    text-decoration: none;
+    color: black;
+}
+
+
+.box .product-type {
+    display: inline-block;
+    min-width: 180px;
+    /*background-color: #007bff;*/
+}
+
+.box .dimensions {
+    display: table-row;
+    /*width: max-content;*/
+    /*background-color: #73AD21;*/
+    min-width: 130px;
+    text-align: justify;
+    text-align-last: justify;
+    border-left: 1px solid darkgrey;
+
+
+}
+
+.box .match {
+    position: relative;
+    display: inline-block;
+}
+
+div.match {
+    /*position: relative;*/
+    border-left: 1px solid darkgrey;
+}
+
+div.match .bullseye {
+    /*content: '';*/
+    /*position: absolute;*/
+    background: url("/static/products/icons/bullseye_redbull.svg");
+    background-size: 15px;
+    height: 15px;
+    width: 15px;
+    display: inline-block;
+    margin-right: 3px;
+}
+
+.enkelgolf {
+    background: url("/static/products/icons/wallthickness_single layer.svg");
+    background-size: 20px;
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    margin-right: 3px;
+    border: 1px solid grey;
+    border-radius: 50%;
+    box-sizing: border-box;
+    margin-top: 3px;
+
+
+}
+
+.dubbelgolf {
+    background: url("/static/products/icons/wallthickness_double layer.svg");
+    background-size: 18px;
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    border: 1px solid grey;
+    border-radius: 50%;
+    box-sizing: border-box;
+    margin-top: 3px;
+
+
+}
+
+.driedubbelgolf {
+    background: url("/static/products/icons/wallthickness_triple layer.svg");
+    background-size: 18px;
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    border: 1px solid grey;
+    border-radius: 50%;
+    box-sizing: border-box;
+    margin-top: 3px;
+
+
+}
+
+.quality .standaard {
+    background: url("/static/products/icons/wallthickness_standard_wallthickness.svg");
+    background-size: 18px;
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    border: 1px solid grey;
+    border-radius: 50%;
+    margin-top: 3px;
+}
+
+
+.box {
+    line-height: 30px;
+}
+
+.color, .quality, .price {
+    position: relative;
+}
+
+.color i {
+    margin-top: 3px;
+}
+
+.blauw,
+.bruin,
+.fuchsia,
+.goud,
+.grijs,
+.groen,
+.oranje,
+.paars,
+.rood,
+.roze,
+.wit,
+.zilver,
+.zwart,
+.color .standaard {
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.blauw {
+    background-color: #1B3DE2;
+}
+
+.bruin {
+    background-color: peru;
+}
+
+.fuchsia {
+    background-color: #f80087;
+}
+
+.goud {
+    background-color: goldenrod;
+}
+
+.grijs {
+
+    background-color: #979797;
+}
+
+.groen {
+    background-color: #73AD21;
+}
+
+.oranje {
+    background-color: orange;
+}
+
+.paars {
+    background-color: #5e008b;
+}
+
+.rood {
+    background-color: red;
+}
+
+.roze {
+    background-color: pink;
+}
+
+.color .standaard {
+    background: url("/static/products/icons/color_standard_color.svg");
+    background-size: 20px;
+}
+
+.wit {
+    background-color: white;
+    border: 1px solid grey;
+}
+
+.zilver {
+    background-color: silver;
+}
+
+.zwart {
+    background-color: black;
+}
+
+.standard-size {
+    position: relative;
+    display: inline-block;
+    font-size: 10px;
+    font-family: "Abadi MT Condensed Extra Bold", sans-serif;
+    margin-right: 3px;
+}
+
+.standard-size::after {
+    content: '';
+    position: absolute;
+    background: url("/static/products/icons/standard_size_paper_size.svg");
+    /*background-color: red;*/
+    top: 50%;
+    transform: translate(-20%, -60%);
+    background-size: 25px;
+    width: 25px;
+    height: 25px;
+    display: block;
+}
 
 /*STAFFELDISCOUNT*/
 .staffel {
     color: #007bff;
+    position: relative;
 }
 
 .staffel:hover {
@@ -266,16 +538,33 @@ img.product-thumb:hover {
 
 .tooltiptext {
     visibility: hidden;
-    width: 10em;
+    width: max-content;
     background-color: #73AD21;
     color: #fff;
     text-align: center;
     padding: 5px;
-    border-radius: 6px 0 6px 6px;
+    border-radius: 6px 6px 6px 6px;
     position: absolute;
     z-index: 1;
-    top: 50%;
-    right: 65%;
+    top: 35px;
+    right: 50%;
+    transform: translate(50%, 0);
+    font-family: Arvo, Charcoal, sans-serif;
+    font-size: 12px;
+    line-height: 12px;
+}
+
+.tooltiptext::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #73AD21;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -100%);
 }
 
 td.staffel:hover .tooltiptext {
@@ -283,6 +572,15 @@ td.staffel:hover .tooltiptext {
 }
 
 td.staffel .staffel-header {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+span.info-icon:hover .tooltiptext {
+    visibility: visible;
+}
+
+span.staffel .staffel-header {
     font-weight: bold;
     letter-spacing: 1px;
 }
@@ -341,6 +639,7 @@ div.arrowDown {
     border-color: grey transparent transparent transparent;
 }
 
+
 div.arrowUp {
     position: absolute;
     margin: auto;
@@ -357,6 +656,23 @@ div.arrowUp {
 
 
 /*FILTER STYLES*/
+.filter-title h4 {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.filter-title span {
+    color: #73AD21;
+    font-size: 35px;
+}
+
+.filter-title span.no-results {
+    color: #d5006b;
+    font-size: 35px;
+}
+
+
 #filters span {
     font-size: 0.7rem;
 }
@@ -393,6 +709,7 @@ input.chk {
     white-space: normal;
     text-decoration: none;
     display: inline-flex;
+    font-weight: bold;
 }
 
 
@@ -511,10 +828,12 @@ input.chk {
 html {
     min-height: 100%; /* make sure it is at least as tall as the viewport */
     position: relative;
+    width: 100%;
 }
 
 body {
     height: 100%; /* force the BODY element to match the height of the HTML element */
+    width: 100%;
 }
 
 .filter-background {
@@ -550,13 +869,13 @@ body {
 }
 
 .filter-section {
-    padding: 20px;
+    padding: 0 20px 0px 20px;
     min-width: 200px;
     width: 100%;
     /*overflow-y: scroll;*/
     /*height: 500px;*/
+    /*display: none;*/
 }
-
 
 
 .filter-section label {
@@ -652,23 +971,37 @@ body {
     margin-bottom: 20px;
 }
 
-.filter-reset {
+/*.filter-reset {*/
+/*    background-color: #d5006b;*/
+/*    color: white;*/
+/*    width: fit-content;*/
+/*    height: 30px;*/
+/*    text-align: center;*/
+/*    !*position: absolute;*!*/
+/*    !*display: inline-block;*!*/
+/*    border-color: transparent;*/
+/*    border-radius: 0.2rem;*/
+/*    font-size: 12px;*/
+/*    !*margin-left: 10px;*!*/
+/*    margin-top: 16px;*/
+/*}*/
+
+.filter-section a.filter-reset {
     background-color: #d5006b;
     color: white;
     width: fit-content;
     height: 30px;
     text-align: center;
-    /*position: absolute;*/
-    /*display: inline-block;*/
     border-color: transparent;
     border-radius: 0.2rem;
-    font-size: 12px;
-    margin-left: 10px;
-    margin-top: 8px;
+    font-size: 16px;
+    /*margin-left: 10px;*/
+    margin-top: 16px;
 }
 
-.filter-reset:hover {
+.filter-section a.filter-reset:hover {
     background-color: #f80087;
+    color: white;
 }
 
 
@@ -1053,4 +1386,80 @@ div.card-body {
 
 .fas.fa-external-link-alt {
     margin-left: 0.25rem;
+}
+
+
+/*LOADING*/
+#work-in-progress {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    font-size: 150px;
+    text-align: center;
+    vertical-align: middle;
+    color: #000000;
+    z-index: 200000;
+    background-color: #FFFFFF;
+}
+
+.work-spinner {
+    background-color: rgba(0, 0, 0, 0);
+    border: 9px solid rgba(27, 61, 226, 0.9);
+    opacity: .9;
+    border-left: 5px solid rgba(0, 0, 0, 0);
+    border-radius: 120px;
+    -webkit-box-shadow: 0 0 35px #1B3DE2;
+    box-shadow: 0 0 35px #1B3DE2;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    -moz-animation: spin .5s infinite linear;
+    -webkit-animation: spin .5s infinite linear;
+    -o-animation: spin .5s infinite linear;
+    animation: spin .5s infinite linear;
+}
+
+@-moz-keyframes spin {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@-o-keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/*ICONS*/
+.bullseye {
+    background: url("/static/products/icons/bullseye_colors.svg");
+    background-size: 20px;
+    height: 20px;
+    width: 20px;
+    display: block;
 }

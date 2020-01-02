@@ -1,54 +1,55 @@
 FLESSEN_DOZEN = 'Flessendozen'
-VEILIGHEIDS_DOZEN = 'Veiligheidsdozen'
+VEILIGHEIDS_DOZEN = 'Extra veilige dozen'
 SPECIALE_DOZEN = 'Speciale dozen'
 ENVELOPPEN = 'Enveloppen'
 VERZENDZAKKEN = 'Verzendzakken'
 VERZENDKOKERS = 'Verzendkokers'
 OVERIG = 'Overig'
 VERZEND_DOZEN = 'Verzenddozen'
-WIKKEL_DOZEN = 'Wikkelverpakkingen en -dozen'
+WIKKEL_DOZEN = 'Boek- en kruiswikkelverpakkingen'
 VERHUIS_DOZEN = 'Verhuis-, ordner- en archiefdozen'
 VARIABELE_DOZEN = 'In hoogte verstelbare dozen'
 VOUWDOZEN = 'Vouwdozen'
 KISTEN = 'Kisten/kratten'
 OVERIGE_DOZEN = 'Overige dozen'
 PALLET_DOZEN = 'Palletdozen'
+OVERIG = 'Overig'
 
 product_category_dict = {
-    'FLESSEN_DOZEN': 'Flessendozen',
-    'VEILIGHEIDS_DOZEN': 'Veiligheidsdozen',
-    'SPECIALE_DOZEN': 'Speciale dozen',
-    'ENVELOPPEN': 'Enveloppen',
-    'VERZENDZAKKEN': 'Verzendzakken',
-    'VERZENDKOKERS': 'Verzendkokers',
-    'OVERIG': 'Overig',
-    'VERZEND_DOZEN': 'Verzenddozen',
-    'WIKKEL_DOZEN': 'Wikkelverpakkingen en -dozen',
-    'VERHUIS_DOZEN': 'Verhuis-, ordner- en archiefdozen',
-    'VARIABELE_DOZEN': 'In hoogte verstelbare dozen',
-    'VOUWDOZEN': 'Vouwdozen',
-    'KISTEN': 'Kisten/kratten',
-    'OVERIGE_DOZEN': 'Overige dozen',
-    'PALLET_DOZEN': 'Palletdozen',
+    'FLESSEN_DOZEN': FLESSEN_DOZEN,
+    'VEILIGHEIDS_DOZEN': VEILIGHEIDS_DOZEN,
+    'SPECIALE_DOZEN': SPECIALE_DOZEN,
+    'ENVELOPPEN': ENVELOPPEN,
+    'VERZENDZAKKEN': VERZENDZAKKEN,
+    'VERZENDKOKERS': VERZENDKOKERS,
+    'OVERIG': OVERIG,
+    'VERZEND_DOZEN': VERZEND_DOZEN,
+    'WIKKEL_DOZEN': WIKKEL_DOZEN,
+    'VERHUIS_DOZEN': VERHUIS_DOZEN,
+    'VARIABELE_DOZEN': VARIABELE_DOZEN,
+    'VOUWDOZEN': VOUWDOZEN,
+    'KISTEN': KISTEN,
+    'OVERIGE_DOZEN': OVERIGE_DOZEN,
+    'PALLET_DOZEN': PALLET_DOZEN,
 }
 
 box_main_category_dict = {
-    'FLESSEN_DOZEN': 'Flessendozen',
-    'VEILIGHEIDS_DOZEN': 'Veiligheidsdozen',
-    'SPECIALE_DOZEN': 'Speciale dozen',
-    'VERZEND_DOZEN': 'Verzenddozen',
-    'WIKKEL_DOZEN': 'Wikkelverpakkingen en -dozen',
-    'VERHUIS_DOZEN': 'Verhuis-, ordner- en archiefdozen',
-    'VARIABELE_DOZEN': 'In hoogte verstelbare dozen',
-    'VOUWDOZEN': 'Vouwdozen',
-    'KISTEN': 'Kisten/kratten',
-    'OVERIGE_DOZEN': 'Overige dozen',
-    'PALLET_DOZEN': 'Palletdozen',
+    'FLESSEN_DOZEN': FLESSEN_DOZEN,
+    'VEILIGHEIDS_DOZEN': VEILIGHEIDS_DOZEN,
+    'SPECIALE_DOZEN': SPECIALE_DOZEN,
+    'VERZEND_DOZEN': VERZEND_DOZEN,
+    'WIKKEL_DOZEN': WIKKEL_DOZEN,
+    'VERHUIS_DOZEN': VERHUIS_DOZEN,
+    'VARIABELE_DOZEN': VARIABELE_DOZEN,
+    'VOUWDOZEN': VOUWDOZEN,
+    'KISTEN': KISTEN,
+    'OVERIGE_DOZEN': OVERIGE_DOZEN,
+    'PALLET_DOZEN': PALLET_DOZEN,
 }
 
 not_box_main_category_dict = {
-    'OVERIG': 'Overig',
-    'VERZENDZAKKEN': 'Verzendzakken',
-    'ENVELOPPEN': 'Enveloppen',
-    'VERZENDKOKERS': 'Verzendkokers',
+    'OVERIG': OVERIG,
+    'VERZENDZAKKEN': VERZENDZAKKEN,
+    'ENVELOPPEN': ENVELOPPEN,
+    'VERZENDKOKERS': VERZENDKOKERS,
 }

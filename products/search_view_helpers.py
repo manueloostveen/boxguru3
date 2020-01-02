@@ -48,11 +48,7 @@ class Filter2:
         GET_copy.pop('initial_search', None)
 
         value_list = GET_copy.getlist(current_filter, None)
-
-
-            # print((current_value, current_filter), remaining_filters)
-
-        print(value_list)
+        self.checked = False
 
         if current_value == '':
             GET_copy.setlist(current_filter, [])
@@ -62,6 +58,7 @@ class Filter2:
             value_list.remove(current_value)
             GET_copy.setlist(current_filter, value_list)
             self.css_class = 'active'
+            self.checked = True
 
         else:
             if current_filter in GET_copy:
@@ -77,7 +74,78 @@ class Filter2:
         # Set page to first page
         GET_copy['page'] = 1
 
-        self.url = request.path + '?' + GET_copy.urlencode()
+        self.url = request.path + '?' + GET_copy.urlencode() + "#filter"
+
+class FilterVarHeight:
+    def __init__(self, request, remaining_filters):
+        GET_copy = request.GET.copy()
+        # remove initial search parameter
+        GET_copy.pop('initial_search', None)
+
+        self.css_class = ''
+        self.filter_name = 'Ja, alleen dozen met variabele hoogte'
+
+        if (115, 'product_type') not in remaining_filters:
+            self.css_class += 'disabled'
+            self.filter_name = 'Ik probeer het toch!'
+
+
+        if GET_copy.get('variable_height'):
+            del GET_copy['variable_height']
+            self.css_class += ' active'
+            self.filter_name = 'Nee, laat me toch alles zien'
+
+        else:
+            GET_copy['variable_height'] = 1
+
+        self.checked = False #todo This need to be removed, is here because of pop-up filters
+        GET_copy['page'] = 1
+        self.url = request.path + '?' + GET_copy.urlencode() + '#filter'
+
+
+class FilterVarHeight2:
+    def __init__(self, request, filter, remaining_filters):
+
+
+        # Filter can either be a tuple or list, depending on request.session (somehow): (value, id)
+        # Value into string because GET.getlist() returns list of strings
+        current_filter = 'product_type'
+        current_value = str(filter[0])
+        self.filter_name = filter[1]
+
+        GET_copy = request.GET.copy()
+        # remove initial search parameter
+        GET_copy.pop('initial_search', None)
+
+        value_list = GET_copy.getlist(current_filter, None)
+        self.checked = False
+
+        if current_value == '':
+            GET_copy.setlist(current_filter, [])
+            self.css_class = 'deactivate-all'
+
+        elif current_value in value_list:
+            value_list.remove(current_value)
+            GET_copy.setlist(current_filter, value_list)
+            self.css_class = 'active'
+            self.checked = True
+
+        else:
+            if current_filter in GET_copy:
+                GET_copy.update({current_filter: current_value})
+            else:
+                GET_copy[current_filter] = current_value
+            self.css_class = ''
+
+        # Set disabled class
+        if (filter[0], current_filter) not in remaining_filters:
+            self.css_class += ' disabled'
+
+        # Set page to first page
+        GET_copy['page'] = 1
+
+        self.url = request.path + '?' + GET_copy.urlencode() + "#filter"
+
 
 
 class Filter3:
@@ -206,12 +274,17 @@ def create_queryset(request, form, context):
     bottles = request.GET.getlist('bottles')
     product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
     companies = request.GET.getlist('company')
+    variable_height_from_get = request.GET.get('variable_height')
 
     # Deal with variable height
     variable_height = {}
     if '115' in product_types:
         product_types.remove('115')
         variable_height = {'product_type': 115}
+        pass
+    if variable_height_from_get:
+        variable_height =  {'product_type': 115}
+    print(variable_height)
 
     qobjects = []
 

@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -10,12 +12,12 @@ from products.models import Product, WallThickness, Color, ProductType, Company
 from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalField, Avg, Func
+from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalField, Avg, Func, Count
 from django.db.models.functions import Greatest, Sqrt
 from products.product_categories import box_main_category_dict
 from math import pi
 from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_filter_list2, \
-    create_queryset, create_sort_headers, Filter3, make_pagination, order_queryset
+    create_queryset, create_sort_headers, Filter3, make_pagination, order_queryset, FilterVarHeight
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 
@@ -725,13 +727,18 @@ def search_product(request):
                 # Create  querysets for result filter
                 no_filter = [('', 'x')]
                 if request.GET.get('initial_search'):
-                    request.session['filter_producttypes'] = no_filter + list(
-                        ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'type'))
-                    request.session['filter_colors'] = no_filter + list(
-                        Color.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'color'))
-                    request.session['filter_wallthicknesses'] = no_filter + list(
-                        WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id',
-                                                                                                           'wall_thickness'))
+                    request.session['filter_product_type'] = no_filter + list(
+                        ProductType.objects.filter(product__in=queryset_qobjects).values_list('id', 'type').distinct())
+
+                    # Remove variable height boxes from product type filter
+                    if (115, 'variabele hoogte dozen') in request.session['filter_product_type']:
+                        request.session['filter_product_type'].remove((115, 'variabele hoogte dozen'))
+
+                    request.session['filter_color'] = no_filter + list(
+                        Color.objects.filter(product__in=queryset_qobjects).values_list('id', 'color').distinct())
+                    request.session['filter_wall_thickness'] = no_filter + list(
+                        WallThickness.objects.filter(product__in=queryset_qobjects).values_list('id',
+                                                                                                'wall_thickness').distinct())
                     request.session['filter_standard_size'] = no_filter + [(value, value) for value in
                                                                            queryset_qobjects.filter(
                                                                                standard_size__isnull=False).order_by(
@@ -742,29 +749,64 @@ def search_product(request):
                                                                          bottles__isnull=False).order_by(
                                                                          'bottles').values_list('bottles',
                                                                                                 flat=True).distinct()]
-                    request.session['filter_companies'] = no_filter + list(
-                        Company.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', 'company'))
+                    request.session['filter_company'] = no_filter + list(
+                        Company.objects.filter(product__in=queryset_qobjects).values_list('id', 'company').distinct())
 
-                    # Add initial search data to context
+                    # Add initial search data to session. Used for clear all filter
                     request.session['initial_search_data'] = {query: value for query, value in request.GET.items() if
                                                               not query == 'initial_search'}
 
                 # Create remaining possible filters
-                remaining_filters = [(value, 'product_type') for value in  ProductType.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', flat=True)] + \
-                                    [(value, 'color') for value in Color.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', flat=True)] + \
-                                    [(value, 'wall_thickness') for value in WallThickness.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', flat=True)] + \
-                                    [(value, 'standard_size') for value in queryset_qobjects.filter(standard_size__isnull=False).order_by('standard_size').values_list('standard_size', flat=True).distinct()] + \
-                                    [(value, 'bottles') for value in queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list('bottles', flat=True).distinct()] + \
-                                    [(value, 'company') for value in Company.objects.filter(product__in=queryset_qobjects).distinct().values_list('id', flat=True)]
+                # remaining_filters = [(value, 'product_type') for value in
+                #                      ProductType.objects.filter(product__in=queryset_qobjects).values_list('id',
+                #                                                                                            flat=True).distinct()] + \
+                #                     [(value, 'color') for value in
+                #                      queryset_qobjects.order_by('color').values_list('color', flat=True).distinct()] + \
+                #                     [(value, 'wall_thickness') for value in
+                #                      queryset_qobjects.order_by('wall_thickness').values_list('wall_thickness',
+                #                                                                               flat=True).distinct()] + \
+                #                     [(value, 'standard_size') for value in
+                #                      queryset_qobjects.filter(standard_size__isnull=False).order_by(
+                #                          'standard_size').values_list('standard_size', flat=True).distinct()] + \
+                #                     [(value, 'bottles') for value in
+                #                      queryset_qobjects.filter(bottles__isnull=False).order_by('bottles').values_list(
+                #                          'bottles', flat=True).distinct()] + \
+                #                     [(value, 'company') for value in
+                #                      queryset_qobjects.order_by('company').values_list('company', flat=True).distinct()]
+
+                # todo Make aggregation that counts all filter product amounts in a single query
+
+
+                filters = ['color', 'wall_thickness', 'standard_size', 'bottles', 'company']
+                all_filter_values_but_producttype = queryset_qobjects.order_by().values_list(*filters)
+                product_type_filter_values = set(ProductType.objects.filter(product__in=queryset_qobjects).values_list('id',
+                                                                                     flat=True).distinct())
+
+                filters_value_lists = [product_type_filter_values] + [set([value
+                                                 for value
+                                                 in value_list
+                                                 if value])
+                                            for value_list
+                                            in zip(*all_filter_values_but_producttype)]
+
+                filters = ['product_type'] + filters
+
+                remaining_filters = []
+                for index in range(len(filters_value_lists)):
+                    for value in filters_value_lists[index]:
+                            remaining_filters.append((value, filters[index]))
+
 
                 # Add filters to context, first check if filter keys are still in session
-                if 'filter_producttypes' in request.session:
+                context['var_height_filter'] = FilterVarHeight(request, remaining_filters)
+
+                if 'filter_product_type' in request.session:
                     context['filters'] = {
                         'Product types': create_filter_list2(Filter2, request, 'product_type',
-                                                             request.session['filter_producttypes'], remaining_filters),
+                                                             request.session['filter_product_type'], remaining_filters),
                         'Kwaliteit': create_filter_list2(Filter2, request, 'wall_thickness',
-                                                         request.session['filter_wallthicknesses'], remaining_filters),
-                        'Kleuren': create_filter_list2(Filter2, request, 'color', request.session['filter_colors'],
+                                                         request.session['filter_wall_thickness'], remaining_filters),
+                        'Kleuren': create_filter_list2(Filter2, request, 'color', request.session['filter_color'],
                                                        remaining_filters),
                         'Standaard formaat': create_filter_list2(Filter2, request, 'standard_size',
                                                                  request.session['filter_standard_size'],
@@ -772,8 +814,13 @@ def search_product(request):
                         'Aantal flessen': create_filter_list2(Filter2, request, 'bottles',
                                                               request.session['filter_bottles'], remaining_filters),
                         'Producenten': create_filter_list2(Filter2, request, 'company',
-                                                           request.session['filter_companies'], remaining_filters),
+                                                           request.session['filter_company'], remaining_filters),
                     }
+                    # Add delete all filters to context
+                    if len(request.session['filter_product_type'])  > 1: #This means we have filterable results
+                        context['clear_all_filters_url'] = request.path + '?' + urlencode(
+                            request.session['initial_search_data'])
+
 
                 # if 'filter_producttypes' in request.session:
                 #     context['filters_popup'] = {
@@ -790,12 +837,11 @@ def search_product(request):
                 #                                           request.session['filter_companies']),
                 #     }
 
-                    # context['initial_search_data'] = request.session['initial_search_data']
-                    # context['filter_count'] = 0
-                    # for filter_list in context['filters_popup'].values():
-                    #     for filter in filter_list:
-                    #         if filter.checked == True:
-                    #             context['filter_count'] += 1
+                context['filter_count'] = 0
+                for filter_list in context['filters'].values():
+                    for filter in filter_list:
+                        if filter.checked == True:
+                            context['filter_count'] += 1
 
                 # Pagination
                 context = make_pagination(request, context, queryset_qobjects)
