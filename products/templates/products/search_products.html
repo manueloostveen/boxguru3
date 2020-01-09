@@ -11,6 +11,82 @@
     {#    </div>#}
     <div class="row d-flex justify-content-center">
         {#        <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5"></div>#}
+        <form action="/catalog/search" method="get">
+
+            <div class="row info-block p-2">
+                <div class="col">
+                    <h3 class="text-center text-white m-2">TYPE DOOS</h3>
+                    <div class="col-lg">
+                        <div class="mb-2">
+                            {{ fit_product_form.product_type__main_category }}
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="row info-block-2 mt-2 p-2">
+                <div class="col">
+
+                    <h3 class="text-center text-white m-2">AFMETINGEN PRODUCT</h3>
+
+                    <div class="col-lg">
+                        <div class="input-group mb-2 input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">B</span>
+                            </div>
+                            {{ fit_product_form.width }}
+                        </div>
+                    </div>
+
+                    <div class="col-lg">
+                        <div class="input-group mb-2 input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">L</span>
+                            </div>
+                            {{ fit_product_form.length }}
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg">
+                        <div class="input-group mb-3 input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">H</span>
+                            </div>
+                            {{ fit_product_form.height }}
+                        </div>
+
+
+                        <div>
+                            <h3 class="text-center text-white m-2">PRODUCT-INFO</h3>
+                            <div class="input-group mb-3 input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">#</span>
+                                </div>
+                                {{ fit_product_form.amount_of_products_in_box }}
+                            </div>
+
+                            {{ fit_product_form.no_tipping }}
+{#                            <div class="checkbox">#}
+{#                                <label for="{{ fit_product_form.no_tipping.id_no_tipping }}" style="display: inline-block;">#}
+{#                                    {{ fit_product_form.no_tipping }}{{ fit_product_form.no_tipping.label_tag }}#}
+{#                                </label>#}
+{#                            </div>#}
+                            {{ fit_product_form.no_stacking }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <input class="searchButton" type="submit" value="ZOEK">
+            <input type="hidden" name="form" value="fitbox">
+            <input type="hidden" name="initial_search" value="1">
+
+        </form>
+
         <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
 
             <h1 class="pt-3">..zoekkk..</h1>
@@ -77,15 +153,11 @@
                                         </div>
                                         {{ box_form.height }}
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row info-block-2 mt-2 p-2 var-height-box-show">
-                            <div class="col">
-                                <h3 class="text-center text-white m-2">IN HOOGTE VERSTELBAAR?</h3>
-                                <div class="col-lg">
-                                    <div class="mb-2">
-                                        {{ box_form.variable_height }}
+                                    <div>
+                                        <h4 class="text-center text-white m-2">VARIABELE HOOGTE?</h4>
+                                        <div class="mb-2">
+                                            {{ box_form.variable_height }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -96,6 +168,7 @@
                         <input type="hidden" name="initial_search" value="1">
 
                     </form>
+
                 </div>
                 <div class="tab-pane" id="nav-verzendkokers" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <form action='/catalog/search' method="get">
@@ -259,15 +332,13 @@
                             {% endif %}
 
                         </div>
-                        {% include "products/pagination.html" %}
 
 
                     </div>
                 </div>
+                <a id="table"></a>
                 {% include 'products/product_table.html' %}
-                <div class="row">
-                    <div class="col">{% include "products/pagination.html" %}</div>
-                </div>
+
             {% endif %}
 
     {#    <div class="filter-background" id="filter-pop-up"></div>#}

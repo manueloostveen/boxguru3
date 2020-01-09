@@ -9,7 +9,7 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from products.models import Product, WallThickness, Color, ProductType, Company
-from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm
+from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm, FitProductForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalField, Avg, Func, Count
@@ -17,7 +17,8 @@ from django.db.models.functions import Greatest, Sqrt
 from products.product_categories import box_main_category_dict
 from math import pi
 from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_filter_list2, \
-    create_queryset, create_sort_headers, Filter3, make_pagination, order_queryset, FilterVarHeight
+    create_queryset, create_sort_headers, Filter3, make_pagination, order_queryset, FilterVarHeight, \
+    create_queryset_product_fit
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 
@@ -678,41 +679,48 @@ def search_product(request):
 
     if request.method == 'GET':
         # Check GET request if and what type of form is requested
+        form = None
+        context['box_form'] = SearchBoxForm()
+        context['tube_form'] = SearchTubeForm()
+        context['envelope_form'] = SearchEnvelopeBagForm()
+        context['fit_product_form'] = FitProductForm()
+
         if 'form' in request.GET:
             if request.GET['form'] == 'box':
                 context['box_form'] = SearchBoxForm(request.GET)
-                context['tube_form'] = SearchTubeForm()
-                context['envelope_form'] = SearchEnvelopeBagForm()
                 context['searched'] = 'box'
                 form = context['box_form']
 
 
             elif request.GET['form'] == 'tube':
-                context['box_form'] = SearchBoxForm()
                 context['tube_form'] = SearchTubeForm(request.GET)
-                context['envelope_form'] = SearchEnvelopeBagForm()
                 context['searched'] = 'tube'
                 form = context['tube_form']
 
 
             elif request.GET['form'] == 'envelope':
-                context['box_form'] = SearchBoxForm()
-                context['tube_form'] = SearchTubeForm()
                 context['envelope_form'] = SearchEnvelopeBagForm(request.GET)
                 context['searched'] = 'envelope'
                 form = context['envelope_form']
 
+            elif request.GET['form'] == 'fitbox':
+                context['fit_product_form'] = FitProductForm(request.GET)
+                context['searched'] = 'fitbox'
+                form = context['fit_product_form']
+
         else:
-            context['box_form'] = SearchBoxForm()
-            context['tube_form'] = SearchTubeForm()
-            context['envelope_form'] = SearchEnvelopeBagForm()
             context['no_search'] = True
-            form = None
 
         if form:
             if form.is_valid():
 
-                context, queryset_qobjects, max_match_possible = create_queryset(request, form, context)
+                # Create queryset, normal search or fitbox search
+                if isinstance(form, FitProductForm):
+                    context, queryset_qobjects = create_queryset_product_fit(request, form, context)
+                    max_match_possible = False
+
+                else:
+                    context, queryset_qobjects, max_match_possible = create_queryset(request, form, context)
 
                 # Set  ordering
                 queryset_qobjects, context = order_queryset(request, context, queryset_qobjects,
@@ -720,8 +728,8 @@ def search_product(request):
 
                 # # Add sort link for order button and sort direction variable to context
                 # context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)
-                #
-                # # Add sorting headers to context
+
+                # Add sorting headers to context
                 context = create_sort_headers(request, context)
 
                 # Create  querysets for result filter

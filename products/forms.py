@@ -104,7 +104,6 @@ class SearchBoxForm(forms.Form):
         # Q objects & queryset for all box main_categories
         q_objects_main_categories = (Q(category=category) for category in box_cat.values())
         main_category_qset = MainCategory.objects.filter(reduce(operator.or_, q_objects_main_categories))
-        print(main_category_qset)
 
         # Category choices for form
         form_choices = [(category.id, category.category) for category in main_category_qset] + [('', 'Alle dozen')]
@@ -128,7 +127,7 @@ class SearchBoxForm(forms.Form):
         # self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in wall_thickness_qset]
         # self.fields['colors'].queryset = color_qset
         # self.fields['colors'].initial = [color for color in color_qset]
-        self.fields['variable_height'].choices = [('', 'Nee, laat me alles zien.'), ('1', 'Ja, alleen dozen met variabele hoogte!')]
+        self.fields['variable_height'].choices = [('', 'Maakt niet uit'), ('1', 'Alleen dozen met variabele hoogte!'), ('2', 'Geen dozen met variabele hoogte.')]
 
 
 class SearchTubeForm(forms.Form):
@@ -225,3 +224,85 @@ class SearchEnvelopeBagForm(forms.Form):
         # self.fields['categories'].initial = [category for category in category_qset]
         # self.fields['colors'].queryset = color_qset
         # self.fields['colors'].initial = [color for color in color_qset]
+
+
+class FitProductForm(forms.Form):
+    # no_tipping = forms.BooleanField(required=False)
+    # no_stacking = forms.BooleanField(required=False)
+
+    # no_tipping = forms.BooleanField(required=False, label='Product mag niet kantelen', widget=forms.CheckboxInput(attrs={
+    #     'placeholder': "Kantelen",
+    # }))
+
+    # no_stacking = forms.BooleanField(required=False, label='Product mag niet gestapeld', widget=forms.CheckboxInput(attrs={
+    #     'placeholder': "Stapelen",
+    # }))
+
+    no_stacking = forms.ChoiceField(
+        widget=forms.Select(attrs={
+            'class': 'custom-select mb-3'
+        }),
+        required=False,
+        initial=None,
+        choices=[('', 'Product mag gestapeld worden'), (True, 'Product mag NIET gestapeld worden')]
+
+    )
+
+    no_tipping = forms.ChoiceField(
+        widget=forms.Select(attrs={
+            'class': 'custom-select mb-3'
+        }),
+        required=False,
+        initial=None,
+        choices=[('', 'Product mag kantelen'), (True, 'Product mag NIET kantelen' )]
+
+    )
+
+    width = forms.IntegerField(required=True, label='Product breedte in mm', min_value=0, widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Breedte in mm",
+    }))
+    length = forms.IntegerField(required=True, label='Product lengte in mm', min_value=0, widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Lengte in mm",
+    }))
+    height = forms.IntegerField(required=True, label='Product hoogte in mm', min_value=0, widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Hoogte in mm",
+    }))
+
+    amount_of_products_in_box = forms.IntegerField(required=False, label='Aantal producten in doos', min_value=0, widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Aantal producten in doos",
+    }))
+
+    product_type__main_category = forms.ChoiceField(
+        widget=forms.Select(attrs={
+            'class': 'custom-select mb-3',
+        }),
+        required=False,
+        initial=None,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(FitProductForm, self).__init__(*args, **kwargs)
+
+        # Q objects & queryset for all box main_categories
+        q_objects_main_categories = (Q(category=category) for category in box_cat.values())
+        main_category_qset = MainCategory.objects.filter(reduce(operator.or_, q_objects_main_categories))
+
+        # Category choices for form
+        form_choices = [(category.id, category.category) for category in main_category_qset] + [('', 'Alle dozen')]
+
+        # All sub categories:
+        product_type_qset = ProductType.objects.filter(main_category__in=main_category_qset)
+
+        # Q objects & queryset for all box type products
+        q_objects_box = (Q(product_type=product_type) for product_type in
+                         product_type_qset.values_list('id', flat=True))
+        box_qset = Product.objects.filter(reduce(operator.or_, q_objects_box))
+
+        # Load queryset choices here so db calls are not made during migrations
+        self.fields['product_type__main_category'].choices = form_choices
+
+

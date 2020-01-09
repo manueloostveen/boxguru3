@@ -1,6 +1,6 @@
 from os.path import join
 
-from django.db.models import Func, Q, When, Case, DecimalField, F
+from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField
 from urllib.parse import unquote
 from urllib.parse import urlencode as urlencodeP
 
@@ -11,6 +11,8 @@ from django.utils.datastructures import MultiValueDict
 from products.models import Product
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from products.product_fit_logic import RectangularProduct
 
 
 class Filter:
@@ -36,7 +38,6 @@ class Filter:
 
 class Filter2:
     def __init__(self, request, current_filter, filter, remaining_filters):
-
 
         # Filter can either be a tuple or list, depending on request.session (somehow): (value, id)
         # Value into string because GET.getlist() returns list of strings
@@ -76,6 +77,7 @@ class Filter2:
 
         self.url = request.path + '?' + GET_copy.urlencode() + "#filter"
 
+
 class FilterVarHeight:
     def __init__(self, request, remaining_filters):
         GET_copy = request.GET.copy()
@@ -89,7 +91,6 @@ class FilterVarHeight:
             self.css_class += 'disabled'
             self.filter_name = 'Ik probeer het toch!'
 
-
         if GET_copy.get('variable_height'):
             del GET_copy['variable_height']
             self.css_class += ' active'
@@ -98,14 +99,13 @@ class FilterVarHeight:
         else:
             GET_copy['variable_height'] = 1
 
-        self.checked = False #todo This need to be removed, is here because of pop-up filters
+        self.checked = False  # todo This need to be removed, is here because of pop-up filters
         GET_copy['page'] = 1
         self.url = request.path + '?' + GET_copy.urlencode() + '#filter'
 
 
 class FilterVarHeight2:
     def __init__(self, request, filter, remaining_filters):
-
 
         # Filter can either be a tuple or list, depending on request.session (somehow): (value, id)
         # Value into string because GET.getlist() returns list of strings
@@ -147,7 +147,6 @@ class FilterVarHeight2:
         self.url = request.path + '?' + GET_copy.urlencode() + "#filter"
 
 
-
 class Filter3:
     def __init__(self, request, current_filter, filter):
 
@@ -177,10 +176,9 @@ class Filter3:
 def create_filter_list2(filter_class, request, filter_type, filter_list, remaining_filters):
     return [filter_class(request, filter_type, filter, remaining_filters) for filter in filter_list]
 
+
 def create_filter_list(filter_class, request, filter_type, filter_list):
     return [filter_class(request, filter_type, filter) for filter in filter_list]
-
-
 
 
 # Create round function, arity 1 so rounds to 0 decimals, no input needed
@@ -257,7 +255,7 @@ def create_sort_headers(request, context):
 
         GET_copy['page'] = 1
 
-        context[header] = request.path + '?' + GET_copy.urlencode()
+        context[header] = request.path + '?' + GET_copy.urlencode() + "#table"
 
     return context
 
@@ -278,13 +276,14 @@ def create_queryset(request, form, context):
 
     # Deal with variable height
     variable_height = {}
+    exclude_variable_height = {}
     if '115' in product_types:
         product_types.remove('115')
         variable_height = {'product_type': 115}
-        pass
-    if variable_height_from_get:
-        variable_height =  {'product_type': 115}
-    print(variable_height)
+    if variable_height_from_get == '1':
+        variable_height = {'product_type': 115}
+    elif variable_height_from_get == '2':
+        exclude_variable_height = {'product_type': 115}
 
     qobjects = []
 
@@ -509,9 +508,142 @@ def create_queryset(request, form, context):
             max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2)).distinct()
 
     else:
-        queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).order_by().distinct()
+        queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).exclude(
+            **exclude_variable_height).order_by().distinct()
 
     return context, queryset_qobjects, max_match
+
+
+def find_perfect_match(requested_amount, queryset, product):
+    """
+    Function that returns a queryset of boxes that fit the requested amount of products
+    :param requested_amount: number of products
+    :param queryset: a list of Box objects from the database
+    :param product: product object that needs to fit in a box
+    :return:
+    """
+
+    # initialize empty queryset with matching boxes
+    list_of_ids = []
+
+    # iterate over all boxes in queryset and append if match is made
+    for box_object in queryset:
+
+        amount_in_box = 0
+        if box_object.inner_dim1 and box_object.inner_dim2 and box_object.inner_dim3:
+            amount_in_box = product.max_in_box(box_object.inner_dim1,
+                                               box_object.inner_dim2,
+                                               box_object.inner_dim3)[0][0]
+        elif box_object.inner_dim1 and box_object.inner_dim2 and box_object.inner_variable_dimension_MAX:
+            amount_in_box = product.max_in_box(box_object.inner_dim1,
+                                               box_object.inner_dim2,
+                                               box_object.inner_variable_dimension_MAX)[0][0]
+
+        # create a queryset containing matching boxes
+        if amount_in_box == requested_amount:
+            list_of_ids.append(box_object.id)
+
+    success_boxes = queryset.filter(id__in=list_of_ids)
+
+    return success_boxes
+
+
+def create_queryset_product_fit(request, form, context):
+    width = form.cleaned_data.get('width')
+    length = form.cleaned_data.get('length')
+    height = form.cleaned_data.get('height')
+    amount_of_products = form.cleaned_data.get('amount_of_products_in_box')
+
+    product_volume = width * length * height
+
+    no_tipping = form.cleaned_data.get('no_tipping')
+    no_stacking = form.cleaned_data.get('no_stacking')
+
+    colors = request.GET.getlist('color')
+    wall_thicknesses = request.GET.getlist('wall_thickness')
+    main_category = request.GET.get('product_type__main_category')
+    standard_size = request.GET.getlist('standard_size')
+    bottles = request.GET.getlist('bottles')
+    product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
+    companies = request.GET.getlist('company')
+    variable_height_from_get = request.GET.get('variable_height')
+
+    # Deal with variable height
+    variable_height = {}
+    exclude_variable_height = {}
+    if '115' in product_types:
+        product_types.remove('115')
+        variable_height = {'product_type': 115}
+    if variable_height_from_get == '1':
+        variable_height = {'product_type': 115}
+    elif variable_height_from_get == '2':
+        exclude_variable_height = {'product_type': 115}
+
+    qobjects = []
+
+    # Q objects query
+    if colors:
+        qcolors = Q(color__in=colors)
+        qobjects.append(qcolors)
+
+    if wall_thicknesses:
+        qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
+        qobjects.append(qwall_thicknesses)
+
+    if main_category:
+        if main_category == '6':  # (Variable_height)
+            variable_height = {'product_type': 115}
+        else:
+            qmain_category = Q(product_type__main_category=main_category)
+            qobjects.append(qmain_category)
+
+    else:
+        qmain_category = Q(product_type__main_category__in=range(1, 11))
+        qobjects.append(qmain_category)
+
+    if len(product_types):
+        qproduct_types = Q(product_type__in=product_types)
+        qobjects.append(qproduct_types)
+
+    if len(standard_size):
+        qstandard_size = Q(standard_size__in=standard_size)
+        qobjects.append(qstandard_size)
+
+    if len(bottles):
+        qbottles = Q(bottles__in=bottles)
+        qobjects.append(qbottles)
+
+    if len(companies):
+        qcompanies = Q(company__in=companies)
+        qobjects.append(qcompanies)
+
+    # Set box volume benchmark
+    error_margin = 1
+    qvolume = Q(volume__range=((product_volume * amount_of_products) - error_margin * product_volume,
+                               (product_volume * amount_of_products) + error_margin * product_volume))
+
+    # Create Queryset
+    # Todo add volume to model when saving in database
+    calculate_volume = Case(
+        When(inner_dim1__isnull=False, inner_dim2__isnull=False, inner_dim3__isnull=False,
+             then=(F('inner_dim1') * F('inner_dim2') * F('inner_dim3'))),
+        When(inner_dim1__isnull=False, inner_dim2__isnull=False, inner_variable_dimension_MAX__isnull=False,
+             then=(F('inner_dim1') * F('inner_dim2') * F('inner_variable_dimension_MAX'))),
+        default=-1, output_field=IntegerField()
+    )
+
+    queryset_qobjects = Product.objects.filter(
+        *qobjects
+    ).filter(**variable_height).exclude(**exclude_variable_height).order_by().distinct()
+
+    queryset_qobjects = queryset_qobjects.annotate(
+        volume=calculate_volume).filter(qvolume)
+
+    product = RectangularProduct(width, length, height, no_tipping, no_stacking)
+
+    queryset_qobjects = find_perfect_match(amount_of_products, queryset_qobjects, product)
+
+    return context, queryset_qobjects
 
 
 def make_pagination(request, context, queryset):
@@ -547,6 +679,7 @@ def make_pagination(request, context, queryset):
     context['products'] = products
     context['page_range'] = page_range
     return context
+
 
 def order_queryset(request, context, queryset, max_match_possible=False):
     order_by = request.GET.get('sort')

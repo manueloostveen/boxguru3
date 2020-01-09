@@ -150,10 +150,14 @@ class Product(models.Model):
         return ' | '.join(str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all())
 
     def display_product_types(self):
-        return ' - '.join(str(product_type.type) for product_type in self.product_type.all())
+
+        return ''.join(str(product_type.type) for product_type in self.product_type.all() if product_type.pk != 115)
 
     def popover_tierprices(self):
         return [str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.order_by('-price').all()]
+
+    def popover_tierprices_dict(self):
+        return {str(tierprice.tier): str(tierprice.price) for tierprice in self.price_table.order_by('-price').all()}
 
     def display_users(self):
         """Create string for Users that liked this product."""
