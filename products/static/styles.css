@@ -25,6 +25,9 @@
     flex-direction: row;
 }
 
+/*FORMS STYLES*/
+
+
 .input-group-text {
     width: 28px;
 }
@@ -84,6 +87,12 @@
 .searchButton:hover {
     background-color: #7900b3;
 }
+
+#diameter_container {
+    display: none;
+}
+
+
 
 /*Checkbox search*/
 .checkbox-cell {

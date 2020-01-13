@@ -238,6 +238,15 @@ class FitProductForm(forms.Form):
     #     'placeholder': "Stapelen",
     # }))
 
+    rectangular_cylindrical = forms.ChoiceField(
+        widget=forms.Select(attrs={
+            'class':'custom-select mb-3'
+        }),
+        required=False,
+        initial=None,
+        choices=[('', 'Rechthoekig'), ('1', 'Rond')]
+    )
+
     no_stacking = forms.ChoiceField(
         widget=forms.Select(attrs={
             'class': 'custom-select mb-3'
@@ -258,20 +267,28 @@ class FitProductForm(forms.Form):
 
     )
 
-    width = forms.IntegerField(required=True, label='Product breedte in mm', min_value=0, widget=forms.NumberInput(attrs={
+    diameter = forms.IntegerField(required=False, label='Product breedte in mm', min_value=0, widget=forms.NumberInput(attrs={
         'class': "form-control",
-        'placeholder': "Breedte in mm",
-    }))
-    length = forms.IntegerField(required=True, label='Product lengte in mm', min_value=0, widget=forms.NumberInput(attrs={
-        'class': "form-control",
-        'placeholder': "Lengte in mm",
-    }))
-    height = forms.IntegerField(required=True, label='Product hoogte in mm', min_value=0, widget=forms.NumberInput(attrs={
-        'class': "form-control",
-        'placeholder': "Hoogte in mm",
+        'placeholder': "Diameter in mm",
     }))
 
-    amount_of_products_in_box = forms.IntegerField(required=False, label='Aantal producten in doos', min_value=0, widget=forms.NumberInput(attrs={
+    width = forms.IntegerField(required=False, label='Product breedte in mm', min_value=0, widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Breedte in mm",
+        'required': True,
+    }))
+    length = forms.IntegerField(required=False, label='Product lengte in mm', min_value=0, widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Lengte in mm",
+        'required': True,
+    }))
+    height = forms.IntegerField(required=False, label='Product hoogte in mm', min_value=0, widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': "Hoogte in mm",
+        'required': True,
+    }))
+
+    amount_of_products_in_box = forms.IntegerField(required=True, label='Aantal producten in doos', min_value=0, widget=forms.NumberInput(attrs={
         'class': "form-control",
         'placeholder': "Aantal producten in doos",
     }))
@@ -304,5 +321,4 @@ class FitProductForm(forms.Form):
 
         # Load queryset choices here so db calls are not made during migrations
         self.fields['product_type__main_category'].choices = form_choices
-
 

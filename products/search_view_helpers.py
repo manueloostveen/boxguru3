@@ -12,7 +12,7 @@ from products.models import Product
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from products.product_fit_logic import RectangularProduct
+from products.product_fit_logic import RectangularProduct, CylindricalProduct
 
 
 class Filter:
@@ -552,12 +552,19 @@ def create_queryset_product_fit(request, form, context):
     width = form.cleaned_data.get('width')
     length = form.cleaned_data.get('length')
     height = form.cleaned_data.get('height')
+    diameter = form.cleaned_data.get('diameter')
     amount_of_products = form.cleaned_data.get('amount_of_products_in_box')
-
-    product_volume = width * length * height
-
+    cylindrical = form.cleaned_data.get('rectangular_cylindrical')
     no_tipping = form.cleaned_data.get('no_tipping')
     no_stacking = form.cleaned_data.get('no_stacking')
+
+    # Calculate estimate of product volume for initial box selection
+    if cylindrical:
+        product_volume = diameter**2 * height
+        product = CylindricalProduct(diameter, height, no_tipping)
+    else:
+        product_volume = width * length * height
+        product = RectangularProduct(width, length, height, no_tipping, no_stacking)
 
     colors = request.GET.getlist('color')
     wall_thicknesses = request.GET.getlist('wall_thickness')
@@ -618,7 +625,7 @@ def create_queryset_product_fit(request, form, context):
         qobjects.append(qcompanies)
 
     # Set box volume benchmark
-    error_margin = 1
+    error_margin = 5
     qvolume = Q(volume__range=((product_volume * amount_of_products) - error_margin * product_volume,
                                (product_volume * amount_of_products) + error_margin * product_volume))
 
@@ -639,8 +646,8 @@ def create_queryset_product_fit(request, form, context):
     queryset_qobjects = queryset_qobjects.annotate(
         volume=calculate_volume).filter(qvolume)
 
-    product = RectangularProduct(width, length, height, no_tipping, no_stacking)
-
+    print(len(queryset_qobjects), 'len queryset qobjects')
+    # Find perfect boxes in queryset boxes
     queryset_qobjects = find_perfect_match(amount_of_products, queryset_qobjects, product)
 
     return context, queryset_qobjects

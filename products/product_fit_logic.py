@@ -377,7 +377,7 @@ class RectangularProduct:
 
 class CylindricalProduct:
 
-    def __init__(self, diameter, height, no_tipping=False):
+    def __init__(self, diameter, height, no_tipping=False, no_stacking=False):
         self._diameter = float(diameter)
         self._height = float(height)
         self._radius = diameter / 2.0
@@ -507,9 +507,10 @@ class CylindricalProduct:
             # 4. calculate remaining space
             remaining_space = (box_orientations[orientation][0], box_orientations[orientation][1],
                                third_side_dictionary[orientation] - stack_height * self._height)
-
             # 5. create list of answers containing all base stacking sizes
             answer.append((base_maximum_amount, orientation, remaining_space))
+
+        print(answer, 'answer')
 
         return answer
 
@@ -541,7 +542,8 @@ class CylindricalProduct:
                 stacked_amount = possibility[2]
                 best_option = possibility
 
-        return best_option
+        # Returns best_option in list, because RectangularProduct returns tuple madness [][]
+        return [best_option]
 
 
 class Container(RectangularProduct):
