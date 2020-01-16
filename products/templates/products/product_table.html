@@ -256,6 +256,10 @@
                          {% elif order_by == 'diameter' %}class="arrowUp"{% endif %}></div>
                 </th>
 
+                <th>
+                    <a href="{{ volume_header }}">Inhoud</a>
+                </th>
+
                 {% if show_match_header %}
                     <th><a href="{{ match_header }}">Zoekmatch</a>
                         <div {% if order_by == '-max_match' %}class="arrowDown"
@@ -319,6 +323,7 @@
                             {{ object.inner_dim3 }}
                         {% else %}-
                         {% endif %}{% endif %}</td>
+                    <td>{{ object.volume_calculated }}</td>
                     {% if object.max_match %}
                         <td>{{ object.max_match }}%</td>{% endif %}
                     <td>{{ object.wall_thickness }}</td>

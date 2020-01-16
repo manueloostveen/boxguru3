@@ -1,6 +1,6 @@
 from os.path import join
 
-from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField
+from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField, Min, FloatField
 from urllib.parse import unquote
 from urllib.parse import urlencode as urlencodeP
 
@@ -242,6 +242,7 @@ def create_sort_headers(request, context):
         'lowest_price_header': ('lowest_price', 'DESC'),
         'price_header': ('price_ex_BTW', 'DESC'),
         'company_header': ('company', 'DESC'),
+        'volume_header': ('volume', 'DESC')
     }
 
     for header, query in header_dict.items():
@@ -549,10 +550,10 @@ def find_perfect_match(requested_amount, queryset, product):
 
 
 def create_queryset_product_fit(request, form, context):
-    width = form.cleaned_data.get('width')
-    length = form.cleaned_data.get('length')
-    height = form.cleaned_data.get('height')
-    diameter = form.cleaned_data.get('diameter')
+    width = form.cleaned_data.get('product_width')
+    length = form.cleaned_data.get('product_length')
+    height = form.cleaned_data.get('product_height')
+    diameter = form.cleaned_data.get('product_diameter')
     amount_of_products = form.cleaned_data.get('amount_of_products_in_box')
     cylindrical = form.cleaned_data.get('rectangular_cylindrical')
     no_tipping = form.cleaned_data.get('no_tipping')
@@ -561,7 +562,7 @@ def create_queryset_product_fit(request, form, context):
     # Calculate estimate of product volume for initial box selection
     if cylindrical:
         product_volume = diameter**2 * height
-        product = CylindricalProduct(diameter, height, no_tipping)
+        product = CylindricalProduct(diameter, height, no_tipping, no_stacking)
     else:
         product_volume = width * length * height
         product = RectangularProduct(width, length, height, no_tipping, no_stacking)
@@ -626,7 +627,8 @@ def create_queryset_product_fit(request, form, context):
 
     # Set box volume benchmark
     error_margin = 5
-    qvolume = Q(volume__range=((product_volume * amount_of_products) - error_margin * product_volume,
+    #TODO change volume_calculated to volume, after volume is added when scraping
+    qvolume = Q(volume_calculated__range=((product_volume * amount_of_products) - error_margin * product_volume,
                                (product_volume * amount_of_products) + error_margin * product_volume))
 
     # Create Queryset
@@ -636,7 +638,7 @@ def create_queryset_product_fit(request, form, context):
              then=(F('inner_dim1') * F('inner_dim2') * F('inner_dim3'))),
         When(inner_dim1__isnull=False, inner_dim2__isnull=False, inner_variable_dimension_MAX__isnull=False,
              then=(F('inner_dim1') * F('inner_dim2') * F('inner_variable_dimension_MAX'))),
-        default=-1, output_field=IntegerField()
+        default=-1, output_field=FloatField()
     )
 
     queryset_qobjects = Product.objects.filter(
@@ -644,13 +646,16 @@ def create_queryset_product_fit(request, form, context):
     ).filter(**variable_height).exclude(**exclude_variable_height).order_by().distinct()
 
     queryset_qobjects = queryset_qobjects.annotate(
-        volume=calculate_volume).filter(qvolume)
+        volume_calculated=calculate_volume).filter(qvolume)
 
-    print(len(queryset_qobjects), 'len queryset qobjects')
+
+
     # Find perfect boxes in queryset boxes
     queryset_qobjects = find_perfect_match(amount_of_products, queryset_qobjects, product)
 
-    return context, queryset_qobjects
+    max_match_possible = False
+
+    return context, queryset_qobjects, max_match_possible
 
 
 def make_pagination(request, context, queryset):

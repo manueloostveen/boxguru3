@@ -1,0 +1,670 @@
+{% extends "base_generic.html" %}
+{% load verbose_names %}
+{% load field_values %}
+{% load static %}
+
+{% block navigation %}
+{% endblock %}
+{% block content %}
+    {#    <div id="work-in-progress">#}
+    {#        <div class="work-spinner"></div>#}
+    {#    </div>#}
+    <div class="row d-flex justify-content-center">
+        {#        <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-3 col-sm-4 mt-5"></div>#}
+        <form action="/catalog/search" method="get">
+
+            <div class="row info-block p-2">
+                <div class="col">
+                    <h3 class="text-center text-white m-2">TYPE DOOS</h3>
+                    <div class="col-lg">
+                        <div class="mb-2">
+                            {{ fit_product_form.product_type__main_category }}
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="row info-block-2 mt-2 p-2">
+                <div class="col">
+
+                    {{ fit_product_form.errors }}
+                    <h3 class="text-center text-white m-2">RECHTHOEKIG OF ROND PRODUCT?</h3>
+
+                    <div class="col-lg">
+                        <div class="input-group mb-2 input-group-sm">
+                            {{ fit_product_form.rectangular_cylindrical }}
+                        </div>
+                    </div>
+
+                    <h3 class="text-center text-white m-2">AFMETINGEN PRODUCT</h3>
+
+                    <div class="col-lg" id="diameter_container">
+                        <div class="input-group mb-2 input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">&Oslash</span>
+                            </div>
+                            {{ fit_product_form.diameter }}
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg" id="width_container">
+                        <div class="input-group mb-2 input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">B</span>
+                            </div>
+                            {{ fit_product_form.width }}
+                        </div>
+                    </div>
+
+                    <div class="col-lg" id="length_container">
+                        <div class="input-group mb-2 input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">L</span>
+                            </div>
+                            {{ fit_product_form.length }}
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg" id="height_container">
+                        <div class="input-group mb-3 input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">H</span>
+                            </div>
+                            {{ fit_product_form.height }}
+                        </div>
+
+
+                        <div>
+                            <h3 class="text-center text-white m-2">PRODUCT-INFO</h3>
+                            <div class="input-group mb-3 input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">n</span>
+                                </div>
+                                {{ fit_product_form.amount_of_products_in_box }}
+                            </div>
+
+                            {{ fit_product_form.no_tipping }}
+                            {#                            <div class="checkbox">#}
+                            {#                                <label for="{{ fit_product_form.no_tipping.id_no_tipping }}" style="display: inline-block;">#}
+                            {#                                    {{ fit_product_form.no_tipping }}{{ fit_product_form.no_tipping.label_tag }}#}
+                            {#                                </label>#}
+                            {#                            </div>#}
+                            {{ fit_product_form.no_stacking }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <input class="searchButton" type="submit" value="ZOEK">
+            <input type="hidden" name="form" value="fitbox">
+            <input type="hidden" name="initial_search" value="1">
+
+        </form>
+
+        <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
+
+            <h1 class="pt-3">..zoekkk..</h1>
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link col active" id="nav-home-tab"
+                       data-toggle="tab"
+                       href="#nav-dozen" role="tab"
+                       aria-controls="nav-home" aria-selected="true">DOZEN</a>
+                    <a class="nav-item nav-link col" id="nav-profile-tab" data-toggle="tab"
+                       href="#nav-verzendkokers"
+                       role="tab"
+                       aria-controls="nav-profile" aria-selected="false">KOKERS</a>
+                    <a class="nav-item nav-link col small" id="nav-contact-tab" data-toggle="tab"
+                       href="#nav-overig"
+                       role="tab"
+                       aria-controls="nav-contact" aria-selected="false">ENVELOPPEN & ZAKKEN</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane show active" id="nav-dozen" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <form action="/catalog/search" method="get">
+
+                        <div class="row info-block p-2">
+                            <div class="col">
+                                <h3 class="text-center text-white m-2">TYPE DOOS</h3>
+                                <div class="col-lg">
+                                    <div class="mb-2">
+                                        {{ box_form.product_type__main_category }}
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="row info-block-2 mt-2 p-2">
+                            <div class="col">
+
+                                <h3 class="text-center text-white m-2">AFMETINGEN</h3>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">B</span>
+                                        </div>
+                                        {{ box_form.width }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">L</span>
+                                        </div>
+                                        {{ box_form.length }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-3 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">H</span>
+                                        </div>
+                                        {{ box_form.height }}
+                                    </div>
+                                    <div>
+                                        <h4 class="text-center text-white m-2">VARIABELE HOOGTE?</h4>
+                                        <div class="mb-2">
+                                            {{ box_form.variable_height }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input class="searchButton" type="submit" value="ZOEK">
+                        <input type="hidden" name="form" value="box">
+                        <input type="hidden" name="initial_search" value="1">
+
+                    </form>
+
+                </div>
+                <div class="tab-pane" id="nav-verzendkokers" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <form action='/catalog/search' method="get">
+
+                        <div class="row info-block-right p-2">
+                            <div class="col">
+                                <h3 class="text-center text-white m-2">TYPE KOKER</h3>
+
+                                <div class="col-lg">
+                                    <div class="mb-2">
+                                        {{ tube_form.product_type }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row info-block-2 mt-2 p-2">
+
+                            <div class="col">
+                                <h3 class="text-center text-white m-2">AFMETINGEN</h3>
+
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">&Oslash</span>
+                                        </div>
+                                        {{ tube_form.diameter }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-3 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">L</span>
+                                        </div>
+                                        {{ tube_form.length }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <input class="searchButton" type="submit" value="ZOEK">
+                        <input type="hidden" name="form" value="tube">
+                        <input type="hidden" name="initial_search" value="1">
+                    </form>
+                </div>
+                <div class="tab-pane" id="nav-overig" role="tabpanel" aria-labelledby="nav-contact-tab">
+
+                    <form action='/catalog/search' method="get">
+
+
+                        <div class="row info-block-right p-2">
+                            <div class="col">
+                                <h3 class="text-center text-white m-2">TYPE PRODUCT</h3>
+                                <div class="col-lg">
+                                    <div class="mb-2">
+                                        {{ envelope_form.product_type }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row info-block mt-2 p-2">
+
+                            <div class="col">
+                                <h3 class="text-center text-white m-2">AFMETINGEN</h3>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">B</span>
+                                        </div>
+                                        {{ envelope_form.width }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-3 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">L</span>
+                                        </div>
+                                        {{ envelope_form.length }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <input class="searchButton" type="submit" value="ZOEK">
+                        <input type="hidden" name="form" value="envelope">
+                        <input type="hidden" name="initial_search" value="1">
+
+                    </form>
+                </div>
+            </div>
+
+            {% if no_search %}
+            {% else %}
+
+                <div class="filter-title">
+                    <a id="filter"></a>
+                    <h4>RESULTATEN:{% if products %}<span> {{ products_found }}</span>{% else %}
+                        <span class="no-results"> 0</span>{% endif %}</h4>
+                    <h4>FILTERS</h4>
+                </div>
+                {#                {% if filter_count %}<span style="font-size: 20px">({{ filter_count }} actief)</span>{% endif %}#}
+                {#                <button class="searchButton" id="showfilter">FILTER RESULTATEN {% if filter_count %}#}
+                {#                    <span style="font-size: 20px">({{ filter_count }} actief)</span>{% endif %}</button>#}
+                {#                {% if products %}#}
+                {#                    <div class="alert alert-success alert-dismissible mt-3 small">#}
+                {#                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>#}
+                {##}
+                {#                        <strong>Yes!</strong> {% if products_found > 1 %}Er zijn {{ products_found }} producten#}
+                {#                        gevonden.{% else %}Er is {{ products_found }} product gevonden.{% endif %}#}
+                {#                    </div>#}
+
+                {#                {% else %}#}
+                {#                    <div class="alert alert-danger alert-dismissible mt-3 small">#}
+                {#                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>#}
+                {#                        <strong>Helaas!</strong> Er zijn met de huidige zoekopdracht geen producten gevonden.#}
+                {#                    </div>#}
+                {##}
+                {#                {% endif %}#}
+                </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-8">
+                        <div class="text-center">
+                            <div class="filter-section">
+                                {#                    <div>#}
+                                {#                        <h4>Dozen met variabele hoogte?</h4>#}
+                                {#                    </div>#}
+                                {#                    <a class="{{ var_height_filter.css_class }}"#}
+                                {#                       href="{{ var_height_filter.url }}">{{ var_height_filter.filter_name }}</a>#}
+
+                                {% for filter_name, filters in filters.items %}
+                                    {% if filters|length > 1 %}
+                                        {% with filters|first as clear_all %}
+                                            <div>
+                                                <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"
+                                                                             href="{{ clear_all.url }}"></a>
+                                            </div>
+                                        {% endwith %}
+                                        {% for filter in filters|slice:"1:" %}
+                                            <a class="{{ filter.css_class }}"
+                                               href="{{ filter.url }}">{{ filter.filter_name }} {{ filter.disabled }}</a>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                {% endfor %}
+
+
+                            </div>
+                            {% if clear_all_filters_url %}
+                                <div class="filter-section">
+                                    <a class="filter-reset" href="{{ clear_all_filters_url }}#filter">reset alle
+                                        filters</a>
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <a id="table"></a>
+                {% include 'products/product_table.html' %}
+
+            {% endif %}
+
+    {#    <div class="filter-background" id="filter-pop-up"></div>#}
+    {##}
+    {#    <div class="filter-pop-up">#}
+    {#        <form action='' method="get">#}
+    {#            <div class="clearfix filters-title">#}
+    {#                <div class="col">#}
+    {#                    <h1>FILTERS</h1>#}
+    {#                    <button class="filter-reset" type="reset">wis alles</button>#}
+    {#                    <button type="button" class="close-filters"></button>#}
+    {#                </div>#}
+    {#            </div>#}
+    {##}
+    {#            <div class="filter-section clearfix">#}
+    {#                {% for filter_name, filters in filters_popup.items %}#}
+    {#                    {% if filters|length > 1 %}#}
+    {#                        <div class="col filter-column">#}
+    {#                            {% with filters|first as clear_all %}#}
+    {#                                <div>#}
+    {#                                    <h4>{{ filter_name }}</h4>#}
+    {#                                    <button type="button" class="{{ clear_all.css_class }} uncheck-button"></button>#}
+    {#                                </div>#}
+    {#                            {% endwith %}#}
+    {#                            <div>#}
+    {#                                {% for filter in filters|slice:"1:" %}#}
+    {#                                    <input {% if filter.checked %}checked=""{% endif %} type="checkbox"#}
+    {#                                           id="{{ filter_name }}-{{ forloop.counter }}"#}
+    {#                                           name="{{ filter.filter_query }}" value="{{ filter.value }}">#}
+    {#                                    <label for="{{ filter_name }}-{{ forloop.counter }}">#}
+    {#                                        {{ filter.filter_name }}#}
+    {#                                    </label>#}
+    {##}
+    {#                                {% endfor %}#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    {% endif %}#}
+    {#                {% endfor %}#}
+    {#            </div>#}
+    {##}
+    {#            <div class="clearfix">#}
+    {#                <div class="col filter-apply">#}
+    {##}
+    {#                    {% for query, value in initial_search_data.items %}#}
+    {#                        <input type="hidden" name="{{ query }}" value="{{ value }}">#}
+    {#                    {% endfor %}#}
+    {#                    <input class="filterButton" type="submit" value="Pas filters toe">#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </form>#}
+    {#    </div>#}
+
+
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        // Script to store selected tab when refreshing
+
+        $('a[data-toggle="tab"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        $('a[data-toggle="tab"]').on("show.bs.tab", function (e) {
+            var id = $(e.target).attr("href");
+            sessionStorage.setItem('selectedTab', id)
+        });
+
+        var selectedTab = sessionStorage.getItem('selectedTab');
+        if (selectedTab != null) {
+            $('a[data-toggle="tab"][href="' + selectedTab + '"]').tab('show');
+        }
+
+    </script>
+
+    <script>
+        function getCheckedBoxes(checkboxName) {
+            var checkboxes, checkboxesChecked;
+            checkboxes = document.getElementsByName(checkboxName);
+            checkboxesChecked = [];
+
+            for (i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    checkboxesChecked.push(checkboxes[i]);
+                }
+            }
+            return checkboxesChecked;
+        }
+
+        function checkCell(cellText, wordArray) {
+            var flag;
+            flag = false;
+            for (word of wordArray) {
+                flag = word === cellText;
+                if (flag === true) {
+                    break;
+                }
+
+            }
+            return flag
+        }
+
+        function checkPassArray(value) {
+            return value
+        }
+
+        function refreshData(checkboxeschecked) {
+            var table, tr, cellText, td, checkboxTextArray;
+            table = document.getElementById('productTable');
+            tr = table.getElementsByTagName('tr');
+            checkboxTextArray = [];
+            columnCheckArray = [];
+
+            for (i = 0; i < checkboxeschecked.length; i++) {
+                var checkbox = checkboxeschecked[i];
+                text = checkbox.parentNode.textContent.trim().toUpperCase();
+                checkboxTextArray.push(text);
+                if (!(columnCheckArray.includes(checkbox.value))) {
+                    columnCheckArray.push(checkbox.value)
+                }
+            }
+
+            // Iterate over every column row
+            for (i = 1; i < tr.length; i++) {
+                passArray = [];
+                td = tr[i].getElementsByTagName('td');
+                for (const column of columnCheckArray) {
+                    td_checked = td[column];
+                    cellText = td_checked.textContent || td_checked.innerText;
+                    cellText = cellText.trim().toUpperCase();
+                    passArray.push(checkCell(cellText, checkboxTextArray))
+                }
+                if (passArray.every(checkPassArray)) {
+                    tr[i].style.display = ""
+                } else {
+                    tr[i].style.display = "none"
+                }
+            }
+        }
+
+        // Script that gets inner text from checkbox
+        $('input[name=filter-checkbox]').change(function () {
+            var checkedBoxes = getCheckedBoxes('filter-checkbox');
+            refreshData(checkedBoxes);
+        });
+
+    </script>
+
+
+    <script>
+        $('.product-wrapper').click(function () {
+            if ($(this).hasClass('unfold')) {
+                $(this).removeClass('unfold');
+            } else {
+                $(this).addClass('unfold');
+            }
+        })
+    </script>
+
+    <script>
+        // popovers initialization - on hover
+        $('[data-toggle="popover-hover"]').popover({
+            html: true,
+            trigger: 'click',
+            placement: 'bottom',
+            content: function () {
+                return '<img src="' + $(this).data('img') + '"' + '/>';
+            }
+        });
+
+        $("html").on("mouseup", function (e) {
+            var l = $(e.target);
+            if (l[0].className.indexOf("popover") === -1) {
+                $(".popover").each(function () {
+                    $(this).popover("hide");
+                });
+            }
+        });
+    </script>
+
+    <script>
+        $('#showfilter').click(function () {
+                $('.filter-background').show();
+                $('.filter-pop-up').show();
+                {#$('body').addClass('stop-scrolling')#}
+            }
+        );
+
+        $('.close-filters').click(function () {
+                $('.filter-background').hide();
+                $('.filter-pop-up').hide();
+                {#$('body').removeClass('stop-scrolling');#}
+            }
+        );
+
+        $('.filter-background').click(function () {
+            $('.filter-background').hide();
+            $('.filter-pop-up').hide();
+            {#$('body').removeClass('stop-scrolling');#}
+        })
+    </script>
+
+    <script>
+        {#UNCHECK FILTERS#}
+        $('button.uncheck-button').click(function () {
+            $(this).parent().next().children('input').prop('checked', false);
+        });
+
+    </script>
+
+    {#    SCROLL SAVING#}
+    {#    <script>#}
+    {#        $(window).scroll(function () {#}
+    {#            sessionStorage.scrollTop = $(this).scrollTop();#}
+    {#        });#}
+    {##}
+    {#        $(document).ready(function () {#}
+    {#            if (sessionStorage.scrollTop != "undefined") {#}
+    {#                $(window).scrollTop(sessionStorage.scrollTop);#}
+    {#            }#}
+    {#        });#}
+    {#    </script>#}
+
+    {#    <script>#}
+    {#        $(window).bind("load", function () {#}
+    {#            console.log('loaded');#}
+    {#            $('#work-in-progress').hide();#}
+    {#        });#}
+    {#    </script>#}
+
+    <script>
+        $(function () {    // Makes sure the code contained doesn't run until
+            //     all the DOM elements have loaded
+
+            $('#id_product_type__main_category').change(function () {
+                if ($(this).val() === '6') {
+                    $('.var-height-box-show').hide();
+
+                } else {
+                    $('.var-height-box-show').show()
+                }
+
+            });
+
+        });
+    </script>
+
+
+    <script>
+        $(function () {
+            $('#id_rectangular_cylindrical').change(function () {
+
+                if ($(this).val() === '1') {
+                    $('#diameter_container').toggle();
+                    $('#id_diameter').prop('required', true);
+
+                    $('#width_container').toggle();
+                    $('#length_container').toggle();
+                    $('#id_width').removeAttr('required');
+                    $('#id_length').removeAttr('required');
+
+                } else {
+                    $('#diameter_container').toggle();
+                    $('#id_diameter').removeAttr('required');
+
+                    $('#width_container').toggle();
+                    $('#id_width').prop('required', true);
+
+                    $('#length_container').toggle();
+                    $('#id_length').prop('required', true);
+
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $(document).ready(function() {
+                if ($('#id_rectangular_cylindrical').val() === '1') {
+                    $('#diameter_container').show();
+                    $('#id_diameter').prop('required', true);
+
+                    $('#width_container').hide();
+                    $('#length_container').hide();
+                    $('#id_width').removeAttr('required');
+                    $('#id_length').removeAttr('required');
+                } else {
+
+                    $('#diameter_container').hide();
+                    $('#id_diameter').removeAttr('required');
+
+                    $('#width_container').show();
+                    $('#id_width').prop('required', true);
+
+                    $('#length_container').show();
+                    $('#id_length').prop('required', true);
+
+                }
+            }
+        )
+    </script>
+
+
+
+
+{% endblock %}

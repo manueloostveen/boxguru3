@@ -716,8 +716,7 @@ def search_product(request):
 
                 # Create queryset, normal search or fitbox search
                 if isinstance(form, FitProductForm):
-                    context, queryset_qobjects = create_queryset_product_fit(request, form, context)
-                    max_match_possible = False
+                    context, queryset_qobjects, max_match_possible = create_queryset_product_fit(request, form, context)
 
                 else:
                     context, queryset_qobjects, max_match_possible = create_queryset(request, form, context)

@@ -388,6 +388,9 @@ class CylindricalProduct:
         else:
             self._orientations = ["WL", "WH", "HL"]
 
+        self._no_tipping = no_tipping
+        self._no_stacking = no_stacking
+
     def __str__(self):
         """
         :return: Returns a string representation of the object, gives it diameter, height and volume.
@@ -457,7 +460,7 @@ class CylindricalProduct:
 
     def product_fit(self, width, length, height):
         """
-        determine if the product can fit at least once in give three dimensional space
+        determine if the product can fit at least once in given three dimensional space
         :param width: width of space
         :param length: length of space
         :param height: height of space
@@ -510,9 +513,34 @@ class CylindricalProduct:
             # 5. create list of answers containing all base stacking sizes
             answer.append((base_maximum_amount, orientation, remaining_space))
 
-        print(answer, 'answer')
-
         return answer
+
+    def max_on_bottom(self, width, length, height):
+        """
+        method to determine the maximum amount of product to fit on the bottom of a box, if the products are not allowed
+        to stack on top of each other.
+        :param width: width of box
+        :param length: length of box
+        :param height: height of box
+        :return:
+        """
+
+        # Calculate max amount of product is not tipped over
+        normal_max = [0] if self._height > height else self.max_in_rect(width, length)
+
+        if self._no_tipping:
+            return [normal_max]
+
+        else:
+            # Treat product as Rectangular product
+            product = RectangularProduct(self._diameter, self._diameter, self._height, no_tipping=False, no_stacking=True)
+            rectangular_approach = product.max_in_box(width, length, height)
+
+            # Compare untipped with tippable rectangular version
+            if normal_max[0] >= rectangular_approach[0][0]:
+                return [normal_max]
+            else:
+                return rectangular_approach
 
     def max_in_box(self, width, length, height):
         """
@@ -522,6 +550,9 @@ class CylindricalProduct:
         :param height: height of box
         :return: returns (maximum amount in box, result of base stacking method, extra stacked amount)
         """
+        if self._no_stacking:
+            return self.max_on_bottom(width, length, height)
+
         base_amounts = self.max_in_box_base(width, length, height)
         total_amounts = []
 

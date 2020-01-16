@@ -267,22 +267,22 @@ class FitProductForm(forms.Form):
 
     )
 
-    diameter = forms.IntegerField(required=False, label='Product breedte in mm', min_value=0, widget=forms.NumberInput(attrs={
+    product_diameter = forms.IntegerField(required=False, label='Product breedte in mm', min_value=0, widget=forms.NumberInput(attrs={
         'class': "form-control",
         'placeholder': "Diameter in mm",
     }))
 
-    width = forms.IntegerField(required=False, label='Product breedte in mm', min_value=0, widget=forms.NumberInput(attrs={
+    product_width = forms.IntegerField(required=False, label='Product breedte in mm', min_value=0, widget=forms.NumberInput(attrs={
         'class': "form-control",
         'placeholder': "Breedte in mm",
         'required': True,
     }))
-    length = forms.IntegerField(required=False, label='Product lengte in mm', min_value=0, widget=forms.NumberInput(attrs={
+    product_length = forms.IntegerField(required=False, label='Product lengte in mm', min_value=0, widget=forms.NumberInput(attrs={
         'class': "form-control",
         'placeholder': "Lengte in mm",
         'required': True,
     }))
-    height = forms.IntegerField(required=False, label='Product hoogte in mm', min_value=0, widget=forms.NumberInput(attrs={
+    product_height = forms.IntegerField(required=False, label='Product hoogte in mm', min_value=0, widget=forms.NumberInput(attrs={
         'class': "form-control",
         'placeholder': "Hoogte in mm",
         'required': True,
