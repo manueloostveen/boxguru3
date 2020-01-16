@@ -88,7 +88,7 @@ class Product(models.Model):
     outer_dim1 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Outer width')
     outer_dim2 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Outer length')
     outer_dim3 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Outer height')
-    volume = models.PositiveIntegerField(blank=True, null=True, verbose_name='Volume')
+    volume = models.DecimalField(blank=True, null=True, decimal_places=1, max_digits=10, verbose_name='Volume')
 
     inner_variable_dimension_MIN = models.PositiveIntegerField(blank=True, null=True,
                                                                verbose_name='Inner variable dimension min')

@@ -19,7 +19,7 @@
                     <a class="nav-item nav-link col small active" id="nav-home-tab"
                        data-toggle="tab"
                        href="#nav-dozen" role="tab"
-                       aria-controls="nav-home" aria-selected="true">ZOEK OP DOZEN MAAT</a>
+                       aria-controls="nav-home" aria-selected="true">ZOEK DOZEN OP MAAT</a>
                     {#                    <a class="nav-item nav-link col" id="nav-profile-tab" data-toggle="tab"#}
                     {#                       href="#nav-verzendkokers"#}
                     {#                       role="tab"#}
@@ -99,18 +99,18 @@
                 <div class="tab-pane show" id="nav-fitproduct" role="tabpanel" aria-labelledby="nav-fitproduct-tab">
                     <form action="/catalog/search" method="get">
 
-                        <div class="row info-block-right p-2">
-                            <div class="col">
-                                <h4 class="text-center text-white m-2">TYPE DOOS</h4>
-                                <div class="col-lg">
-                                    <div class="mb-2">
-                                        {{ fit_product_form.product_type__main_category }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+{#                        <div class="row info-block-right p-2">#}
+{#                            <div class="col">#}
+{#                                <h4 class="text-center text-white m-2">TYPE DOOS</h4>#}
+{#                                <div class="col-lg">#}
+{#                                    <div class="mb-2">#}
+{#                                        {{ fit_product_form.product_type__main_category }}#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
 
-                        <div class="row info-block-2 mt-2 p-2">
+                        <div class="row info-block-right p-2">
                             <div class="col">
 
                                 {{ fit_product_form.errors }}
@@ -428,22 +428,22 @@
 
                 if ($(this).val() === '1') {
                     $('#diameter_container').toggle();
-                    $('#id_diameter').prop('required', true);
+                    $('#id_product_diameter').prop('required', true);
 
                     $('#width_container').toggle();
                     $('#length_container').toggle();
-                    $('#id_width').removeAttr('required');
-                    $('#id_length').removeAttr('required');
+                    $('#id_product_width').removeAttr('required');
+                    $('#id_product_length').removeAttr('required');
 
                 } else {
                     $('#diameter_container').toggle();
-                    $('#id_diameter').removeAttr('required');
+                    $('#id_product_diameter').removeAttr('required');
 
                     $('#width_container').toggle();
-                    $('#id_width').prop('required', true);
+                    $('#id_product_width').prop('required', true);
 
                     $('#length_container').toggle();
-                    $('#id_length').prop('required', true);
+                    $('#id_product_length').prop('required', true);
 
                 }
             })

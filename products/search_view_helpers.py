@@ -561,10 +561,10 @@ def create_queryset_product_fit(request, form, context):
 
     # Calculate estimate of product volume for initial box selection
     if cylindrical:
-        product_volume = diameter**2 * height
+        product_volume = diameter**2 * height / 1000000.0
         product = CylindricalProduct(diameter, height, no_tipping, no_stacking)
     else:
-        product_volume = width * length * height
+        product_volume = width * length * height / 1000000.0
         product = RectangularProduct(width, length, height, no_tipping, no_stacking)
 
     colors = request.GET.getlist('color')
@@ -626,27 +626,22 @@ def create_queryset_product_fit(request, form, context):
         qobjects.append(qcompanies)
 
     # Set box volume benchmark
-    error_margin = 5
+    error_margin = 30
     #TODO change volume_calculated to volume, after volume is added when scraping
-    qvolume = Q(volume_calculated__range=((product_volume * amount_of_products) - error_margin * product_volume,
+    qvolume = Q(volume__range=((product_volume * amount_of_products) - error_margin * product_volume,
                                (product_volume * amount_of_products) + error_margin * product_volume))
 
-    # Create Queryset
-    # Todo add volume to model when saving in database
-    calculate_volume = Case(
-        When(inner_dim1__isnull=False, inner_dim2__isnull=False, inner_dim3__isnull=False,
-             then=(F('inner_dim1') * F('inner_dim2') * F('inner_dim3'))),
-        When(inner_dim1__isnull=False, inner_dim2__isnull=False, inner_variable_dimension_MAX__isnull=False,
-             then=(F('inner_dim1') * F('inner_dim2') * F('inner_variable_dimension_MAX'))),
-        default=-1, output_field=FloatField()
-    )
+    print(qvolume, 'qvolume')
 
+    qobjects.append(qvolume)
+
+    # Create Queryset
     queryset_qobjects = Product.objects.filter(
         *qobjects
     ).filter(**variable_height).exclude(**exclude_variable_height).order_by().distinct()
-
-    queryset_qobjects = queryset_qobjects.annotate(
-        volume_calculated=calculate_volume).filter(qvolume)
+    #
+    # queryset_qobjects = queryset_qobjects.annotate(
+    #     volume_calculated=calculate_volume).filter(qvolume)
 
 
 

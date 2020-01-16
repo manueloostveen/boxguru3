@@ -585,6 +585,7 @@ span.price-staffel {
 .tooltiptext {
     visibility: hidden;
     width: max-content;
+    max-width: 200px;
     background-color: #73AD21;
     color: #fff;
     /*text-align: center;*/
