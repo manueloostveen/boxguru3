@@ -23,13 +23,13 @@
     {% load static %}
 
     <!-- Data tables -->
-{#    <link rel="stylesheet" type="text/css" href="{% static 'products/DataTables/datatables.min.css' %}"/>#}
-{#    <script type="text/javascript" src="{% static 'products/DataTables/datatables.min.js' %}"></script>#}
+    {#    <link rel="stylesheet" type="text/css" href="{% static 'products/DataTables/datatables.min.css' %}"/>#}
+    {#    <script type="text/javascript" src="{% static 'products/DataTables/datatables.min.js' %}"></script>#}
     {#    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"/>#}
     {#    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>#}
-{#    <script type="text/javascript" src="{% static 'products/DataTables/naturalSort.js' %}"></script>#}
-{##}
-{#    <!-- Add additional CSS in static file -->#}
+    {#    <script type="text/javascript" src="{% static 'products/DataTables/naturalSort.js' %}"></script>#}
+    {##}
+    {#    <!-- Add additional CSS in static file -->#}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 
     {#    <!-- Table sorter -->#}
@@ -40,38 +40,45 @@
     <link href='https://fonts.googleapis.com/css?family=Alfa Slab One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Arvo' rel='stylesheet'>
 </head>
-<body>
 
 <div class="container-fluid">
 
     {% block navigation %}
-        <div class="row">
-            <div class="col-md-4">
-                <a href="{% url 'index' %}">Home</a>
-                <a href="{% url 'search-product' %}">Zoek producten</a>
-                {#                <a href="">All manufacturers</a>#}
-                {#                <a href="{% url 'products' %}">All products</a>#}
-                {#                <a href="{% url 'producttypes' %}">All product types</a>#}
-                {#                <a href="{% url 'colors' %}">All colors</a>#}
-                {#                <a href="{% url 'wallthickness' %}">All wallthickness</a>#}
-            </div>
-            <div class="col-md-4 ml-auto">
-                {% if user.is_authenticated %}
-                    <br>
-                    <ul>Gebruiker: {{ user.get_username }}</ul>
-                    <ul><a href="{% url 'my-liked' %}">Mijn bewaarde producten</a></ul>
-                    <ul><a href="{% url 'logout' %}?next={{ request.path }}">Uitloggen</a></ul>
-                {% else %}
-                    <a href="{% url 'login' %}?next={{ request.path }}">Inloggen</a>
-                {% endif %}
-                {% if perms.products.can_see_all_liked_products %}
-                    <br>
-                    <li>Staff</li>
-                    <li><a href="{% url 'all-liked' %}">All liked products</a></li>
 
-                {% endif %}
+        <div class="row navigation-row">
+            <div class="col">
+                <a href="{% url 'index' %}"><h4>HOME</h4></a>
+                <a href="{% url 'search-product' %}"><h4>ZOEK DOZEN</h4></a>
+                <a href=""><h4>VOLLEDIG ASSORTIMENT</h4></a>
             </div>
         </div>
+        {#        <div class="row">#}
+        {#            <div class="col-md-4">#}
+        {#                <a href="{% url 'index' %}">Home</a>#}
+        {#                <a href="{% url 'search-product' %}">Zoek producten</a>#}
+        {#                <a href="">All manufacturers</a>#}
+        {#                <a href="{% url 'products' %}">All products</a>#}
+        {#                <a href="{% url 'producttypes' %}">All product types</a>#}
+        {#                <a href="{% url 'colors' %}">All colors</a>#}
+        {#                <a href="{% url 'wallthickness' %}">All wallthickness</a>#}
+        {#            </div>#}
+        {#            <div class="col-md-4 ml-auto">#}
+        {#                {% if user.is_authenticated %}#}
+        {#                    <br>#}
+        {#                    <ul>Gebruiker: {{ user.get_username }}</ul>#}
+        {#                    <ul><a href="{% url 'my-liked' %}">Mijn bewaarde producten</a></ul>#}
+        {#                    <ul><a href="{% url 'logout' %}?next={{ request.path }}">Uitloggen</a></ul>#}
+        {#                {% else %}#}
+        {#                    <a href="{% url 'login' %}?next={{ request.path }}">Inloggen</a>#}
+        {#                {% endif %}#}
+        {#                {% if perms.products.can_see_all_liked_products %}#}
+        {#                    <br>#}
+        {#                    <li>Staff</li>#}
+        {#                    <li><a href="{% url 'all-liked' %}">All liked products</a></li>#}
+        {##}
+        {#                {% endif %}#}
+        {#            </div>#}
+        {#        </div>#}
 
 
     {% endblock %}
@@ -97,6 +104,17 @@
         {% endif %}
     {% endblock %}
 </div>
+
+{% block footer %}
+    <footer>
+        <div>
+            <a href="{% url 'index' %}"><h4>HOME</h4></a>
+            <a href="{% url 'search-product' %}"><h4>ZOEK DOZEN</h4></a>
+            <a href=""><h4>VOLLEDIG ASSORTIMENT</h4></a>
+        </div>
+    </footer>
+{% endblock %}
+
 {% block js %}
 {% endblock %}
 

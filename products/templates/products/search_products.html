@@ -3,12 +3,11 @@
 {% load field_values %}
 {% load static %}
 
-{% block navigation %}
-{% endblock %}
+{#{% block navigation %}#}
+{#{% endblock %}#}
+
 {% block content %}
-    {#    <div id="work-in-progress">#}
-    {#        <div class="work-spinner"></div>#}
-    {#    </div>#}
+
     <div class="row d-flex justify-content-center">
 
         <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
@@ -20,10 +19,6 @@
                        data-toggle="tab"
                        href="#nav-dozen" role="tab"
                        aria-controls="nav-home" aria-selected="true">ZOEK DOZEN OP MAAT</a>
-                    {#                    <a class="nav-item nav-link col" id="nav-profile-tab" data-toggle="tab"#}
-                    {#                       href="#nav-verzendkokers"#}
-                    {#                       role="tab"#}
-                    {#                       aria-controls="nav-profile" aria-selected="false">KOKERS</a>#}
                     <a class="nav-item nav-link col small" id="nav-fitproduct-tab" data-toggle="tab"
                        href="#nav-fitproduct"
                        role="tab"
@@ -99,16 +94,6 @@
                 <div class="tab-pane show" id="nav-fitproduct" role="tabpanel" aria-labelledby="nav-fitproduct-tab">
                     <form action="/catalog/search" method="get">
 
-{#                        <div class="row info-block-right p-2">#}
-{#                            <div class="col">#}
-{#                                <h4 class="text-center text-white m-2">TYPE DOOS</h4>#}
-{#                                <div class="col-lg">#}
-{#                                    <div class="mb-2">#}
-{#                                        {{ fit_product_form.product_type__main_category }}#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
 
                         <div class="row info-block-right p-2">
                             <div class="col">
@@ -172,8 +157,8 @@
                                         </div>
 
                                         <h4 class="text-center text-white m-2">OVERIG</h4>
-                                            {{ fit_product_form.no_tipping }}
-                                            {{ fit_product_form.no_stacking }}
+                                        {{ fit_product_form.no_tipping }}
+                                        {{ fit_product_form.no_stacking }}
                                     </div>
                                 </div>
 
@@ -195,55 +180,52 @@
                     <a id="filter"></a>
                     <h4>RESULTATEN:{% if products %}<span> {{ products_found }}</span>{% else %}
                         <span class="no-results"> 0</span>{% endif %}</h4>
-
                 </div>
-
-                </div>
-                </div>
-                {% if products %}
-
-                    <div class="row d-flex justify-content-center">
-                        <div class="col-8">
-                            <div class="text-center">
-                                <h4>FILTERS</h4>
-                                <div class="filter-section">
-                                    {% for filter_name, filters in filters.items %}
-                                        {% if filters|length > 1 %}
-                                            {% with filters|first as clear_all %}
-                                                <div>
-                                                    <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"
-                                                                                 href="{{ clear_all.url }}"></a>
-                                                </div>
-                                            {% endwith %}
-                                            {% for filter in filters|slice:"1:" %}
-                                                <a class="{{ filter.css_class }}"
-                                                   href="{{ filter.url }}">{{ filter.filter_name }} {{ filter.disabled }}</a>
-                                            {% endfor %}
-                                        {% endif %}
-
-                                    {% endfor %}
-
-
-                                </div>
-                                {% if clear_all_filters_url %}
-                                    <div class="filter-section">
-                                        <a class="filter-reset" href="{{ clear_all_filters_url }}#filter">reset alle
-                                            filters</a>
-                                    </div>
-                                {% endif %}
-
-                            </div>
-
-
-                        </div>
-                    </div>
-                    <a id="table"></a>
-                    {% include 'products/product_table.html' %}
-                {% endif %}
-
             {% endif %}
+        </div>
+    </div>
+    {% if products %}
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-8">
+                <div class="text-center">
+
+                    <h4>FILTERS</h4>
+                    <div class="filter-section">
+                        {% for filter_name, filters in filters.items %}
+                            {% if filters|length > 1 %}
+                                {% with filters|first as clear_all %}
+                                    <div>
+                                        <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"
+                                                                     href="{{ clear_all.url }}"></a>
+                                    </div>
+                                {% endwith %}
+                                {% for filter in filters|slice:"1:" %}
+                                    <a class="{{ filter.css_class }}"
+                                       href="{{ filter.url }}">{{ filter.filter_name }} {{ filter.disabled }}</a>
+                                {% endfor %}
+                            {% endif %}
+
+                        {% endfor %}
 
 
+                    </div>
+                    {% if clear_all_filters_url %}
+                        <div class="filter-section">
+                            <a class="filter-reset" href="{{ clear_all_filters_url }}#filter">reset alle
+                                filters</a>
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                <a id="table"></a>
+
+            </div>
+        </div>
+    {% endif %}
+
+    {% include 'products/product_table.html' %}
 
 {% endblock %}
 

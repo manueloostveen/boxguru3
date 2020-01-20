@@ -894,10 +894,28 @@ html {
     width: 100%;
 }
 
+
+
 body {
     height: 100%; /* force the BODY element to match the height of the HTML element */
     width: 100%;
+    display: table;
+    margin: 0;
 }
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    display: table;
+}
+
+footer {
+    background-color: grey;
+    display: table-row;
+    height: 0;
+}
+
 
 .filter-background {
     width: 100%;
@@ -1525,4 +1543,16 @@ div.card-body {
     height: 20px;
     width: 20px;
     display: block;
+}
+
+/*NAVIGATION*/
+.navigation-row {
+    background-color: #5e008b;
+    /*height: 500px;*/
+}
+
+.navigation-row a h4 {
+    color: white;
+    display: inline-block;
+    margin: 20px;
 }
