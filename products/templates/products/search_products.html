@@ -74,7 +74,7 @@
                                         </div>
                                         {{ box_form.height }}
                                     </div>
-                                    <div>
+                                    <div class="var-height-box-show">
                                         <h4 class="text-center text-white m-2">VARIABELE HOOGTE?</h4>
                                         <div class="mb-2">
                                             {{ box_form.variable_height }}
@@ -172,58 +172,14 @@
                     </form>
                 </div>
             </div>
-
-            {% if no_search %}
-            {% else %}
-
-                <div class="filter-title">
-                    <a id="filter"></a>
-                    <h4>RESULTATEN:{% if products %}<span> {{ products_found }}</span>{% else %}
-                        <span class="no-results"> 0</span>{% endif %}</h4>
-                </div>
-            {% endif %}
         </div>
     </div>
-    {% if products %}
 
-        <div class="row d-flex justify-content-center">
-            <div class="col-8">
-                <div class="text-center">
-
-                    <h4>FILTERS</h4>
-                    <div class="filter-section">
-                        {% for filter_name, filters in filters.items %}
-                            {% if filters|length > 1 %}
-                                {% with filters|first as clear_all %}
-                                    <div>
-                                        <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"
-                                                                     href="{{ clear_all.url }}"></a>
-                                    </div>
-                                {% endwith %}
-                                {% for filter in filters|slice:"1:" %}
-                                    <a class="{{ filter.css_class }}"
-                                       href="{{ filter.url }}">{{ filter.filter_name }} {{ filter.disabled }}</a>
-                                {% endfor %}
-                            {% endif %}
-
-                        {% endfor %}
-
-
-                    </div>
-                    {% if clear_all_filters_url %}
-                        <div class="filter-section">
-                            <a class="filter-reset" href="{{ clear_all_filters_url }}#filter">reset alle
-                                filters</a>
-                        </div>
-                    {% endif %}
-
-                </div>
-
-                <a id="table"></a>
-
-            </div>
-        </div>
+    {% if no_search %}
+    {% else %}
+        {% include 'products/filters.html' %}
     {% endif %}
+
 
     {% include 'products/product_table.html' %}
 
@@ -391,8 +347,10 @@
             //     all the DOM elements have loaded
 
             $('#id_product_type__main_category').change(function () {
+
                 if ($(this).val() === '6') {
                     $('.var-height-box-show').hide();
+                    console.log($(this).val());
 
                 } else {
                     $('.var-height-box-show').show()
@@ -455,6 +413,10 @@
                 }
             }
         )
+    </script>
+
+    <script>
+        $(".js-range-slider").ionRangeSlider();
     </script>
 
 

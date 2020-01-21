@@ -18,29 +18,29 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
+
+    <!--Plugin CSS file with desired skin-->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+
+    <!--Plugin JavaScript file-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+
     {#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
 
     {% load static %}
 
-    <!-- Data tables -->
-    {#    <link rel="stylesheet" type="text/css" href="{% static 'products/DataTables/datatables.min.css' %}"/>#}
-    {#    <script type="text/javascript" src="{% static 'products/DataTables/datatables.min.js' %}"></script>#}
-    {#    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"/>#}
-    {#    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>#}
-    {#    <script type="text/javascript" src="{% static 'products/DataTables/naturalSort.js' %}"></script>#}
-    {##}
+
     {#    <!-- Add additional CSS in static file -->#}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 
-    {#    <!-- Table sorter -->#}
-    {#    <script src="{% static 'products/sorttable.js' %}"></script>#}
-
-    <!-- Add additional fonts here -->
+    <!-- Additional fonts -->
     <link href='https://fonts.googleapis.com/css?family=Abril Fatface' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Alfa Slab One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Arvo' rel='stylesheet'>
-</head>
 
+</head>
+<body>
 <div class="container-fluid">
 
     {% block navigation %}
@@ -49,7 +49,7 @@
             <div class="col">
                 <a href="{% url 'index' %}"><h4>HOME</h4></a>
                 <a href="{% url 'search-product' %}"><h4>ZOEK DOZEN</h4></a>
-                <a href=""><h4>VOLLEDIG ASSORTIMENT</h4></a>
+                <a href="{% url 'categories' %}"><h4>BROWSE VOLLEDIG AANBOD</h4></a>
             </div>
         </div>
         {#        <div class="row">#}

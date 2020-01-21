@@ -1,6 +1,7 @@
+from collections import defaultdict
 from os.path import join
 
-from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField, Min, FloatField
+from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField, Min, FloatField, Max
 from urllib.parse import unquote
 from urllib.parse import urlencode as urlencodeP
 
@@ -8,7 +9,7 @@ from django.db.models.functions import Greatest
 from django.utils.http import urlencode
 from django.utils.datastructures import MultiValueDict
 
-from products.models import Product
+from products.models import Product, ProductType, Color, Company, WallThickness
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -262,6 +263,7 @@ def create_sort_headers(request, context):
 
 
 def create_queryset(request, form, context):
+
     width = form.cleaned_data.get('width')
     length = form.cleaned_data.get('length')
     height = form.cleaned_data.get('height')
@@ -512,7 +514,7 @@ def create_queryset(request, form, context):
         queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).exclude(
             **exclude_variable_height).order_by().distinct()
 
-    return context, queryset_qobjects, max_match
+    return queryset_qobjects, max_match
 
 
 def find_perfect_match(requested_amount, queryset, product):
@@ -561,7 +563,7 @@ def create_queryset_product_fit(request, form, context):
 
     # Calculate estimate of product volume for initial box selection
     if cylindrical:
-        product_volume = diameter**2 * height / 1000000.0
+        product_volume = diameter ** 2 * height / 1000000.0
         product = CylindricalProduct(diameter, height, no_tipping, no_stacking)
     else:
         product_volume = width * length * height / 1000000.0
@@ -627,7 +629,7 @@ def create_queryset_product_fit(request, form, context):
 
     # Set box volume benchmark
     error_margin = 30
-    #TODO change volume_calculated to volume, after volume is added when scraping
+    # TODO change volume_calculated to volume, after volume is added when scraping
     qvolume = Q(volume__range=((product_volume * amount_of_products) - error_margin * product_volume,
                                (product_volume * amount_of_products) + error_margin * product_volume))
 
@@ -643,14 +645,12 @@ def create_queryset_product_fit(request, form, context):
     # queryset_qobjects = queryset_qobjects.annotate(
     #     volume_calculated=calculate_volume).filter(qvolume)
 
-
-
     # Find perfect boxes in queryset boxes
     queryset_qobjects = find_perfect_match(amount_of_products, queryset_qobjects, product)
 
     max_match_possible = False
 
-    return context, queryset_qobjects, max_match_possible
+    return queryset_qobjects, max_match_possible
 
 
 def make_pagination(request, context, queryset):
@@ -715,4 +715,158 @@ def order_queryset(request, context, queryset, max_match_possible=False):
 
     context['order_by'] = order_by
 
-    return queryset, context
+    return queryset
+
+
+def create_filters(request, context, queryset, browse=False):
+    no_filter = [('', 'x')]
+
+    if request.GET.get('initial_search') or browse:
+
+        request.session['filter_product_type'] = no_filter + list(
+            ProductType.objects.filter(product__in=queryset).values_list('id', 'type').distinct())
+
+        # Remove variable height boxes from product type filter
+        if (115, 'variabele hoogte dozen') in request.session['filter_product_type']:
+            request.session['filter_product_type'].remove((115, 'variabele hoogte dozen'))
+
+        request.session['filter_color'] = no_filter + list(
+            Color.objects.filter(product__in=queryset).values_list('id', 'color').distinct())
+        request.session['filter_wall_thickness'] = no_filter + list(
+            WallThickness.objects.filter(product__in=queryset).values_list('id',
+                                                                           'wall_thickness').distinct())
+        request.session['filter_standard_size'] = no_filter + [(value, value) for value in
+                                                               queryset.filter(
+                                                                   standard_size__isnull=False).order_by(
+                                                                   'standard_size').values_list(
+                                                                   'standard_size', flat=True).distinct()]
+        request.session['filter_bottles'] = no_filter + [(value, value) for value in
+                                                         queryset.filter(
+                                                             bottles__isnull=False).order_by(
+                                                             'bottles').values_list('bottles',
+                                                                                    flat=True).distinct()]
+        request.session['filter_company'] = no_filter + list(
+            Company.objects.filter(product__in=queryset).values_list('id', 'company').distinct())
+
+        # Add initial search data to session. Used for clear all filter
+        request.session['initial_search_data'] = {query: value for query, value in request.GET.items() if
+                                                  not query == 'initial_search'}
+
+        # Add minimum and maximum dimensions of initial results to session. Used to refine results on size
+        min_max_dimensions = get_min_max_dimensions(queryset)
+        request.session['min_width'] = min_max_dimensions['min_width']
+        request.session['max_width'] = min_max_dimensions['max_width']
+        request.session['min_length'] = min_max_dimensions['min_length']
+        request.session['max_length'] = min_max_dimensions['max_length']
+        request.session['min_height'] = min_max_dimensions['min_height']
+        request.session['max_height'] = min_max_dimensions['max_height']
+
+
+
+    # todo Make aggregation that counts all filter product amounts in a single query
+
+    filters = ['color', 'wall_thickness', 'standard_size', 'bottles', 'company']
+    all_filter_values_but_producttype = queryset.order_by().values_list(*filters)
+    product_type_filter_values = set(ProductType.objects.filter(product__in=queryset).values_list('id',
+                                                                                                  flat=True).distinct())
+
+    filters_value_lists = [product_type_filter_values] + [set([value
+                                                               for value
+                                                               in value_list
+                                                               if value])
+                                                          for value_list
+                                                          in zip(*all_filter_values_but_producttype)]
+
+    filters = ['product_type'] + filters
+
+    remaining_filters = []
+    for index in range(len(filters_value_lists)):
+        for value in filters_value_lists[index]:
+            remaining_filters.append((value, filters[index]))
+
+
+    # Add filters to context, first check if filter keys are still in session
+    if 'filter_product_type' in request.session:
+        context['filters'] = {
+            'Product types': create_filter_list2(Filter2, request, 'product_type',
+                                                 request.session['filter_product_type'], remaining_filters),
+            'Kwaliteit': create_filter_list2(Filter2, request, 'wall_thickness',
+                                             request.session['filter_wall_thickness'], remaining_filters),
+            'Kleuren': create_filter_list2(Filter2, request, 'color', request.session['filter_color'],
+                                           remaining_filters),
+            'Standaard formaat': create_filter_list2(Filter2, request, 'standard_size',
+                                                     request.session['filter_standard_size'],
+                                                     remaining_filters),
+            'Aantal flessen': create_filter_list2(Filter2, request, 'bottles',
+                                                  request.session['filter_bottles'], remaining_filters),
+            'Producenten': create_filter_list2(Filter2, request, 'company',
+                                               request.session['filter_company'], remaining_filters),
+        }
+        # Add delete all filters to context
+        if len(request.session['filter_product_type']) > 1:  # This means we have filterable results
+            context['filterable_results'] = True  # Variable used in template
+            context['clear_all_filters_url'] = request.path + '?' + urlencode(
+                request.session['initial_search_data'])
+
+        # Add size filter dimensions to context
+        for dimension in ['min_width', 'max_width', 'min_length', 'max_length', 'min_height', 'max_height']:
+            context[dimension] = request.session[dimension]
+
+        # Add initial latest request parameters to context to add to afmetingen filter form
+        parameter_dict = defaultdict(list)
+        for param, value in request.GET.lists():
+            if param != 'initial_search' and param != 'filter_width' and param != 'filter_length' and param != 'filter_height':
+                parameter_dict[param] += value
+
+        parameter_dict.default_factory = None # This makes sure Django template can iterate over defaultdict
+
+        context['size_filter_get_parameters'] = parameter_dict
+
+
+    context['filter_count'] = 0
+    for filter_list in context['filters'].values():
+        for filter in filter_list:
+            if filter.checked == True:
+                context['filter_count'] += 1
+
+    context['products_found'] = len(queryset)
+
+
+def get_min_max_dimensions(queryset):
+    """
+    Takes a Product queryset and returns the minimum and maximum width, length and height
+    :param queryset: Product class queryset
+    :return: min and max of width, length and height
+    """
+
+    aggregation = queryset.aggregate(
+        min_width=Min('inner_dim1'),
+        max_width=Max('inner_dim1'),
+        min_length=Min('inner_dim2'),
+        max_length=Max('inner_dim2'),
+        min_dim3=Min('inner_dim3'),
+        min_var_height=Min('inner_variable_dimension_MIN'),
+        max_dim3=Max('inner_dim3'),
+        max_var_height=Max('inner_variable_dimension_MAX')
+    )
+
+    # Determine maximum height
+    if aggregation.get('max_var_height') and aggregation.get('max_dim3'):
+        if aggregation['max_dim3'] >= aggregation['max_var_height']:
+            aggregation['max_height'] = aggregation['max_dim3']
+        else:
+            aggregation['max_height'] = aggregation['max_var_height']
+    elif aggregation.get('max_dim3') and not aggregation.get('max_var_height'):
+        aggregation['max_height'] = aggregation['max_dim3']
+    else:
+        aggregation['max_height'] = aggregation['max_var_height']
+
+    # Determine minimum height
+    if aggregation.get('min_var_height') and aggregation.get('min_dim3'):
+        aggregation['min_height'] = aggregation['min_dim3'] if aggregation['min_dim3'] <= aggregation['min_var_height'] else aggregation['min_var_height']
+    elif aggregation.get('min_dim3') and not aggregation.get('min_var_height'):
+        aggregation['min_height'] = aggregation['min_dim3']
+    else:
+        aggregation['min_height'] = aggregation['min_var_height']
+
+    return aggregation

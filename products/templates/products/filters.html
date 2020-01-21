@@ -1,0 +1,100 @@
+<div class="filter-title">
+    <a id="filter"></a>
+    <h4>RESULTATEN:{% if products %}<span> {{ products_found }}</span>{% else %}
+        <span class="no-results"> 0</span>{% endif %}</h4>
+</div>
+
+<div class="row d-flex justify-content-center">
+    <div class="col-8">
+        <div class="text-center">
+
+            {% if filterable_results %}<h4>FILTERS</h4>{% endif %}
+            <div class="filter-section">
+                {% for filter_name, filters in filters.items %}
+                    {% if filters|length > 1 %}
+                        {% with filters|first as clear_all %}
+                            <div>
+                                <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"
+                                                             href="{{ clear_all.url }}"></a>
+                            </div>
+                        {% endwith %}
+                        {% for filter in filters|slice:"1:" %}
+                            <a class="{{ filter.css_class }}"
+                               href="{{ filter.url }}">{{ filter.filter_name }} {{ filter.disabled }}</a>
+                        {% endfor %}
+                    {% endif %}
+
+                {% endfor %}
+
+
+                <form action="{{ request.get_full_path }}#filter">
+                    <div>
+                        <h4>Afmetingen</h4>
+                        <div style="display: flex; align-items: flex-end; justify-content: center;">
+                            <h4 style="display:inline-block; margin-top:0;">Breedte</h4>
+                            <div style="display:inline-block; min-width: 300px;">
+                                <input type="text" class="js-range-slider" name="filter_width" value=""
+                                       data-type="double"
+                                       data-min="{{ min_width }}"
+                                       data-max="{{ max_width }}"
+                                       data-from="{{ filter_min_width }}"
+                                       data-to="{{ filter_max_width }}"
+                                       data-step="10"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 style="display:inline-block; margin-top:0;">Lengte</h4>
+                            <div style="display:inline-block; min-width: 300px;">
+                                <input type="text" class="js-range-slider" name="filter_length" value=""
+                                       data-type="double"
+                                       data-min="{{ min_length }}"
+                                       data-max="{{ max_length }}"
+                                       data-from="{{ filter_min_length }}"
+                                       data-to="{{ filter_max_length }}"
+                                       data-step="10"
+
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 style="display:inline-block; margin-top:0;">Hoogte</h4>
+                            <div style="display:inline-block; min-width: 300px;">
+                                <input type="text" class="js-range-slider" name="filter_height" value=""
+                                       data-type="double"
+                                       data-min="{{ min_height }}"
+                                       data-max="{{ max_height }}"
+                                       data-from="{{ filter_min_height }}"
+                                       data-to="{{ filter_max_height }}"
+                                       data-step="10"
+
+
+                                />
+                            </div>
+                        </div>; margin-top:0;
+                    </div>
+                    <input class="searchButton" type="submit" value="Update maten">
+                    {% for parameter, values in size_filter_get_parameters.items %}
+                        {% for value in values %}
+                            <input type="hidden" name="{{ parameter }}" value="{{ value }}">
+                        {% endfor %}
+                    {% endfor %}
+                </form>
+
+
+            </div>
+            {% if clear_all_filters_url %}
+                <div class="filter-section">
+                    <a class="filter-reset" href="{{ clear_all_filters_url }}#filter">reset alle
+                        filters</a>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <a id="table"></a>
+
+    </div>
+</div>
