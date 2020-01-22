@@ -93,7 +93,6 @@
 }
 
 
-
 /*Checkbox search*/
 .checkbox-cell {
     width: 50% !important;
@@ -203,48 +202,45 @@ h6 {
 }
 
 /*Table style*/
-.table-condensed {
-    font-size: 10px;
-}
+
 
 table.table-center {
-    margin-left: auto;
-    margin-right: auto;
-    width: 70%;
+    margin-left: 0;
+    margin-right: 0;
+    min-width: 100%;
+    width: 100%;
     margin-top: 20px;
+    font-size: 12px;
 }
+
+.table-wrapper {
+    /*position: relative;*/
+    /*width: 100%;*/
+    /*overflow-x: auto;*/
+    /*overflow-y: hidden;*/
+    display: block;
+    justify-content: center;
+
+}
+
+table {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: table;
+    /*white-space: nowrap;*/
+
+
+}
+
 
 td {
     position: relative;
     text-align: center;
-    overflow-wrap: normal;
+    overflow-wrap: break-word;
     vertical-align: middle !important;
-
+    word-break: normal;
 }
 
-/*table {*/
-/*    table-layout: auto;*/
-/*    width: 1200px;*/
-/*    border-collapse: separate;*/
-/*}*/
-
-
-/*tr:not(:first-child) {*/
-/*    background-color: white;*/
-/*    border-radius: 10px;*/
-/*    border-top: #2b2b2b;*/
-/*    border-left: #2b2b2b;*/
-/*    border-bottom: #0c0c0c;*/
-/*    border-right: transparent;*/
-
-
-/*}*/
-
-/*td:first-child {*/
-/*    border-bottom-left-radius: 10px;*/
-/*    border-top-left-radius: 10px;*/
-/*    border: 1px solid black;*/
-/*}*/
 
 tr.row-spacer {
     height: 20px;
@@ -255,7 +251,7 @@ tr.row-spacer {
 th {
     text-align: center;
     position: relative;
-    white-space: nowrap;
+    /*white-space: nowrap;*/
 }
 
 .table th {
@@ -279,10 +275,6 @@ th {
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
     background-color: #d4edda;
-}
-
-.table-condensed {
-    font-size: 12px;
 }
 
 img.product-thumb {
@@ -574,12 +566,11 @@ span.price-staffel {
 }
 
 
-.popover-table td, .popover-table th{
+.popover-table td, .popover-table th {
     text-align: center;
     border: none !important;
     padding: 5px;
 }
-
 
 
 .tooltiptext {
@@ -775,6 +766,23 @@ input.chk {
     font-weight: bold;
 }
 
+/*#### FOR MOBILE #####*/
+/*.filter-section a {*/
+/*    background-color: #73AD21;*/
+/*    color: white;*/
+/*    padding: 0.2rem 0.2rem 0.2rem 0.2rem;*/
+/*    margin: 0.15rem 0 0 0;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    border-radius: 0.2rem;*/
+/*    !*width: available;*!*/
+/*    font-size: 10px;*/
+/*    white-space: normal;*/
+/*    text-decoration: none;*/
+/*    display: inline-flex;*/
+/*    font-weight: bold;*/
+/*}*/
+
 
 .filter-section a:hover {
     text-decoration: none;
@@ -836,8 +844,30 @@ input.chk {
     transform: translate(-50%, -50%);
 }
 
+.filter-section div.measurement-filter-header a.deactivate-all {
+    background-color: #d5006b;
+    color: white;
+    border-radius: 1rem;
+    width: 50px;
+    height: 20px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    border-color: transparent;
+}
+
+.filter-section div.measurement-filter-header a.deactivate-all::after {
+    content: 'reset';
+    font-size: 0.8rem;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
 .filter-section a.deactivate-all:hover {
     background-color: #f80087;
+    color: white;
     /*border: 1px solid #73AD21;*/
     /*color: white;*/
 }
@@ -856,19 +886,35 @@ input.chk {
     /*transform: translate(0, -50%);*/
 }
 
+.measurement-filter-button {
+    display: inline-block;
+    border-radius: 0.2rem;
+    background-color: #5e008b;
+    font-family: 'Alfa Slab One', Charcoal, sans-serif;
+    letter-spacing: 1px;
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    margin-top: 0.5rem;
+    color: white;
+    font-size: 15px;
+}
+
+.measurement-filter-button:hover {
+    background-color: #7900b3;
+}
+
 
 /*SLIDER STYLES*/
 .irs--flat .irs-from,
 .irs--flat .irs-to,
 .irs--flat .irs-single,
 .irs--flat .irs-bar,
-.irs--flat .irs-handle>i:first-child {
+.irs--flat .irs-handle > i:first-child {
     background-color: #73AD21 !important;
 }
 
 .irs--flat .irs-to:before,
 .irs--flat .irs-from:before,
-.irs--flat .irs-single:before{
+.irs--flat .irs-single:before {
     border-top-color: #73AD21 !important;
 }
 
@@ -912,26 +958,25 @@ html {
 }
 
 
-
-body {
-    height: 100%; /* force the BODY element to match the height of the HTML element */
-    width: 100%;
-    display: table;
-    margin: 0;
-}
+/*body {*/
+/*    height: 100%; !* force the BODY element to match the height of the HTML element *!*/
+/*    width: 100%;*/
+/*    display: table;*/
+/*    margin: 0;*/
+/*}*/
 
 html, body {
     height: 100%;
     width: 100%;
     margin: 0;
-    display: table;
+    /*display: table;*/
 }
 
-footer {
-    background-color: grey;
-    display: table-row;
-    height: 0;
-}
+/*footer {*/
+/*    background-color: grey;*/
+/*    display: table-row;*/
+/*    height: 0;*/
+/*}*/
 
 
 .filter-background {
@@ -1085,16 +1130,17 @@ footer {
 /*}*/
 
 .filter-section a.filter-reset {
+    display: inline-block;
     background-color: #d5006b;
     color: white;
-    width: fit-content;
-    height: 30px;
     text-align: center;
     border-color: transparent;
     border-radius: 0.2rem;
-    font-size: 16px;
+    font-size: 20px;
     /*margin-left: 10px;*/
     margin-top: 16px;
+    font-family: 'Alfa Slab One', Charcoal, sans-serif;
+    letter-spacing: 1px;
 }
 
 .filter-section a.filter-reset:hover {

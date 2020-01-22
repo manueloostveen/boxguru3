@@ -5,7 +5,7 @@
 </div>
 
 <div class="row d-flex justify-content-center">
-    <div class="col-8">
+    <div class="col-xs-12 col-sm-12">
         <div class="text-center">
 
             {% if filterable_results %}<h4>FILTERS</h4>{% endif %}
@@ -29,9 +29,9 @@
 
                 <form action="{{ request.get_full_path }}#filter">
                     <div>
-                        <h4>Afmetingen</h4>
-                        <div style="display: flex; align-items: flex-end; justify-content: center;">
-                            <h4 style="display:inline-block; margin-top:0;">Breedte</h4>
+                        <div>
+                            <div class="measurement-filter-header"><h4>Breedte</h4><a data-from="{{ filter_min_width }}" data-to="{{ filter_max_width }}" data-target="filter_width" class="deactivate-all disabled del-meas"></a></div>
+
                             <div style="display:inline-block; min-width: 300px;">
                                 <input type="text" class="js-range-slider" name="filter_width" value=""
                                        data-type="double"
@@ -40,12 +40,13 @@
                                        data-from="{{ filter_min_width }}"
                                        data-to="{{ filter_max_width }}"
                                        data-step="10"
+                                       id="filter_width"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <h4 style="display:inline-block; margin-top:0;">Lengte</h4>
+                            <div class="measurement-filter-header"><h4>Lengte</h4><a data-from="{{ filter_min_length }}" data-to="{{ filter_max_length }}" data-target="filter_length" class="deactivate-all disabled del-meas"></a></div>
                             <div style="display:inline-block; min-width: 300px;">
                                 <input type="text" class="js-range-slider" name="filter_length" value=""
                                        data-type="double"
@@ -60,7 +61,7 @@
                         </div>
 
                         <div>
-                            <h4 style="display:inline-block; margin-top:0;">Hoogte</h4>
+                            <div class="measurement-filter-header"><h4>Hoogte</h4><a data-from="{{ filter_min_height }}" data-to="{{ filter_max_height }}" data-target="filter_height" class="deactivate-all disabled del-meas"></a></div>
                             <div style="display:inline-block; min-width: 300px;">
                                 <input type="text" class="js-range-slider" name="filter_height" value=""
                                        data-type="double"
@@ -73,9 +74,9 @@
 
                                 />
                             </div>
-                        </div>; margin-top:0;
+                        </div>
                     </div>
-                    <input class="searchButton" type="submit" value="Update maten">
+                    <input class="measurement-filter-button" type="submit" value="Update maten">
                     {% for parameter, values in size_filter_get_parameters.items %}
                         {% for value in values %}
                             <input type="hidden" name="{{ parameter }}" value="{{ value }}">
@@ -87,8 +88,7 @@
             </div>
             {% if clear_all_filters_url %}
                 <div class="filter-section">
-                    <a class="filter-reset" href="{{ clear_all_filters_url }}#filter">reset alle
-                        filters</a>
+                    <a class="filter-reset" href="{{ clear_all_filters_url }}#filter">RESET ALLE FILTERS</a>
                 </div>
             {% endif %}
 
