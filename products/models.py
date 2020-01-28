@@ -34,6 +34,7 @@ class Color(models.Model):
 
 class ProductType(models.Model):
     type = models.CharField(max_length=120, verbose_name='Product Type')
+    type_singular = models.CharField(max_length=120, verbose_name='Product Type Singular', blank=True, null=True)
     main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
@@ -154,6 +155,9 @@ class Product(models.Model):
 
         return ''.join(str(product_type.type) for product_type in self.product_type.all() if product_type.pk != 115)
 
+    def display_product_type_singular(self):
+        return ''.join(str(product_type.type_singular) for product_type in self.product_type.all() if product_type.pk != 115)
+
     def popover_tierprices(self):
         return [str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.order_by('-price').all()]
 
@@ -172,6 +176,17 @@ class Product(models.Model):
 
     def get_remaining_table_fields(self):
         return self.special_dimensions + self.price_fields + self.specifications
+
+    def get_product_image(self):
+
+        if self.product_image != None:
+            return self.product_image
+        # else:
+        #     return self.display_product_type_singular()
+        else:
+            path =  'full/standaard_dozen/' + 'standaard_dozen_afbeeldingen_' + self.display_product_type_singular() + '.jpg'
+            print(path)
+            return path
 
     # This sets the header descriptions in admin
     display_tierprices.short_description = 'Staffelkorting'

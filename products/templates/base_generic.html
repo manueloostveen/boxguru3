@@ -63,14 +63,14 @@
         {#                <a href="{% url 'wallthickness' %}">All wallthickness</a>#}
         {#            </div>#}
         {#            <div class="col-md-4 ml-auto">#}
-        {#                {% if user.is_authenticated %}#}
-        {#                    <br>#}
-        {#                    <ul>Gebruiker: {{ user.get_username }}</ul>#}
-        {#                    <ul><a href="{% url 'my-liked' %}">Mijn bewaarde producten</a></ul>#}
-        {#                    <ul><a href="{% url 'logout' %}?next={{ request.path }}">Uitloggen</a></ul>#}
-        {#                {% else %}#}
-        {#                    <a href="{% url 'login' %}?next={{ request.path }}">Inloggen</a>#}
-        {#                {% endif %}#}
+                        {% if user.is_authenticated %}
+                            <br>
+                            <ul>Gebruiker: {{ user.get_username }}</ul>
+                            <ul><a href="{% url 'my-liked' %}">Mijn bewaarde producten</a></ul>
+                            <ul><a href="{% url 'logout' %}?next={{ request.path }}">Uitloggen</a></ul>
+                        {% else %}
+                            <a href="{% url 'login' %}?next={{ request.path }}">Inloggen</a>
+                        {% endif %}
         {#                {% if perms.products.can_see_all_liked_products %}#}
         {#                    <br>#}
         {#                    <li>Staff</li>#}

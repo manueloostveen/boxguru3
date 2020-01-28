@@ -193,12 +193,9 @@ class Abs(Func):
     function = 'ABS'
 
 
-def create_sort_order_link(request, order):
+def create_sort_order_link(request):
     GET_copy = request.GET.copy()
-    order = order.replace('-', '')
-
-    if 'sort' not in GET_copy:
-        GET_copy['sort'] = order
+    show_sort_order = True
 
     if 'by' in GET_copy:
         if GET_copy['by'] == 'ASC':
@@ -206,17 +203,14 @@ def create_sort_order_link(request, order):
         else:
             GET_copy['by'] = 'ASC'
     else:
-        if GET_copy.get('initial_search') and order == 'max_match':
-            GET_copy['by'] = 'DESC'
-        else:
-            GET_copy['by'] = 'ASC'
+        show_sort_order = False
 
     # Set page to first page
     GET_copy['page'] = 1
 
-    full_path = request.path + "?" + GET_copy.urlencode()
+    full_path = request.path + "?" + GET_copy.urlencode() + "#table"
 
-    return full_path, GET_copy['by']
+    return full_path, show_sort_order
 
 
 def create_sort_headers(request, context):
@@ -245,6 +239,20 @@ def create_sort_headers(request, context):
         'company_header': ('company', 'DESC'),
         'volume_header': ('volume', 'DESC')
     }
+
+    current_sort_dict = {
+        'product_type': 'Type doos',
+        'inner_dim1': 'Breedte',
+        'inner_dim2': 'Lengte',
+        'inner_dim3': 'Hoogte',
+        'max_match': 'Zoekmatch',
+        'price_ex_BTW': 'Prijs',
+        'lowest_price': 'Laagste bulkprijs'
+    }
+
+    context['sort_order_link'], context['show_sort_order_link'] = create_sort_order_link(request)
+    context['current_sort'] = current_sort_dict.get(request.GET.get('sort'))
+    context['sort'] = request.GET.get('by')
 
     for header, query in header_dict.items():
         if request.GET.get('sort') == query[0]:

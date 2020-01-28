@@ -739,9 +739,6 @@ def search_product(request):
                     context['filter_min_height'] = min_height
                     context['filter_max_height'] = max_height
 
-                    print(request.GET.get('filter_width'))
-                    print(min_width, '--', max_width)
-
                     qheight = Q(inner_dim3__range=(min_height, max_height)) | (
                         (Q(inner_variable_dimension_MAX__gte=min_height) & Q(inner_variable_dimension_MIN__lte=max_height)))
 

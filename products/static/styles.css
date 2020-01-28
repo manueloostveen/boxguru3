@@ -203,6 +203,23 @@ h6 {
 
 /*Table style*/
 
+@media (max-width: 785px) {
+    .table-wrapper {
+        display: none;
+    }
+}
+
+@media (min-width: 786px) {
+    .results-mobile {
+        display: none;
+    }
+}
+
+table {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: table;
+}
 
 table.table-center {
     margin-left: 0;
@@ -213,25 +230,44 @@ table.table-center {
     font-size: 12px;
 }
 
-.table-wrapper {
-    /*position: relative;*/
-    /*width: 100%;*/
-    /*overflow-x: auto;*/
-    /*overflow-y: hidden;*/
-    display: block;
-    justify-content: center;
-
+table.table-mobile {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    font-size: 12px;
+    /*font-family: Arial, sans-serif;*/
+    box-shadow: 0 -5px 15px -5px #333;
+    border-radius: 10px;
 }
 
-table {
-    overflow-x: scroll;
-    overflow-y: hidden;
-    display: table;
-    /*white-space: nowrap;*/
-
-
+table.table-mobile td {
+    border: none;
+    width: 35%;
 }
 
+table.table-mobile td:nth-child(3) {
+    width: 15%;
+}
+
+table.table-mobile tr:first-child td:first-child {
+    border-radius: 10px 0 0 0;
+}
+
+table.table-mobile tr:first-child td:last-child {
+    border-radius: 0 10px 0 0;
+}
+
+table.table-mobile tr:last-child td:first-child {
+    border-radius: 0 0 0 10px;
+}
+
+table.table-mobile tr:nth-child(3) td:last-child {
+    border-radius: 0 0 10px 0;
+}
+
+th {
+    border-radius: 10px 0 0 0;
+}
 
 td {
     position: relative;
@@ -265,7 +301,7 @@ th {
     /*padding-bottom: 6px;*/
     /*padding-top: 6px;*/
     padding: 6px;
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     text-transform: capitalize;
 }
 
@@ -278,7 +314,7 @@ th {
 }
 
 img.product-thumb {
-    width: 30px;
+    /*width: 30px;*/
     height: 30px;
 }
 
@@ -957,27 +993,11 @@ html {
     width: 100%;
 }
 
-
-/*body {*/
-/*    height: 100%; !* force the BODY element to match the height of the HTML element *!*/
-/*    width: 100%;*/
-/*    display: table;*/
-/*    margin: 0;*/
-/*}*/
-
 html, body {
     height: 100%;
     width: 100%;
     margin: 0;
-    /*display: table;*/
 }
-
-/*footer {*/
-/*    background-color: grey;*/
-/*    display: table-row;*/
-/*    height: 0;*/
-/*}*/
-
 
 .filter-background {
     width: 100%;
@@ -989,7 +1009,6 @@ html, body {
     background: rgba(0, 0, 0, 0.4);
     bottom: 0;
     right: 0;
-    /*margin: 0 auto; !*horizontally centers div*!*/
     display: none;
 }
 
