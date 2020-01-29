@@ -184,9 +184,7 @@ class Product(models.Model):
         # else:
         #     return self.display_product_type_singular()
         else:
-            path =  'full/standaard_dozen/' + 'standaard_dozen_afbeeldingen_' + self.display_product_type_singular() + '.jpg'
-            print(path)
-            return path
+            return 'full/standaard_dozen/' + 'standaard_dozen_afbeeldingen_' + self.display_product_type_singular() + '.jpg'
 
     # This sets the header descriptions in admin
     display_tierprices.short_description = 'Staffelkorting'
