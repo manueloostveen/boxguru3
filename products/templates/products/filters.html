@@ -20,7 +20,7 @@
                         {% endwith %}
                         {% for filter in filters|slice:"1:" %}
                             <a class="{{ filter.css_class }}"
-                               href="{{ filter.url }}">{{ filter.filter_name }} {{ filter.disabled }}</a>
+                               href="{{ filter.url }}">{{ filter.filter_name }} <span class="filter-count">&nbsp{{ filter.count }}</span>{{ filter.disabled }}</a>
                         {% endfor %}
                     {% endif %}
 

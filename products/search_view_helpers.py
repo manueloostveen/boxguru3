@@ -1,7 +1,7 @@
 from collections import defaultdict
 from os.path import join
 
-from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField, Min, FloatField, Max
+from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField, Min, FloatField, Max, Count
 from urllib.parse import unquote
 from urllib.parse import urlencode as urlencodeP
 
@@ -38,12 +38,21 @@ class Filter:
 
 
 class Filter2:
-    def __init__(self, request, current_filter, filter, remaining_filters):
+    def __init__(self, request, current_filter, filter, remaining_filters, count_dict):
 
         # Filter can either be a tuple or list, depending on request.session (somehow): (value, id)
         # Value into string because GET.getlist() returns list of strings
         current_value = str(filter[0])
         self.filter_name = filter[1]
+
+        # Get filter count from count dict, pass '', this is the clear all filter
+        if not current_value == '':
+            try:
+                self.count = '(' + str(count_dict[current_filter][filter[0]]) + ')'
+            except KeyError:
+                self.count = ''
+
+
 
         GET_copy = request.GET.copy()
         # remove initial search parameter
@@ -174,8 +183,8 @@ class Filter3:
             self.checked = True
 
 
-def create_filter_list2(filter_class, request, filter_type, filter_list, remaining_filters):
-    return [filter_class(request, filter_type, filter, remaining_filters) for filter in filter_list]
+def create_filter_list2(filter_class, request, filter_type, filter_list, remaining_filters, count_dict):
+    return [filter_class(request, filter_type, filter, remaining_filters, count_dict) for filter in filter_list]
 
 
 def create_filter_list(filter_class, request, filter_type, filter_list):
@@ -227,7 +236,7 @@ def create_sort_headers(request, context):
         'category_header': ('product_type', 'DESC'),
         'width_header': ('inner_dim1', 'ASC'),
         'length_header': ('inner_dim2', 'ASC'),
-        'height_header': ('inner_dim3', 'ASC'),
+        'height_header': ('height_sorter', 'ASC'),
         'diameter_header': ('diameter', 'ASC'),
         'match_header': ('max_match', 'ASC'),
         'wall_thickness_header': ('wall_thickness', 'DESC'),
@@ -244,7 +253,7 @@ def create_sort_headers(request, context):
         'product_type': 'Type doos',
         'inner_dim1': 'Breedte',
         'inner_dim2': 'Lengte',
-        'inner_dim3': 'Hoogte',
+        'height_sorter': 'Hoogte',
         'max_match': 'Zoekmatch',
         'price_ex_BTW': 'Prijs',
         'lowest_price': 'Laagste bulkprijs'
@@ -271,7 +280,6 @@ def create_sort_headers(request, context):
 
 
 def create_queryset(request, form, context):
-
     width = form.cleaned_data.get('width')
     length = form.cleaned_data.get('length')
     height = form.cleaned_data.get('height')
@@ -283,20 +291,18 @@ def create_queryset(request, form, context):
     bottles = request.GET.getlist('bottles')
     product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
     companies = request.GET.getlist('company')
-    variable_height_from_get = request.GET.get('variable_height')
-
-    # Deal with variable height
-    variable_height = {}
-    exclude_variable_height = {}
-    if '115' in product_types:
-        product_types.remove('115')
-        variable_height = {'product_type': 115}
-    if variable_height_from_get == '1':
-        variable_height = {'product_type': 115}
-    elif variable_height_from_get == '2':
-        exclude_variable_height = {'product_type': 115}
+    variable_height = form.cleaned_data.get('variable_height')
 
     qobjects = []
+
+    # Deal with variable height
+    qvariable_height = Q()
+    if variable_height == '1':
+        qvariable_height = Q(variable_height=True)
+    elif variable_height == '2':
+        qvariable_height = Q(variable_height=False)
+
+    qobjects.append(qvariable_height)
 
     # Q objects query
     if colors:
@@ -306,7 +312,6 @@ def create_queryset(request, form, context):
     if wall_thicknesses:
         qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
         qobjects.append(qwall_thicknesses)
-
 
     if main_category:
         if main_category == '6':  # (Variable_height)
@@ -428,7 +433,7 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             swidth_width_test=swidth_width_test,
             swidth_length_test=swidth_length_test,
             max_match=Round(Greatest('swidth_width_test', 'swidth_length_test'))).distinct()
@@ -438,7 +443,7 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             slength_width_test=slength_width_test,
             slength_length_test=slength_length_test,
             max_match=Round(Greatest('slength_width_test', 'slength_length_test'))).distinct()
@@ -447,14 +452,14 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             max_match=Round(sheight_height_test)).distinct()
 
     elif length and width and not height:
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             slength_width_test=slength_width_test,
             slength_length_test=slength_length_test,
             swidth_width_test=swidth_width_test,
@@ -467,7 +472,7 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             slength_width_test=slength_width_test,
             slength_length_test=slength_length_test,
             sheight_height_test=sheight_height_test,
@@ -478,19 +483,19 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             swidth_width_test=swidth_width_test,
             swidth_length_test=swidth_length_test,
             sheight_height_test=sheight_height_test,
             wl_match=Greatest('swidth_width_test', 'swidth_length_test'),
-            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3).distinct()
-        )
+            max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).distinct()
+
 
     elif width and length and height:
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             slength_width_test=slength_width_test,
             slength_length_test=slength_length_test,
             swidth_width_test=swidth_width_test,
@@ -505,14 +510,14 @@ def create_queryset(request, form, context):
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             max_match=Round(sdiameter_diameter_test)).distinct()
 
     elif length and diameter:
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
-        ).filter(**variable_height).order_by().annotate(
+        ).order_by().annotate(
             slength_width_test=slength_width_test,
             slength_length_test=slength_length_test,
             sdiameter_diameter_test=sdiameter_diameter_test,
@@ -520,10 +525,7 @@ def create_queryset(request, form, context):
             max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2)).distinct()
 
     else:
-        print(qobjects)
-        queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).exclude(
-            **exclude_variable_height).order_by().distinct()
-        queryset_qobjects = Product.objects.all()
+        queryset_qobjects = Product.objects.filter(*qobjects).order_by().distinct()
 
     return queryset_qobjects, max_match
 
@@ -582,23 +584,10 @@ def create_queryset_product_fit(request, form, context):
 
     colors = request.GET.getlist('color')
     wall_thicknesses = request.GET.getlist('wall_thickness')
-    main_category = request.GET.get('product_type__main_category')
     standard_size = request.GET.getlist('standard_size')
     bottles = request.GET.getlist('bottles')
     product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
     companies = request.GET.getlist('company')
-    variable_height_from_get = request.GET.get('variable_height')
-
-    # Deal with variable height
-    variable_height = {}
-    exclude_variable_height = {}
-    if '115' in product_types:
-        product_types.remove('115')
-        variable_height = {'product_type': 115}
-    if variable_height_from_get == '1':
-        variable_height = {'product_type': 115}
-    elif variable_height_from_get == '2':
-        exclude_variable_height = {'product_type': 115}
 
     qobjects = []
 
@@ -611,16 +600,8 @@ def create_queryset_product_fit(request, form, context):
         qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
         qobjects.append(qwall_thicknesses)
 
-    if main_category:
-        if main_category == '6':  # (Variable_height)
-            variable_height = {'product_type': 115}
-        else:
-            qmain_category = Q(product_type__main_category=main_category)
-            qobjects.append(qmain_category)
-
-    else:
-        qmain_category = Q(product_type__main_category__in=range(1, 11))
-        qobjects.append(qmain_category)
+    qmain_category = Q(product_type__main_category__category_id__in=range(1, 11))
+    qobjects.append(qmain_category)
 
     if len(product_types):
         qproduct_types = Q(product_type__in=product_types)
@@ -640,7 +621,6 @@ def create_queryset_product_fit(request, form, context):
 
     # Set box volume benchmark
     error_margin = 30
-    # TODO change volume_calculated to volume, after volume is added when scraping
     qvolume = Q(volume__range=((product_volume * amount_of_products) - error_margin * product_volume,
                                (product_volume * amount_of_products) + error_margin * product_volume))
 
@@ -649,7 +629,7 @@ def create_queryset_product_fit(request, form, context):
     # Create Queryset
     queryset_qobjects = Product.objects.filter(
         *qobjects
-    ).filter(**variable_height).exclude(**exclude_variable_height).order_by().distinct()
+    ).order_by().distinct()
     #
     # queryset_qobjects = queryset_qobjects.annotate(
     #     volume_calculated=calculate_volume).filter(qvolume)
@@ -770,23 +750,18 @@ def create_filters(request, context, queryset, browse=False):
         request.session['min_height'] = min_max_dimensions['min_height']
         request.session['max_height'] = min_max_dimensions['max_height']
 
-
-
     # todo Make aggregation that counts all filter product amounts in a single query
 
-    filters = ['color', 'wall_thickness', 'standard_size', 'bottles', 'company']
+    filters = ['product_type', 'color', 'wall_thickness', 'standard_size', 'bottles', 'company']
+
     all_filter_values_but_producttype = queryset.order_by().values_list(*filters)
-    product_type_filter_values = set(ProductType.objects.filter(product__in=queryset).values_list('id',
-                                                                                                  flat=True).distinct())
 
-    filters_value_lists = [product_type_filter_values] + [set([value
-                                                               for value
-                                                               in value_list
-                                                               if value])
-                                                          for value_list
-                                                          in zip(*all_filter_values_but_producttype)]
-
-    filters = ['product_type'] + filters
+    filters_value_lists = [set([value
+                                for value
+                                in value_list
+                                if value])
+                           for value_list
+                           in zip(*all_filter_values_but_producttype)]
 
     remaining_filters = []
     for index in range(len(filters_value_lists)):
@@ -794,22 +769,35 @@ def create_filters(request, context, queryset, browse=False):
             remaining_filters.append((value, filters[index]))
 
 
+    count_dictionary = {field: {} for field in filters}
+    remaining_fields = set()
+    for filter in remaining_filters:
+        remaining_fields.add(filter[1])
+    for field in remaining_fields:
+        count_queryset = queryset.values(field).order_by(field).annotate(the_count=Count(field))
+        for object in count_queryset:
+               count_dictionary[field][object[field]] = object['the_count']
+    print(count_dictionary, 'count dictionary')
+
+
+
+
     # Add filters to context, first check if filter keys are still in session
     if 'filter_product_type' in request.session:
         context['filters'] = {
             'Product types': create_filter_list2(Filter2, request, 'product_type',
-                                                 request.session['filter_product_type'], remaining_filters),
+                                                 request.session['filter_product_type'], remaining_filters, count_dictionary),
             'Kwaliteit': create_filter_list2(Filter2, request, 'wall_thickness',
-                                             request.session['filter_wall_thickness'], remaining_filters),
+                                             request.session['filter_wall_thickness'], remaining_filters, count_dictionary),
             'Kleuren': create_filter_list2(Filter2, request, 'color', request.session['filter_color'],
-                                           remaining_filters),
+                                           remaining_filters, count_dictionary),
             'Standaard formaat': create_filter_list2(Filter2, request, 'standard_size',
                                                      request.session['filter_standard_size'],
-                                                     remaining_filters),
+                                                     remaining_filters, count_dictionary),
             'Aantal flessen': create_filter_list2(Filter2, request, 'bottles',
-                                                  request.session['filter_bottles'], remaining_filters),
+                                                  request.session['filter_bottles'], remaining_filters, count_dictionary),
             'Producenten': create_filter_list2(Filter2, request, 'company',
-                                               request.session['filter_company'], remaining_filters),
+                                               request.session['filter_company'], remaining_filters, count_dictionary),
         }
         # Add delete all filters to context
         if len(request.session['filter_product_type']) > 1:  # This means we have filterable results
@@ -827,10 +815,9 @@ def create_filters(request, context, queryset, browse=False):
             if param != 'initial_search' and param != 'filter_width' and param != 'filter_length' and param != 'filter_height':
                 parameter_dict[param] += value
 
-        parameter_dict.default_factory = None # This makes sure Django template can iterate over defaultdict
+        parameter_dict.default_factory = None  # This makes sure Django template can iterate over defaultdict
 
         context['size_filter_get_parameters'] = parameter_dict
-
 
     context['filter_count'] = 0
     for filter_list in context['filters'].values():
@@ -859,8 +846,6 @@ def get_min_max_dimensions(queryset):
         max_var_height=Max('inner_variable_dimension_MAX')
     )
 
-    print(aggregation)
-
     # Determine maximum height
     if aggregation.get('max_var_height') and aggregation.get('max_dim3'):
         if aggregation['max_dim3'] >= aggregation['max_var_height']:
@@ -874,11 +859,11 @@ def get_min_max_dimensions(queryset):
 
     # Determine minimum height
     if aggregation.get('min_var_height') and aggregation.get('min_dim3'):
-        aggregation['min_height'] = aggregation['min_dim3'] if aggregation['min_dim3'] <= aggregation['min_var_height'] else aggregation['min_var_height']
+        aggregation['min_height'] = aggregation['min_dim3'] if aggregation['min_dim3'] <= aggregation[
+            'min_var_height'] else aggregation['min_var_height']
     elif aggregation.get('min_dim3') and not aggregation.get('min_var_height'):
         aggregation['min_height'] = aggregation['min_dim3']
     else:
         aggregation['min_height'] = aggregation['min_var_height']
-
 
     return aggregation

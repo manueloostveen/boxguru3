@@ -104,6 +104,8 @@ class Product(models.Model):
                                                                verbose_name='Outer variable dimension max')
     variable_height = models.BooleanField(blank=True, null=True)
 
+    height_sorter = models.PositiveIntegerField(blank=True, null=True, verbose_name='Sortable height')
+
     diameter = models.PositiveIntegerField(blank=True, null=True, verbose_name='Diameter')
     bottles = models.PositiveIntegerField(blank=True, null=True, verbose_name='Number of bottles')
     standard_size = models.CharField(max_length=5, blank=True, null=True, verbose_name='Standard size')

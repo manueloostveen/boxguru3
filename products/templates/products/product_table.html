@@ -252,7 +252,7 @@
                                                                          src="{% static image_static %}"
                                                                          alt="product">{% endwith %}</a>
                         </td>
-                        <td>{{ object.display_product_type_singular }}
+                        <td>{{ object.product_type }}
                         </td>
                         <td rowspan="2">{% if show_match_header %}
                             Match: {{ object.max_match }}%
@@ -295,7 +295,7 @@
                                 {{ object.inner_dim3 }}{% elif object.inner_variable_dimension_MAX %}
                                 {{ object.inner_variable_dimension_MIN }} -
                                 {{ object.inner_variable_dimension_MAX }}{% endif %}
-                            <span> ({{ object.volume }}L)</span>
+                            <span> ({{ object.volume|floatformat }}L)</span>
                         </td>
                     </tr>
 
@@ -515,8 +515,8 @@
                                 {{ object.inner_dim3 }}
                             {% else %}-
                             {% endif %}{% endif %}</td>
-                        <td>{{ object.volume }}L</td>
-                        {% if object.max_match %}
+                        <td>{{ object.volume|floatformat }}L</td>
+                        {% if show_match_header %}
                             <td>{{ object.max_match }}%</td>{% endif %}
                         <td>{{ object.wall_thickness }}</td>
                         <td>{{ object.color }}</td>

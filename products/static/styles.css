@@ -1066,6 +1066,11 @@ html, body {
     /*display: none;*/
 }
 
+.filter-section span.filter-count {
+    font-size: 12px;
+    color: #cbea99;
+}
+
 
 .filter-section label {
     background-color: #73AD21;
