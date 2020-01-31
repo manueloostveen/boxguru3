@@ -1,13 +1,15 @@
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from users.models import CustomUser
 
 
 class MainCategory(models.Model):
     category = models.CharField(max_length=120, verbose_name='Hoofdcategorie', null=True)
+    category_id = models.IntegerField(blank=True, null=True, verbose_name='Category id')
 
     def __str__(self):
-        return self.category + " " + str(self.pk)
+        return self.category + " " + str(self.category_id)
 
     def get_absolute_url(self):
         return reverse('categories-detail', args=[str(self.id)])
@@ -36,9 +38,10 @@ class ProductType(models.Model):
     type = models.CharField(max_length=120, verbose_name='Product Type')
     type_singular = models.CharField(max_length=120, verbose_name='Product Type Singular', blank=True, null=True)
     main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
+    product_type_id = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.type + ' ' + str(self.id)
+        return self.type + ' ' + str(self.product_type_id)
 
     def get_absolute_url(self):
         return reverse('producttype-detail', args=[str(self.id)])
@@ -89,7 +92,7 @@ class Product(models.Model):
     outer_dim1 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Outer width')
     outer_dim2 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Outer length')
     outer_dim3 = models.PositiveIntegerField(blank=True, null=True, verbose_name='Outer height')
-    volume = models.DecimalField(blank=True, null=True, decimal_places=1, max_digits=10, verbose_name='Volume')
+    volume = models.DecimalField(blank=True, null=True, decimal_places=4, max_digits=10, verbose_name='Volume')
 
     inner_variable_dimension_MIN = models.PositiveIntegerField(blank=True, null=True,
                                                                verbose_name='Inner variable dimension min')
@@ -99,11 +102,13 @@ class Product(models.Model):
                                                                verbose_name='Outer variable dimension min')
     outer_variable_dimension_MAX = models.PositiveIntegerField(blank=True, null=True,
                                                                verbose_name='Outer variable dimension max')
+    variable_height = models.BooleanField(blank=True, null=True)
+
     diameter = models.PositiveIntegerField(blank=True, null=True, verbose_name='Diameter')
     bottles = models.PositiveIntegerField(blank=True, null=True, verbose_name='Number of bottles')
     standard_size = models.CharField(max_length=5, blank=True, null=True, verbose_name='Standard size')
 
-    product_type = models.ManyToManyField(to=ProductType)
+    product_type = models.ForeignKey(ProductType, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Product type')
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
     description = models.CharField(max_length=120, blank=True, default='', verbose_name='Product description')
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, verbose_name='Color')
@@ -121,7 +126,7 @@ class Product(models.Model):
 
     tags = models.ManyToManyField(Tag)
 
-    users = models.ManyToManyField(User, verbose_name='Liked by', blank=True)
+    users = models.ManyToManyField(CustomUser, verbose_name='Liked by', blank=True)
 
     product_image = models.CharField(max_length=200, blank=True, null=True)
 
@@ -152,11 +157,12 @@ class Product(models.Model):
         return ' | '.join(str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all())
 
     def display_product_types(self):
-
-        return ''.join(str(product_type.type) for product_type in self.product_type.all() if product_type.pk != 115)
+        return self.product_type
+        # return ''.join(str(product_type.type) for product_type in self.product_type.all() if product_type.pk != 115)
 
     def display_product_type_singular(self):
-        return ''.join(str(product_type.type_singular) for product_type in self.product_type.all() if product_type.pk != 115)
+        return 'test display_prodtypesingular'
+        # return ''.join(str(product_type.type_singular) for product_type in self.product_type.all() if product_type.pk != 115)
 
     def popover_tierprices(self):
         return [str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.order_by('-price').all()]

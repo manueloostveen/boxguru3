@@ -503,11 +503,11 @@
                         </td>
                         <td>{{ object.display_product_types }}
                             <span class="tooltiptext">{{ object.description }}</span></td>
-                        <td>{{ object.inner_dim1 }}</td>
+                        <td>{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %}</td>
                         <td>{% if searched == 'tube' %}{{ object.inner_dim2 }}
                             {{ object.inner_variable_dimension_MIN }}-
                             {{ object.inner_variable_dimension_MAX }}{% else %}
-                            {{ object.inner_dim2 }}{% endif %}</td>
+                            {% if object.inner_dim2 %}{{ object.inner_dim2 }}{% else %}-{% endif %}{% endif %}</td>
                         <td>{% if searched == 'tube' %}&Oslash{{ object.diameter }}{% else %}
                             {% if object.inner_variable_dimension_MAX %}
                                 {{ object.inner_variable_dimension_MIN }}-{{ object.inner_variable_dimension_MAX }}

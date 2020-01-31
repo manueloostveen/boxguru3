@@ -307,6 +307,7 @@ def create_queryset(request, form, context):
         qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
         qobjects.append(qwall_thicknesses)
 
+
     if main_category:
         if main_category == '6':  # (Variable_height)
             variable_height = {'product_type': 115}
@@ -316,14 +317,14 @@ def create_queryset(request, form, context):
 
     else:
         if context['searched'] == 'box':
-            qmain_category = Q(product_type__main_category__in=range(1, 11))
+            qmain_category = Q(product_type__main_category__category_id__in=list(range(1, 11)))
             qobjects.append(qmain_category)
-        elif context['searched'] == 'tube':
-            qmain_category = Q(product_type__main_category=14)
-            qobjects.append(qmain_category)
-        elif context['searched'] == 'envelope':
-            qmain_category = Q(product_type__main_category=13)
-            qobjects.append(qmain_category)
+        # elif context['searched'] == 'tube':
+        #     qmain_category = Q(product_type__main_category=14)
+        #     qobjects.append(qmain_category)
+        # elif context['searched'] == 'envelope':
+        #     qmain_category = Q(product_type__main_category=13)
+        #     qobjects.append(qmain_category)
 
     if len(product_types):
         qproduct_types = Q(product_type__in=product_types)
@@ -519,8 +520,10 @@ def create_queryset(request, form, context):
             max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2)).distinct()
 
     else:
+        print(qobjects)
         queryset_qobjects = Product.objects.filter(*qobjects).filter(**variable_height).exclude(
             **exclude_variable_height).order_by().distinct()
+        queryset_qobjects = Product.objects.all()
 
     return queryset_qobjects, max_match
 
@@ -640,8 +643,6 @@ def create_queryset_product_fit(request, form, context):
     # TODO change volume_calculated to volume, after volume is added when scraping
     qvolume = Q(volume__range=((product_volume * amount_of_products) - error_margin * product_volume,
                                (product_volume * amount_of_products) + error_margin * product_volume))
-
-    print(qvolume, 'qvolume')
 
     qobjects.append(qvolume)
 
@@ -858,6 +859,8 @@ def get_min_max_dimensions(queryset):
         max_var_height=Max('inner_variable_dimension_MAX')
     )
 
+    print(aggregation)
+
     # Determine maximum height
     if aggregation.get('max_var_height') and aggregation.get('max_dim3'):
         if aggregation['max_dim3'] >= aggregation['max_var_height']:
@@ -876,5 +879,6 @@ def get_min_max_dimensions(queryset):
         aggregation['min_height'] = aggregation['min_dim3']
     else:
         aggregation['min_height'] = aggregation['min_var_height']
+
 
     return aggregation

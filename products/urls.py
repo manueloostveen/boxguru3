@@ -38,6 +38,8 @@ urlpatterns = [
     path('unlike/<pk>/', views.unlike_product, name='unlike-product'),
 
     path('search/', views.search_product, name='search-product'),
+    path('search/<str:category_name>/', views.search_product, name='footer-search'),
+    path('aanmelden/', views.signup, name='signup')
 ]
 
 urlpatterns += [

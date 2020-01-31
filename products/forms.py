@@ -6,6 +6,10 @@ from django.db.models import Q
 from products.product_categories import box_main_category_dict as box_cat
 from products.product_categories import not_box_main_category_dict as not_box
 import operator
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+from .populate_db import box_main_categories
 
 
 class SearchProductForm(forms.Form):
@@ -102,7 +106,7 @@ class SearchBoxForm(forms.Form):
         super(SearchBoxForm, self).__init__(*args, **kwargs)
 
         # Q objects & queryset for all box main_categories
-        q_objects_main_categories = (Q(category=category) for category in box_cat.values())
+        q_objects_main_categories = (Q(category_id=category[0]) for category in box_main_categories.keys())
         main_category_qset = MainCategory.objects.filter(reduce(operator.or_, q_objects_main_categories))
 
         # Category choices for form
@@ -227,16 +231,6 @@ class SearchEnvelopeBagForm(forms.Form):
 
 
 class FitProductForm(forms.Form):
-    # no_tipping = forms.BooleanField(required=False)
-    # no_stacking = forms.BooleanField(required=False)
-
-    # no_tipping = forms.BooleanField(required=False, label='Product mag niet kantelen', widget=forms.CheckboxInput(attrs={
-    #     'placeholder': "Kantelen",
-    # }))
-
-    # no_stacking = forms.BooleanField(required=False, label='Product mag niet gestapeld', widget=forms.CheckboxInput(attrs={
-    #     'placeholder': "Stapelen",
-    # }))
 
     rectangular_cylindrical = forms.ChoiceField(
         widget=forms.Select(attrs={
@@ -293,32 +287,14 @@ class FitProductForm(forms.Form):
         'placeholder': "Aantal producten in doos",
     }))
 
-    product_type__main_category = forms.ChoiceField(
-        widget=forms.Select(attrs={
-            'class': 'custom-select mb-3',
-        }),
-        required=False,
-        initial=None,
-    )
 
-    def __init__(self, *args, **kwargs):
-        super(FitProductForm, self).__init__(*args, **kwargs)
 
-        # Q objects & queryset for all box main_categories
-        q_objects_main_categories = (Q(category=category) for category in box_cat.values())
-        main_category_qset = MainCategory.objects.filter(reduce(operator.or_, q_objects_main_categories))
 
-        # Category choices for form
-        form_choices = [(category.id, category.category) for category in main_category_qset] + [('', 'Alle dozen')]
+class SignUpForm(UserCreationForm):
+    # first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
+    # last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
+    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
 
-        # All sub categories:
-        product_type_qset = ProductType.objects.filter(main_category__in=main_category_qset)
-
-        # Q objects & queryset for all box type products
-        q_objects_box = (Q(product_type=product_type) for product_type in
-                         product_type_qset.values_list('id', flat=True))
-        box_qset = Product.objects.filter(reduce(operator.or_, q_objects_box))
-
-        # Load queryset choices here so db calls are not made during migrations
-        self.fields['product_type__main_category'].choices = form_choices
-
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2', )

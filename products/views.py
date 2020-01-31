@@ -9,7 +9,7 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from products.models import Product, WallThickness, Color, ProductType, Company
-from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm, FitProductForm
+from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm, FitProductForm, SignUpForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalField, Avg, Func, Count
@@ -21,6 +21,7 @@ from products.search_view_helpers import Round, Abs, Filter, Filter2, create_fil
     create_queryset_product_fit, create_filters
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
+from django.contrib.auth import login, authenticate
 
 
 # Create your views here.
@@ -674,7 +675,7 @@ def search_product_OLD(request):
     return render(request, template_name, context)
 
 
-def search_product(request):
+def search_product(request, category_name=None):
     context = {}
     template_name = 'products/search_products.html'
 
@@ -773,6 +774,20 @@ def search_product(request):
     return render(request, template_name, context)
 
 
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            # email = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('search-product')
+    else:
+        form = SignUpForm()
+    return render(request, 'products/signup.html', {'form': form})
 class ProductCreate(PermissionRequiredMixin, CreateView):
     # template_name_suffix = '_other_suffix' default template is: model_name_form.html
     model = Product
@@ -800,3 +815,4 @@ def bootstrap(request):
     template_name = 'products/bootstrap2.html'
     context['queryset'] = Product.objects.all()
     return render(request, template_name, context)
+

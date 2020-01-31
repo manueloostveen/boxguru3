@@ -53,11 +53,15 @@
                             src="{% static 'products/images/logo/boxguru_logo_v1.svg' %}"
                             alt="BOXGURU"></a></div>
                 {% if user.is_authenticated %}
-                    <div><a href="{% url 'logout' %}?next={{ request.get_full_path }}"><h4>
+                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h4>
                         Uitloggen: {{ user.get_username }}</h4></a></div>
 
                 {% else %}
-                    <div><a href="{% url 'login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a></div>
+                    <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>
+                    </div>
+                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Aanmelden</h4></a>
+                    </div>
+
                 {% endif %}
                 {#                <a href="{% url 'index' %}"><h4>HOME</h4></a>#}
                 {#                <a href="{% url 'search-product' %}"><h4>ZOEK DOZEN</h4></a>#}
@@ -121,11 +125,19 @@
 {% block footer %}
 
     <footer class="footer">
-        <div>
-            <a href="{% url 'index' %}"><h4>HOME</h4></a>
-            <a href="{% url 'search-product' %}"><h4>ZOEK DOZEN</h4></a>
-            <a href=""><h4>VOLLEDIG ASSORTIMENT</h4></a>
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <h4>VOLLEDIG ASSORTIMENT</h4>
+                {% for url in footer_urls %}
+                    <a href="{% url 'footer-search' category_name=url.0 %}?{{ url.1 }}">{{ url.0 }}</a>
+                    {#                    {% url 'panel_person_form' person_id=item.id %}#}
+                {% endfor %}
+            </div>
+            <div class="col-2"></div>
+
         </div>
+
     </footer>
 {% endblock %}
 
