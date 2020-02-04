@@ -110,7 +110,7 @@ class SearchBoxForm(forms.Form):
         main_category_qset = MainCategory.objects.filter(reduce(operator.or_, q_objects_main_categories))
 
         # Category choices for form
-        form_choices = [(category.id, category.category) for category in main_category_qset] + [('', 'Alle dozen')]
+        form_choices = [(category.category_id, category.category) for category in main_category_qset] + [('', 'Alle dozen')]
 
         # All sub categories:
         product_type_qset = ProductType.objects.filter(main_category__in=main_category_qset)

@@ -6,7 +6,7 @@ from users.models import CustomUser
 
 class MainCategory(models.Model):
     category = models.CharField(max_length=120, verbose_name='Hoofdcategorie', null=True)
-    category_id = models.IntegerField(blank=True, null=True, verbose_name='Category id')
+    category_id = models.IntegerField(blank=True,verbose_name='Category id')
 
     def __str__(self):
         return self.category + " " + str(self.category_id)
@@ -38,7 +38,7 @@ class ProductType(models.Model):
     type = models.CharField(max_length=120, verbose_name='Product Type')
     type_singular = models.CharField(max_length=120, verbose_name='Product Type Singular', blank=True, null=True)
     main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
-    product_type_id = models.IntegerField(null=True, blank=True)
+    product_type_id = models.IntegerField(blank=True)
 
     def __str__(self):
         return self.type + ' ' + str(self.product_type_id)
@@ -163,7 +163,7 @@ class Product(models.Model):
         # return ''.join(str(product_type.type) for product_type in self.product_type.all() if product_type.pk != 115)
 
     def display_product_type_singular(self):
-        return 'test display_prodtypesingular'
+        return str(self.product_type.product_type_id)
         # return ''.join(str(product_type.type_singular) for product_type in self.product_type.all() if product_type.pk != 115)
 
     def popover_tierprices(self):
@@ -192,7 +192,7 @@ class Product(models.Model):
         # else:
         #     return self.display_product_type_singular()
         else:
-            return 'full/standaard_dozen/' + 'standaard_dozen_afbeeldingen_' + self.display_product_type_singular() + '.jpg'
+            return 'standaard_dozen/' + 'standaard_dozen_afbeeldingen_' + self.display_product_type_singular() + '.jpg'
 
     # This sets the header descriptions in admin
     display_tierprices.short_description = 'Staffelkorting'

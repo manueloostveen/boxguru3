@@ -4,7 +4,7 @@ from .models import Product, WallThickness, Color, ProductType, MainCategory
 
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.search_product, name='index'),
 
     path('products/', views.GenericListView.as_view(model=Product), name='products'),
     path('products/<int:pk>', views.ProductDetailView.as_view(), name='product-detail'),

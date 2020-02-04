@@ -1,92 +1,90 @@
-<div class="filter-title">
-    <a id="filter"></a>
-    <h4>RESULTATEN:{% if products %}<span> {{ products_found }}</span>{% else %}
-        <span class="no-results"> 0</span>{% endif %}</h4>
-</div>
-
 <div class="row d-flex justify-content-center">
     <div class="col-xs-12 col-sm-12">
         <div class="text-center">
 
-            {% if filterable_results %}<h4>FILTERS</h4>
-            <div class="filter-section">
-                {% for filter_name, filters in filters.items %}
-                    {% if filters|length > 1 %}
-                        {% with filters|first as clear_all %}
+            {% if filterable_results %}<h3>FILTERS</h3>
+                <div class="filter-section">
+                    <form action="{{ request.get_full_path }}#filter">
+                        <div>
                             <div>
-                                <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"
-                                                             href="{{ clear_all.url }}"></a>
+                                <div class="measurement-filter-header"><h4>Breedte (mm)</h4><a
+                                        data-from="{{ min_width }}" data-to="{{ max_width }}" data-target="filter_width"
+                                        class="deactivate-all disabled del-meas"></a></div>
+
+                                <div class="slider">
+                                    <input type="text" class="js-range-slider" name="filter_width" value=""
+                                           data-type="double"
+                                           data-min="{{ min_width }}"
+                                           data-max="{{ max_width }}"
+                                           data-from="{{ filter_min_width }}"
+                                           data-to="{{ filter_max_width }}"
+                                           data-step="10"
+                                           id="filter_width"
+                                    />
+                                </div>
                             </div>
-                        {% endwith %}
-                        {% for filter in filters|slice:"1:" %}
-                            <a class="{{ filter.css_class }}"
-                               href="{{ filter.url }}">{{ filter.filter_name }} <span class="filter-count">&nbsp{{ filter.count }}</span>{{ filter.disabled }}</a>
+
+                            <div>
+                                <div class="measurement-filter-header"><h4>Lengte (mm)</h4><a
+                                        data-from="{{ min_length }}" data-to="{{ max_length }}"
+                                        data-target="filter_length" class="deactivate-all disabled del-meas"></a></div>
+                                <div class="slider">
+                                    <input type="text" class="js-range-slider" name="filter_length" value=""
+                                           data-type="double"
+                                           data-min="{{ min_length }}"
+                                           data-max="{{ max_length }}"
+                                           data-from="{{ filter_min_length }}"
+                                           data-to="{{ filter_max_length }}"
+                                           data-step="10"
+
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="measurement-filter-header"><h4>Hoogte (mm)</h4><a
+                                        data-from="{{ min_height }}" data-to="{{ max_height }}"
+                                        data-target="filter_height" class="deactivate-all disabled del-meas"></a></div>
+                                <div class="slider">
+                                    <input type="text" class="js-range-slider" name="filter_height" value=""
+                                           data-type="double"
+                                           data-min="{{ min_height }}"
+                                           data-max="{{ max_height }}"
+                                           data-from="{{ filter_min_height }}"
+                                           data-to="{{ filter_max_height }}"
+                                           data-step="10"
+
+
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <input class="measurement-filter-button" type="submit" value="Update maten">
+                        {% for parameter, values in size_filter_get_parameters.items %}
+                            {% for value in values %}
+                                <input type="hidden" name="{{ parameter }}" value="{{ value }}">
+                            {% endfor %}
                         {% endfor %}
-                    {% endif %}
+                    </form>
+                    {% for filter_name, filters in filters.items %}
+                        {% if filters|length > 1 %}
+                            {% with filters|first as clear_all %}
+                                <div>
+                                    <h4>{{ filter_name }}</h4><a class="{{ clear_all.css_class }}"
+                                                                 href="{{ clear_all.url }}"></a>
+                                </div>
+                            {% endwith %}
+                            {% for filter in filters|slice:"1:" %}
+                                <a class="{{ filter.css_class }}"
+                                   href="{{ filter.url }}">{{ filter.filter_name }} <span
+                                        class="filter-count">&nbsp{{ filter.count }}</span>{{ filter.disabled }}</a>
+                            {% endfor %}
+                        {% endif %}
 
-                {% endfor %}
-
-
-                <form action="{{ request.get_full_path }}#filter">
-                    <div>
-                        <div>
-                            <div class="measurement-filter-header"><h4>Breedte (mm)</h4><a data-from="{{ min_width }}" data-to="{{ max_width }}" data-target="filter_width" class="deactivate-all disabled del-meas"></a></div>
-
-                            <div  class="slider">
-                                <input type="text" class="js-range-slider" name="filter_width" value=""
-                                       data-type="double"
-                                       data-min="{{ min_width }}"
-                                       data-max="{{ max_width }}"
-                                       data-from="{{ filter_min_width }}"
-                                       data-to="{{ filter_max_width }}"
-                                       data-step="10"
-                                       id="filter_width"
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="measurement-filter-header"><h4>Lengte (mm)</h4><a data-from="{{ min_length }}" data-to="{{ max_length }}" data-target="filter_length" class="deactivate-all disabled del-meas"></a></div>
-                            <div class="slider">
-                                <input type="text" class="js-range-slider" name="filter_length" value=""
-                                       data-type="double"
-                                       data-min="{{ min_length }}"
-                                       data-max="{{ max_length }}"
-                                       data-from="{{ filter_min_length }}"
-                                       data-to="{{ filter_max_length }}"
-                                       data-step="10"
-
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="measurement-filter-header"><h4>Hoogte (mm)</h4><a data-from="{{ min_height }}" data-to="{{ max_height }}" data-target="filter_height" class="deactivate-all disabled del-meas"></a></div>
-                            <div class="slider">
-                                <input type="text" class="js-range-slider" name="filter_height" value=""
-                                       data-type="double"
-                                       data-min="{{ min_height }}"
-                                       data-max="{{ max_height }}"
-                                       data-from="{{ filter_min_height }}"
-                                       data-to="{{ filter_max_height }}"
-                                       data-step="10"
-
-
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <input class="measurement-filter-button" type="submit" value="Update maten">
-                    {% for parameter, values in size_filter_get_parameters.items %}
-                        {% for value in values %}
-                            <input type="hidden" name="{{ parameter }}" value="{{ value }}">
-                        {% endfor %}
                     {% endfor %}
-                </form>
 
-
-            </div>
-        {% endif %}
+                </div>
+            {% endif %}
             {% if clear_all_filters_url %}
                 <div class="filter-section">
                     <a class="filter-reset" href="{{ clear_all_filters_url }}#filter">RESET ALLE FILTERS</a>

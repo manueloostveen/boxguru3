@@ -7,16 +7,16 @@ from products.models import MainCategory, ProductType
 
 
 box_main_categories = {
-    (1, 'vouwdozen'): [(1, 'autolock dozen'), (2, 'deksel dozen'), (3, 'standaard dozen')], #Vouwdozen
-    (2, 'verhuis-, ordner- & archiefdozen '): [(4, 'ordner dozen'), (5, 'verhuis dozen'), (22, 'archief dozen')],  # Verhuis/order/archiefdozen
-    (3, 'palletdozen'): [(6, 'pallet dozen')],  # Palletdozen
-    (4, 'verzenddozen'): [(7, 'brievenbus dozen'), (8, 'envelobox'), (9, 'post dozen')],  # Verzenddozen
-    (5, 'luxe/geschenk dozen'): [(10, 'geschenk dozen'), (11, 'giftcard dozen'), (12, 'gondel dozen'), (13, 'magneet dozen')],  # Speciale dozen
-    (6, 'flessendozen'): [(14, 'bier dozen'), (15, 'wijn dozen')],  # Flessendozen
-    (7, 'extra veilige dozen'): [(16, 'UN dozen'), (17, 'fixeer-/zweef verpakkingen'), (18, 'schuim dozen')], #Extra veilige dozen
-    (8, 'kruiswikkel-/boekverpakkingen'): [(19, 'kruiswikkel/boek verpakkingen')], #Kruiswikkel/boekverpakkingen
-    (9, 'schuifdozen'): [(20, 'schuifdozen')], #Overige dozen
-    (10,'koeldozen'): [(21, 'koeldozen')],  # Koeldozen
+    (1, 'vouwdozen'): [(1, 'autolock dozen', 'autolockdozen'), (2, 'deksel dozen', 'dekseldozen'), (3, 'standaard dozen', 'standaarddozen')], #Vouwdozen
+    (2, 'verhuis-, ordner- & archiefdozen '): [(4, 'ordner dozen', 'ordnerdozen'), (5, 'verhuis dozen', 'verhuisdozen'), (22, 'archief dozen', 'archiefdozen')],  # Verhuis/order/archiefdozen
+    (3, 'palletdozen'): [(6, 'pallet dozen', 'palletdozen')],  # Palletdozen
+    (4, 'verzenddozen'): [(7, 'brievenbus dozen', 'brievenbusdozen'), (8, 'envelobox', 'envelobox'), (9, 'post dozen', 'postdozen')],  # Verzenddozen
+    (5, 'luxe/geschenk dozen'): [(10, 'geschenk dozen', 'geschenkdozen'), (11, 'giftcard dozen', 'giftcarddozen'), (12, 'gondel dozen', 'gondeldozen'), (13, 'magneet dozen', 'magneetdozen')],  # Speciale dozen
+    (6, 'flessendozen'): [(14, 'bier dozen', 'bierdozen'), (15, 'wijn dozen', 'wijndozen')],  # Flessendozen
+    (7, 'extra veilige dozen'): [(16, 'UN dozen', 'UN-dozen'), (17, 'fixeer- & zweefverpakkingen', 'fixeer-zweefverpakkingen'), (18, 'schuim dozen', 'schuimdozen')], #Extra veilige dozen
+    (8, 'kruiswikkel- & boekverpakkingen'): [(19, 'kruiswikkel- & boekverpakkingen', 'kruiswikkel-boek-verpakkingen')], #Kruiswikkel/boekverpakkingen
+    (9, 'schuifdozen'): [(20, 'schuifdozen', 'schuifdozen')], #Overige dozen
+    (10,'koeldozen'): [(21, 'koeldozen', 'koeldozen')],  # Koeldozen
 }
 
 def create_main_box_categories():
@@ -27,11 +27,12 @@ def create_product_types():
     for key, values in box_main_categories.items():
         for type in values:
             main_category = MainCategory.objects.get(category_id=key[0])
-            ProductType.objects.create(
+            ProductType.objects.get_or_create(
                 type=type[1],
                 product_type_id=type[0],
                 main_category=main_category
             )
+
 
 
 if __name__ == '__main__':

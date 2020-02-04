@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Uitloggen" %}{% endblock %}
+
+{% block content %}
+    <div class="row d-flex justify-content-center">
+        <div class="col-5 text-center">
+            <h1 class="mt-4">{% trans "Uitloggen" %}</h1>
+
+            <p>{% trans 'Weet je zeker dat je wilt uitloggen?' %}</p>
+
+            <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                {% endif %}
+                <button class="measurement-filter-button" type="submit">{% trans 'Uitloggen' %}</button>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}

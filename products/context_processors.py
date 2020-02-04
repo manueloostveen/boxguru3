@@ -1,5 +1,5 @@
 from django.db.models import Q
-from products.product_categories import box_main_categories as box_cat
+from products.populate_db import box_main_categories
 from django.http import QueryDict
 
 def footer(request):
@@ -7,17 +7,17 @@ def footer(request):
     urls = []
     context = {}
 
-    for main_cat_id, categories in box_cat.items():
-        for id in categories:
+    for main_category, product_types in box_main_categories.items():
+        for product_type in product_types:
             get_dict = {}
-            get_dict['product_type__main_category'] = str(main_cat_id)
-            get_dict['product_type'] = str(id[0])
+            get_dict['product_type__main_category'] = str(main_category[0])
+            get_dict['product_type__product_type_id'] = str(product_type[0])
             get_dict['form'] = 'box'
 
             querydict = QueryDict('', mutable=True)
             querydict.update(**get_dict)
             url = querydict.urlencode()
-            urls.append((id[1], url, id[0]))
+            urls.append((product_type[1], url, product_type[2]))
 
     context['footer_urls'] = urls
 

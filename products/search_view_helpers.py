@@ -286,10 +286,10 @@ def create_queryset(request, form, context):
     diameter = form.cleaned_data.get('diameter')
     colors = request.GET.getlist('color')
     wall_thicknesses = request.GET.getlist('wall_thickness')
-    main_category = request.GET.get('product_type__main_category')
+    main_category = form.cleaned_data.get('product_type__main_category')
     standard_size = request.GET.getlist('standard_size')
     bottles = request.GET.getlist('bottles')
-    product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
+    product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if product_type]
     companies = request.GET.getlist('company')
     variable_height = form.cleaned_data.get('variable_height')
 
@@ -314,11 +314,8 @@ def create_queryset(request, form, context):
         qobjects.append(qwall_thicknesses)
 
     if main_category:
-        if main_category == '6':  # (Variable_height)
-            variable_height = {'product_type': 115}
-        else:
-            qmain_category = Q(product_type__main_category=main_category)
-            qobjects.append(qmain_category)
+        qmain_category = Q(product_type__main_category=main_category)
+        qobjects.append(qmain_category)
 
     else:
         if context['searched'] == 'box':
@@ -332,7 +329,7 @@ def create_queryset(request, form, context):
         #     qobjects.append(qmain_category)
 
     if len(product_types):
-        qproduct_types = Q(product_type__in=product_types)
+        qproduct_types = Q(product_type__product_type_id__in=product_types)
         qobjects.append(qproduct_types)
 
     if len(standard_size):
@@ -346,6 +343,8 @@ def create_queryset(request, form, context):
     if len(companies):
         qcompanies = Q(company__in=companies)
         qobjects.append(qcompanies)
+
+    print(qobjects)
 
     # Set error margin for query search range
     error_margin = 50
@@ -604,7 +603,7 @@ def create_queryset_product_fit(request, form, context):
     qobjects.append(qmain_category)
 
     if len(product_types):
-        qproduct_types = Q(product_type__in=product_types)
+        qproduct_types = Q(product_type__product_type_id__in=product_types)
         qobjects.append(qproduct_types)
 
     if len(standard_size):
@@ -713,7 +712,7 @@ def create_filters(request, context, queryset, browse=False):
     if request.GET.get('initial_search') or browse:
 
         request.session['filter_product_type'] = no_filter + list(
-            ProductType.objects.filter(product__in=queryset).values_list('id', 'type').distinct())
+            ProductType.objects.filter(product__in=queryset).values_list('product_type_id', 'type').distinct())
 
         # Remove variable height boxes from product type filter
         if (115, 'variabele hoogte dozen') in request.session['filter_product_type']:
@@ -752,7 +751,7 @@ def create_filters(request, context, queryset, browse=False):
 
     # todo Make aggregation that counts all filter product amounts in a single query
 
-    filters = ['product_type', 'color', 'wall_thickness', 'standard_size', 'bottles', 'company']
+    filters = ['product_type__product_type_id', 'color', 'wall_thickness', 'standard_size', 'bottles', 'company']
 
     all_filter_values_but_producttype = queryset.order_by().values_list(*filters)
 
@@ -762,6 +761,7 @@ def create_filters(request, context, queryset, browse=False):
                                 if value])
                            for value_list
                            in zip(*all_filter_values_but_producttype)]
+
 
     remaining_filters = []
     for index in range(len(filters_value_lists)):
@@ -777,15 +777,12 @@ def create_filters(request, context, queryset, browse=False):
         count_queryset = queryset.values(field).order_by(field).annotate(the_count=Count(field))
         for object in count_queryset:
                count_dictionary[field][object[field]] = object['the_count']
-    print(count_dictionary, 'count dictionary')
-
-
 
 
     # Add filters to context, first check if filter keys are still in session
     if 'filter_product_type' in request.session:
         context['filters'] = {
-            'Product types': create_filter_list2(Filter2, request, 'product_type',
+            'Product types': create_filter_list2(Filter2, request, 'product_type__product_type_id',
                                                  request.session['filter_product_type'], remaining_filters, count_dictionary),
             'Kwaliteit': create_filter_list2(Filter2, request, 'wall_thickness',
                                              request.session['filter_wall_thickness'], remaining_filters, count_dictionary),

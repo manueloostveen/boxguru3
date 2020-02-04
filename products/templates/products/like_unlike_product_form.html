@@ -14,5 +14,5 @@
         </form>
     {% endif %}
 {% else %}
-    <a href="{% url 'login' %}?next={{ request.get_full_path }}">Login</a>
+    <a href="{% url 'account_login' %}?next={{ request.get_full_path }}">Login</a>
 {% endif %}

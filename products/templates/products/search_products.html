@@ -12,7 +12,7 @@
 
         <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
 
-{#            <h1 class="pt-3 main-title">ZOEK</h1>#}
+            {#            <h1 class="pt-3 main-title">ZOEK</h1>#}
 
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -178,7 +178,15 @@
 
     {% if no_search %}
     {% else %}
-        {% include 'products/filters.html' %}
+        <div class="filter-title">
+            <h4 class="mb-3">RESULTATEN:{% if products %}<span> {{ products_found }}</span>{% else %}
+                <span class="no-results"> 0</span>{% endif %}</h4>
+        </div>
+        <a id="filter"></a>
+
+        <div class="product-filter-mobile">
+            {% include 'products/filters.html' %}
+        </div>
     {% endif %}
 
 
