@@ -22,6 +22,7 @@ from products.search_view_helpers import Round, Abs, Filter, Filter2, create_fil
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
+from .populate_db import get_parameter_to_category_product_type_id as get2cat
 
 
 # Create your views here.
@@ -242,7 +243,6 @@ def unlike_product(request, pk):
         next = request.POST.get('next', '/')
 
         return HttpResponseRedirect(next)
-
 
 
 def search_product_OLD(request):
@@ -674,37 +674,44 @@ def search_product_OLD(request):
 
     return render(request, template_name, context)
 
+def home(request):
+    context = {}
+    template_name = 'products/home.html'
 
-def search_product(request, category_name=None):
+    if request.method == 'GET':
+        context['box_form'] = SearchBoxForm()
+        context['fit_product_form'] = FitProductForm()
+        context['boxes'] = Product.objects.filter(product_type__main_category__category_id__in=range(1,11)).count()
+        context['companies'] = Company.objects.count()
+        print(context['boxes'], context['companies'])
+
+    return render(request, template_name, context)
+
+
+
+
+def search_product(request, test=None, category_name=None):
     context = {}
     template_name = 'products/search_products.html'
 
     if request.method == 'GET':
 
-        # Check GET request if and what type of form is requested
-        form = None
-        context['box_form'] = SearchBoxForm()
-        # context['tube_form'] = SearchTubeForm()
-        # context['envelope_form'] = SearchEnvelopeBagForm()
-        context['fit_product_form'] = FitProductForm()
+        product_type_footer = None
+        browse = False
+        if category_name:
+            category, product_type_footer = get2cat[category_name]
+            browse = True
+            form = SearchBoxForm({'category': category})
+            context['box_form'] = form
+            context['fit_product_form'] = FitProductForm()
+            context['category_name'] = category_name
 
-        if 'form' in request.GET:
+        elif 'form' in request.GET:
             if request.GET['form'] == 'box':
                 context['box_form'] = SearchBoxForm(request.GET)
+                context['fit_product_form'] = FitProductForm()
                 context['searched'] = 'box'
                 form = context['box_form']
-
-
-            # elif request.GET['form'] == 'tube':
-            #     context['tube_form'] = SearchTubeForm(request.GET)
-            #     context['searched'] = 'tube'
-            #     form = context['tube_form']
-
-
-            # elif request.GET['form'] == 'envelope':
-            #     context['envelope_form'] = SearchEnvelopeBagForm(request.GET)
-            #     context['searched'] = 'envelope'
-            #     form = context['envelope_form']
 
             elif request.GET['form'] == 'fitbox':
                 context['fit_product_form'] = FitProductForm(request.GET)
@@ -712,6 +719,10 @@ def search_product(request, category_name=None):
                 form = context['fit_product_form']
 
         else:
+            # Check GET request if and what type of form is requested
+            form = None
+            context['box_form'] = SearchBoxForm()
+            context['fit_product_form'] = FitProductForm()
             context['no_search'] = True
 
         if form:
@@ -722,7 +733,7 @@ def search_product(request, category_name=None):
                     queryset_qobjects, max_match_possible = create_queryset_product_fit(request, form, context)
 
                 else:
-                    queryset_qobjects, max_match_possible = create_queryset(request, form, context)
+                    queryset_qobjects, max_match_possible = create_queryset(request, form, context, initial_product_type=product_type_footer)
 
                 # Filter queryset based on "Afmetingen" filter
                 if request.GET.get('filter_width'):
@@ -741,7 +752,8 @@ def search_product(request, category_name=None):
                     context['filter_max_height'] = max_height
 
                     qheight = Q(inner_dim3__range=(min_height, max_height)) | (
-                        (Q(inner_variable_dimension_MAX__gte=min_height) & Q(inner_variable_dimension_MIN__lte=max_height)))
+                        (Q(inner_variable_dimension_MAX__gte=min_height) & Q(
+                            inner_variable_dimension_MIN__lte=max_height)))
 
                     qwidth_length = (Q(inner_dim1__range=(min_width, max_width)) & Q(
                         inner_dim2__range=(min_length, max_length))) | (
@@ -755,7 +767,7 @@ def search_product(request, category_name=None):
 
                 # Set  ordering
                 queryset_qobjects = order_queryset(request, context, queryset_qobjects,
-                                                            max_match_possible=max_match_possible)
+                                                   max_match_possible=max_match_possible)
 
                 # # Add sort link for order button and sort direction variable to context
                 # context['sort_order_link'], context['sort'] = create_sort_order_link(request, order_by)
@@ -764,7 +776,7 @@ def search_product(request, category_name=None):
                 create_sort_headers(request, context)
 
                 # Create filters
-                create_filters(request, context, queryset_qobjects)
+                create_filters(request, context, queryset_qobjects, browse=browse)
 
                 # Pagination
                 make_pagination(request, context, queryset_qobjects)
@@ -788,6 +800,8 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'products/signup.html', {'form': form})
+
+
 class ProductCreate(PermissionRequiredMixin, CreateView):
     # template_name_suffix = '_other_suffix' default template is: model_name_form.html
     model = Product
@@ -815,4 +829,3 @@ def bootstrap(request):
     template_name = 'products/bootstrap2.html'
     context['queryset'] = Product.objects.all()
     return render(request, template_name, context)
-

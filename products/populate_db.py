@@ -19,6 +19,11 @@ box_main_categories = {
     (10,'koeldozen'): [(21, 'koeldozen', 'koeldozen')],  # Koeldozen
 }
 
+get_parameter_to_category_product_type_id = {}
+for category, product_types in box_main_categories.items():
+    for product_type_tuple in product_types:
+        get_parameter_to_category_product_type_id[product_type_tuple[2]] = (category[0], product_type_tuple[0])
+
 def create_main_box_categories():
     for tuple in box_main_categories.keys():
         MainCategory.objects.get_or_create(category_id=tuple[0], category=tuple[1])

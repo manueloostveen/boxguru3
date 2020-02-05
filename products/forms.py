@@ -73,9 +73,9 @@ class SearchBoxForm(forms.Form):
         'placeholder': "Hoogte in mm",
     }))
 
-    product_type__main_category = forms.ChoiceField(
+    category = forms.ChoiceField(
         widget=forms.Select(attrs={
-            'class': 'custom-select mb-3',
+            'class': 'custom-select mb-3 capitalize',
         }),
         required=False,
         initial=None,
@@ -125,7 +125,7 @@ class SearchBoxForm(forms.Form):
         color_qset = Color.objects.filter(product__in=box_qset).distinct()
 
         # Load queryset choices here so db calls are not made during migrations
-        self.fields['product_type__main_category'].choices = form_choices
+        self.fields['category'].choices = form_choices
         # self.fields['main_categories'].initial = [category for category in main_category_qset]
         # self.fields['wall_thicknesses'].queryset = wall_thickness_qset
         # self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in wall_thickness_qset]

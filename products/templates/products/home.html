@@ -1,0 +1,172 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+
+    <div class="row d-flex justify-content-center">
+
+        <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
+
+            {#            <h1 class="pt-3 main-title">ZOEK</h1>#}
+
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link col small active" id="nav-home-tab"
+                       data-toggle="tab"
+                       href="#nav-dozen" role="tab"
+                       aria-controls="nav-home" aria-selected="true">ZOEK DOZEN OP MAAT</a>
+                    <a class="nav-item nav-link col small" id="nav-fitproduct-tab" data-toggle="tab"
+                       href="#nav-fitproduct"
+                       role="tab"
+                       aria-controls="nav-fitproduct" aria-selected="false">ZOEK OMDOOS OP PRODUCT MAAT</a>
+                </div>
+            </nav>
+
+
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane show active" id="nav-dozen" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <form action="{% url 'search-product' %}" method="get">
+
+                        <div class="row info-block p-2">
+                            <div class="col">
+                                <h4 class="text-center text-white m-2">TYPE DOOS</h4>
+                                <div class="col-lg">
+                                    <div class="mb-2">
+                                        {{ box_form.category }}
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="row info-block-2 mt-2 p-2">
+                            <div class="col">
+
+                                <h4 class="text-center text-white m-2">AFMETINGEN</h4>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">B</span>
+                                        </div>
+                                        {{ box_form.width }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">L</span>
+                                        </div>
+                                        {{ box_form.length }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-3 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">H</span>
+                                        </div>
+                                        {{ box_form.height }}
+                                    </div>
+                                    <div class="var-height-box-show">
+                                        <h4 class="text-center text-white m-2">VARIABELE HOOGTE?</h4>
+                                        <div class="mb-2">
+                                            {{ box_form.variable_height }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input class="searchButton" type="submit" value="ZOEK">
+                        <input type="hidden" name="form" value="box">
+                        <input type="hidden" name="initial_search" value="1">
+                    </form>
+
+                </div>
+
+
+                <div class="tab-pane show" id="nav-fitproduct" role="tabpanel" aria-labelledby="nav-fitproduct-tab">
+                    <form action="/catalog/search" method="get">
+
+
+                        <div class="row info-block-right p-2">
+                            <div class="col">
+
+                                {{ fit_product_form.errors }}
+                                <h4 class="text-center text-white m-2">RECHTHOEKIG OF ROND PRODUCT?</h4>
+
+                                <div class="col-lg">
+                                    <div class="input-group mb-2">
+                                        {{ fit_product_form.rectangular_cylindrical }}
+                                    </div>
+                                </div>
+
+                                <h4 class="text-center text-white m-2">AFMETINGEN PRODUCT</h4>
+
+                                <div class="col-lg" id="diameter_container">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">&Oslash</span>
+                                        </div>
+                                        {{ fit_product_form.product_diameter }}
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg" id="width_container">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">B</span>
+                                        </div>
+                                        {{ fit_product_form.product_width }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg" id="length_container">
+                                    <div class="input-group mb-2 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">L</span>
+                                        </div>
+                                        {{ fit_product_form.product_length }}
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg" id="height_container">
+                                    <div class="input-group mb-3 input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">H</span>
+                                        </div>
+                                        {{ fit_product_form.product_height }}
+                                    </div>
+
+
+                                    <div>
+                                        <h4 class="text-center text-white m-2">AANTAL PRODUCTEN IN DE DOOS</h4>
+                                        <div class="input-group mb-3 input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">n</span>
+                                            </div>
+                                            {{ fit_product_form.amount_of_products_in_box }}
+                                        </div>
+
+                                        <h4 class="text-center text-white m-2">OVERIG</h4>
+                                        {{ fit_product_form.no_tipping }}
+                                        {{ fit_product_form.no_stacking }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <input class="searchButton" type="submit" value="ZOEK">
+                        <input type="hidden" name="form" value="fitbox">
+                        <input type="hidden" name="initial_search" value="1">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

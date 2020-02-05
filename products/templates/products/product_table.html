@@ -191,45 +191,47 @@
 {#</div>#}
 
 
-{% if products %}
-    <div class="resultlist">
+<div class="resultlist">
 
-
+    {% if products %}
         <div class="results-mobile">
             <div class="col d-flex justify-content-center">
-                <div class="pagination-block">
-                    {% include "products/pagination.html" %}
-                </div>
-                <div class="orderOps">
-                    <button class="orderbtn small">SORTEER OP:
-                        {% if current_sort %}{{ current_sort }}{% endif %}</button>
-                    <div class="orderOps-content">
-                        <a href="{{ category_header }}">Doos type</a>
-                        <a href="{{ width_header }}">Breedte (mm)</a>
-                        <a href="{{ length_header }}">Lengte (mm)</a>
-                        {% if searched == 'tube' %}
-                            <a href="{{ diameter_header }}">Diameter (mm)</a>{% else %}
-                            <a href="{{ height_header }}">Hoogte (mm)</a>{% endif %}
-                        <a href="{{ volume_header }}">Inhoud (L)</a>
-
-                        {% if show_match_header %}
-                            <a href="{{ match_header }}">Zoekmatch</a>{% endif %}
-                        {#            <a href="{{ wall_thickness_header }}">Kwaliteit</a>#}
-                        {#            <a href="{{ color_header }}">Kleur</a>#}
-                        {#            <a href="{{ bottles_header }}">Aantal flesen</a>#}
-                        {#            <a href="{{ standard_size_header }}">Standaard formaat</a>#}
-                        <a href="{{ price_header }}">Prijs ex. BTW</a>
-                        <a href="{{ lowest_price_header }}">Bulkprijs</a>
+                <div class="mobile-table-top mt-3">
+                    <div class="pagination-block">
+                        {% include "products/pagination.html" %}
                     </div>
-                </div>
-                {% if show_sort_order_link %}
-                    <a class="sortOrder" href="{{ sort_order_link }}">
-                        <div>
-                            <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"
-                               {% else %}class="fas fa-sort-amount-down-alt"{% endif %}></i>
+                    <div class="orderOps">
+                        <button class="orderbtn small">SORTEER OP:
+                            {% if current_sort %}{{ current_sort }}{% endif %}</button>
+                        <div class="orderOps-content">
+                            <a href="{{ category_header }}">Doos type</a>
+                            <a href="{{ width_header }}">Breedte (mm)</a>
+                            <a href="{{ length_header }}">Lengte (mm)</a>
+                            {% if searched == 'tube' %}
+                                <a href="{{ diameter_header }}">Diameter (mm)</a>{% else %}
+                                <a href="{{ height_header }}">Hoogte (mm)</a>{% endif %}
+                            <a href="{{ volume_header }}">Inhoud (L)</a>
+
+                            {% if show_match_header %}
+                                <a href="{{ match_header }}">Zoekmatch</a>{% endif %}
+                            {#            <a href="{{ wall_thickness_header }}">Kwaliteit</a>#}
+                            {#            <a href="{{ color_header }}">Kleur</a>#}
+                            {#            <a href="{{ bottles_header }}">Aantal flesen</a>#}
+                            {#            <a href="{{ standard_size_header }}">Standaard formaat</a>#}
+                            <a href="{{ price_header }}">Prijs ex. BTW</a>
+                            <a href="{{ lowest_price_header }}">Bulkprijs</a>
                         </div>
-                    </a>
-                {% endif %}
+                    </div>
+                    {% if show_sort_order_link %}
+                        <a class="sortOrder" href="{{ sort_order_link }}">
+                            <div>
+                                <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"
+                                   {% else %}class="fas fa-sort-amount-down-alt"{% endif %}></i>
+                            </div>
+                        </a>
+                    {% endif %}
+                </div>
+
             </div>
 
             {% for object in products %}
@@ -416,20 +418,36 @@
 
                 </table>
             {% endfor %}
-        </div>
-
-
-        <div class="table-wrapper">
-            <div class="row">
-                <div class="col-4">
-                    <div class="product-filter-normal">
-                        {% include 'products/filters.html' %}
-                    </div>
+            <div class="pagination-bottom-mobile">
+                <div class="pagination-block">
+                    {% include "products/pagination.html" %}
                 </div>
-                <div class="col-8">
-                    <div class="pagination-block">
-                        {% include "products/pagination.html" %}
+            </div>
+        </div>
+    {% endif %}
+
+
+    <div class="table-wrapper">
+        <div class="row">
+            {#            <div class="col-lg-0 col-1"></div>#}
+            <div class="col-md-3 col-4 filter-col">
+                <div class="product-filter-normal">
+                    {% include 'products/filters_desktop.html' %}
+                </div>
+            </div>
+            <div class="col-8 col-lg-8">
+                {% if no_search %}
+                {% else %}
+                    <div class="table-top-wrap">
+                        <h4 class="filter-title">RESULTATEN:{% if products %}
+                            <span> {{ products_found }}</span>{% else %}
+                            <span class="no-results"> 0</span>{% endif %}</h4>
+                        <div class="pagination-block">
+                            {% include "products/pagination.html" %}
+                        </div>
                     </div>
+                {% endif %}
+                {% if products %}
                     <table class="table table-center">
                         <thead>
                         <tr>
@@ -576,16 +594,22 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                    <div class="pagination-block">
-                        {% include "products/pagination.html" %}
+                    <div class="pagination-bottom">
+                        <div></div>
+                        <div class="pagination-block">
+                            {% include "products/pagination.html" %}
+                        </div>
+                        <div></div>
                     </div>
-                </div>
+                {% endif %}
             </div>
+            <div class="col-lg-1 d-none d-lg-block"></div>
         </div>
-
     </div>
 
-{% endif %}
+</div>
+
+{#{% endif %}#}
 
 
 

@@ -25,11 +25,11 @@ urlpatterns = [
 ]
 
 # Use include() to add paths from the catalog application
-urlpatterns += [path('catalog/', include('products.urls'))]
+urlpatterns += [path('', include('products.urls'))]
 
 
 # Add URL maps to redirect the base URL to our application
-urlpatterns += [path('', RedirectView.as_view(url='/catalog/', permanent=True))]
+# urlpatterns += [path('', RedirectView.as_view(url='/catalog/', permanent=True))]
 
 # Add Django site authentication urls (for login, logout, password management)
 # urlpatterns += [path('accounts/', include('django.contrib.auth.urls'))]

@@ -5,6 +5,13 @@
 
 {#{% block navigation %}#}
 {#{% endblock %}#}
+{% block title %}
+    {% if category_name %}
+        <title>BoxGuru - {{ category_name|title }}</title>
+    {% else %}
+        <title>BoxGuru - Alle dozen en verzendverpakkingen</title>
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 
@@ -30,14 +37,14 @@
 
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-dozen" role="tabpanel" aria-labelledby="nav-home-tab">
-                    <form action="/catalog/search" method="get">
+                    <form action="{% url 'search-product' %}" method="get">
 
                         <div class="row info-block p-2">
                             <div class="col">
                                 <h4 class="text-center text-white m-2">TYPE DOOS</h4>
                                 <div class="col-lg">
-                                    <div class="mb-2">
-                                        {{ box_form.product_type__main_category }}
+                                    <div class="mb-2 capitalize">
+                                        {{ box_form.category }}
                                     </div>
                                 </div>
 
@@ -93,7 +100,7 @@
 
 
                 <div class="tab-pane show" id="nav-fitproduct" role="tabpanel" aria-labelledby="nav-fitproduct-tab">
-                    <form action="/catalog/search" method="get">
+                    <form action="{% url 'search-product' %}" method="get">
 
 
                         <div class="row info-block-right p-2">
@@ -178,18 +185,20 @@
 
     {% if no_search %}
     {% else %}
-        <div class="filter-title">
-            <h4 class="mb-3">RESULTATEN:{% if products %}<span> {{ products_found }}</span>{% else %}
-                <span class="no-results"> 0</span>{% endif %}</h4>
-        </div>
+
         <a id="filter"></a>
 
         <div class="product-filter-mobile">
+            <div class="filter-title">
+                <h4 class="mb-3 filter-title center">RESULTATEN:{% if products %}
+                    <span> {{ products_found }}</span>{% else %}
+                    <span class="no-results"> 0</span>{% endif %}</h4>
+            </div>
             {% include 'products/filters.html' %}
         </div>
     {% endif %}
 
-
+    <a id="table"></a>
     {% include 'products/product_table.html' %}
 
 {% endblock %}
@@ -429,7 +438,7 @@
     </script>
 
     <script>
-        $(".del-meas").click(
+        $(".del-meas, .del-meas-2").click(
             function () {
                 var name = $(this).data('target');
                 var reset_min = parseInt($(this).data('from'));

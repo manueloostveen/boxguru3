@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+{% load static %}
     {% block title %}<title>BoxGuru</title>{% endblock %}
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -49,17 +51,17 @@
 
             <div class="row navigation-row">
                 <div class="logo">
-                    <a href="{% url 'search-product' %}"><img
+                    <a href="{% url 'index' %}"><img
                             src="{% static 'products/images/logo/boxguru_logo_v1.svg' %}"
                             alt="BOXGURU"></a></div>
                 {% if user.is_authenticated %}
-                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h4>
-                        Uitloggen: {{ user }}</h4></a></div>
+                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">
+                        Uitloggen: {{ user }}</h6></a></div>
 
                 {% else %}
                     <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>
                     </div>
-                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Aanmelden</h4></a>
+                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Registreren</h4></a>
                     </div>
 
                 {% endif %}
@@ -67,6 +69,9 @@
             </div>
 
 
+        {% endblock %}
+
+        {% block site-info %}
         {% endblock %}
 
         {% block content %}
@@ -96,16 +101,26 @@
 {% block footer %}
 
     <footer class="footer">
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-8">
+        <div class="row footer-spacer"></div>
+        <div class="row all-boxes">
+            <div class="col-1"></div>
+            <div class="col-10">
                 <h4>ALLE SOORTEN DOZEN</h4>
                 {% for url in footer_urls %}
-                    <a href="{% url 'footer-search' category_name=url.2 %}?{{ url.1 }}">{{ url.0 }}</a>
+                    <div><a href="{% url 'footer-search' category_name=url.2 %}">{{ url.0 }}</a></div>
                     {#                    {% url 'panel_person_form' person_id=item.id %}#}
                 {% endfor %}
             </div>
-            <div class="col-2"></div>
+            <div class="col-1"></div>
+        </div>
+        <div class="row bottom">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <p>Goedkope dozen | Vergelijk verzendverpakkingen | Vergelijk gratis op Boxguru.nl</p>
+                <p>&copy Boxguru 2019-2020</p>
+            </div>
+            <div class="col-1"></div>
+
 
         </div>
 

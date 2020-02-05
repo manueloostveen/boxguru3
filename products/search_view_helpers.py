@@ -40,7 +40,6 @@ class Filter:
 class Filter2:
     def __init__(self, request, current_filter, filter, remaining_filters, count_dict):
 
-        # Filter can either be a tuple or list, depending on request.session (somehow): (value, id)
         # Value into string because GET.getlist() returns list of strings
         current_value = str(filter[0])
         self.filter_name = filter[1]
@@ -48,6 +47,8 @@ class Filter2:
         # Get filter count from count dict, pass '', this is the clear all filter
         if not current_value == '':
             try:
+                if current_filter == 'product_type_id':
+                    current_filter = 'product_type__product_type_id'
                 self.count = '(' + str(count_dict[current_filter][filter[0]]) + ')'
             except KeyError:
                 self.count = ''
@@ -279,19 +280,24 @@ def create_sort_headers(request, context):
     return context
 
 
-def create_queryset(request, form, context):
+def create_queryset(request, form, context, initial_product_type=None):
     width = form.cleaned_data.get('width')
     length = form.cleaned_data.get('length')
     height = form.cleaned_data.get('height')
     diameter = form.cleaned_data.get('diameter')
     colors = request.GET.getlist('color')
     wall_thicknesses = request.GET.getlist('wall_thickness')
-    main_category = form.cleaned_data.get('product_type__main_category')
+    main_category = form.cleaned_data.get('category')
     standard_size = request.GET.getlist('standard_size')
     bottles = request.GET.getlist('bottles')
-    product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if product_type]
     companies = request.GET.getlist('company')
     variable_height = form.cleaned_data.get('variable_height')
+
+    if initial_product_type:
+        product_types = [initial_product_type]
+    else:
+        product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if product_type]
+
 
     qobjects = []
 
@@ -343,8 +349,6 @@ def create_queryset(request, form, context):
     if len(companies):
         qcompanies = Q(company__in=companies)
         qobjects.append(qcompanies)
-
-    print(qobjects)
 
     # Set error margin for query search range
     error_margin = 50
@@ -752,7 +756,6 @@ def create_filters(request, context, queryset, browse=False):
     # todo Make aggregation that counts all filter product amounts in a single query
 
     filters = ['product_type__product_type_id', 'color', 'wall_thickness', 'standard_size', 'bottles', 'company']
-
     all_filter_values_but_producttype = queryset.order_by().values_list(*filters)
 
     filters_value_lists = [set([value
@@ -777,7 +780,6 @@ def create_filters(request, context, queryset, browse=False):
         count_queryset = queryset.values(field).order_by(field).annotate(the_count=Count(field))
         for object in count_queryset:
                count_dictionary[field][object[field]] = object['the_count']
-
 
     # Add filters to context, first check if filter keys are still in session
     if 'filter_product_type' in request.session:

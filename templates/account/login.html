@@ -10,7 +10,7 @@
                 {% csrf_token %}
                 <div><p><span class="pr-2">E-mail:</span>{{ form.login }}</p></div>
                 <div><p><span class="pr-2">Wachtwoord:</span>{{ form.password }}</p></div>
-                <button class="measurement-filter-button" type="submit">Log In</button>
+                <button class="measurement-filter-button" type="submit">LOG IN</button>
                 {% if form.errors %}
                     {% for field in form %}
                         {% for error in field.errors %}
