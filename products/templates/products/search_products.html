@@ -443,7 +443,7 @@
                 var name = $(this).data('target');
                 var reset_min = parseInt($(this).data('from'));
                 var reset_max = parseInt($(this).data('to'));
-                var my_range = $('input[name="' + name + '"]').data("ionRangeSlider");
+                var my_range = $('input[data-name="' + name + '"]').data("ionRangeSlider");
                 my_range.update({
                     from: reset_min,
                     to: reset_max

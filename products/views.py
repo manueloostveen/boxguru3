@@ -18,7 +18,7 @@ from products.product_categories import box_main_category_dict
 from math import pi
 from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_filter_list2, \
     create_queryset, create_sort_headers, Filter3, make_pagination, order_queryset, FilterVarHeight, \
-    create_queryset_product_fit, create_filters
+    create_queryset_product_fit, create_filters, FilterLikedBoxes
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
@@ -690,7 +690,7 @@ def home(request):
 
 
 
-def search_product(request, test=None, category_name=None):
+def search_product(request, category_name=None):
     context = {}
     template_name = 'products/search_products.html'
 
@@ -777,6 +777,7 @@ def search_product(request, test=None, category_name=None):
 
                 # Create filters
                 create_filters(request, context, queryset_qobjects, browse=browse)
+                context['liked_filter'] = FilterLikedBoxes(request)
 
                 # Pagination
                 make_pagination(request, context, queryset_qobjects)

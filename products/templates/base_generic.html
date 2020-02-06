@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-{% load static %}
-    {% block title %}<title>BoxGuru</title>{% endblock %}
+    {% load static %}
+    {% block title %}<title>BoxGuru - Dozen & verzendverpakkingen vergelijken</title>{% endblock %}
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,8 +11,8 @@
 
     <script src="https://kit.fontawesome.com/fcfd91d41d.js" crossorigin="anonymous"></script>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+{#            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"#}
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
@@ -20,6 +20,10 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
+
+    {% comment %}Cookie law{% endcomment %}
+    <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
+
 
     <!--Plugin CSS file with desired skin-->
     <link rel="stylesheet"
@@ -35,6 +39,8 @@
 
     {#    <!-- Add additional CSS in static file -->#}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'cookielaw/css/cookielaw.css' %}">
+
 
     <!-- Additional fonts -->
     <link href='https://fonts.googleapis.com/css?family=Abril Fatface' rel='stylesheet'>
@@ -43,6 +49,8 @@
 
 </head>
 <body>
+{% load cookielaw_tags %}
+{% cookielaw_banner %}
 <div class="wrap">
     <div class="container-fluid main">
 
@@ -56,7 +64,9 @@
                             alt="BOXGURU"></a></div>
                 {% if user.is_authenticated %}
                     <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">
-                        Uitloggen: {{ user }}</h6></a></div>
+                        Uitloggen: {{ user }}</h6></a>
+                    </div>
+                    <a href="{% url 'search-product' %}?liked=1&form=box&initial_search=1"><h4>MIJN BEWAARDE DOZEN</h4></a>
 
                 {% else %}
                     <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>
@@ -104,13 +114,14 @@
         <div class="row footer-spacer"></div>
         <div class="row all-boxes">
             <div class="col-1"></div>
-            <div class="col-10">
+            <div class="col-8">
                 <h4>ALLE SOORTEN DOZEN</h4>
                 {% for url in footer_urls %}
                     <div><a href="{% url 'footer-search' category_name=url.2 %}">{{ url.0 }}</a></div>
                     {#                    {% url 'panel_person_form' person_id=item.id %}#}
                 {% endfor %}
             </div>
+            <div class="col-2"><a href=""><h4>CONTACT</h4></a></div>
             <div class="col-1"></div>
         </div>
         <div class="row bottom">
@@ -126,6 +137,29 @@
 
     </footer>
 {% endblock %}
+
+{#{% load i18n static %}#}
+
+{#<div id="CookielawBanner">#}
+{#<div class="cookie-content">#}
+{#    <div class="cookie-text">#}
+{#        {% trans 'This website uses cookies to make your experience better.' %}#}
+{#    </div>#}
+{#    <div class="cookie-buttons">#}
+{#         <a class="btn-blue" href="">{% trans "What are the cookies?" %}</a>#}
+{#         <a class="btn-orange" href="javascript:Cookielaw.createCookielawCookie();">{% trans "Ok, understood" %}</a>#}
+{#    </div>#}
+{#    <div class="close-cookies"></div>#}
+{#</div>#}
+{#</div>#}
+
+<script type="application/javascript">
+    $(document).ready(function () {
+        $('.close-cookies').click(function () {
+            $(this).parent().hide();
+        });
+    });
+</script>
 
 
 

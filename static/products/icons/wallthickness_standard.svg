@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="30px" height="30px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve">
+<g>
+	<defs>
+		<circle id="SVGID_13_" cx="15" cy="15" r="15"/>
+	</defs>
+	<clipPath id="SVGID_2_">
+		<use xlink:href="#SVGID_13_"  overflow="visible"/>
+	</clipPath>
+	<g clip-path="url(#SVGID_2_)">
+		<g>
+			<defs>
+				<rect id="SVGID_15_" y="0" width="30" height="30"/>
+			</defs>
+			<clipPath id="SVGID_4_">
+				<use xlink:href="#SVGID_15_"  overflow="visible"/>
+			</clipPath>
+			<g opacity="0.4" clip-path="url(#SVGID_4_)">
+				<polygon fill="none" stroke="#000000" stroke-width="0.75" stroke-miterlimit="10" points="18.999,-2.565 18.999,33.141 
+					11.83,33.141 11.83,-3.905 				"/>
+				<g>
+					<path fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2.3256" stroke-miterlimit="10" d="
+						M15.427,35.683c1.327-0.558,2.221-1.61,2.222-2.815c-0.001-1.207-0.896-2.258-2.222-2.817
+						c-1.329-0.559-2.224-1.611-2.225-2.816c0-1.206,0.895-2.257,2.219-2.815c1.328-0.56,2.223-1.611,2.22-2.816
+						c0.003-1.207-0.892-2.259-2.219-2.818c-1.329-0.56-2.223-1.612-2.222-2.817c-0.001-1.204,0.893-2.256,2.219-2.816
+						c1.328-0.559,2.221-1.609,2.22-2.816c0.002-1.206-0.892-2.256-2.219-2.817c-1.327-0.559-2.223-1.609-2.225-2.815
+						c0.003-1.206,0.896-2.257,2.222-2.816c1.329-0.559,2.221-1.61,2.221-2.817c0-1.207-0.893-2.256-2.225-2.817
+						c-1.323-0.558-2.22-1.61-2.218-2.816c-0.001-1.207,0.892-2.257,2.217-2.814c1.328-0.56,2.224-1.613,2.223-2.817
+						c-0.001-1.206-0.895-2.258-2.222-2.817c-1.329-0.559-2.222-1.61-2.222-2.816c0-1.207,0.893-2.256,2.219-2.817
+						c1.328-0.558,2.222-1.61,2.223-2.814c-0.003-1.207-0.896-2.259-2.223-2.818c-1.326-0.559-2.221-1.61-2.223-2.815
+						c0-1.205,0.896-2.258,2.221-2.816"/>
+				</g>
+				<polyline fill="none" points="12.349,34.986 -8.921,13.716 12.235,-7.44 33.505,13.83 				"/>
+			</g>
+		</g>
+	</g>
+</g>
+<g>
+	<path d="M15,2c7.168,0,13,5.832,13,13c0,7.168-5.832,13-13,13C7.832,28,2,22.168,2,15C2,7.832,7.832,2,15,2 M15,0
+		C6.716,0,0,6.715,0,15c0,8.284,6.716,15,15,15c8.285,0,15-6.716,15-15C30,6.715,23.285,0,15,0L15,0z"/>
+</g>
+<text transform="matrix(1 0 0 1 7.4854 26.2983)" font-family="'Avenir-Roman'" font-size="30.8804">?</text>
+</svg>

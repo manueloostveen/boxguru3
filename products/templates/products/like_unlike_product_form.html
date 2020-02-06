@@ -3,13 +3,13 @@
     {% if user not in object.users.all %}
         <form action="{% url 'like-product' pk=object.pk %}" method="POST">
             {% csrf_token %}
-            <button class="btn btn-outline-success btn-sm" type="submit">Bewaar</button>
+            <button class="show-liked-boxes" type="submit">BEWAAR</button>
             <input type="hidden" name="next" value="{{ request.get_full_path }}#table">
         </form>
     {% else %}
         <form action="{% url 'unlike-product' pk=object.pk %}" method="POST">
             {% csrf_token %}
-            <button class="btn btn-outline-danger btn-sm" type="submit">Verwijder</button>
+            <button class="show-liked-boxes delete" type="submit">VERWIJDER</button>
             <input type="hidden" name="next" value="{{ request.get_full_path }}#table">
         </form>
     {% endif %}

@@ -197,39 +197,47 @@
         <div class="results-mobile">
             <div class="col d-flex justify-content-center">
                 <div class="mobile-table-top mt-3">
-                    <div class="pagination-block">
-                        {% include "products/pagination.html" %}
-                    </div>
-                    <div class="orderOps">
-                        <button class="orderbtn small">SORTEER OP:
-                            {% if current_sort %}{{ current_sort }}{% endif %}</button>
-                        <div class="orderOps-content">
-                            <a href="{{ category_header }}">Doos type</a>
-                            <a href="{{ width_header }}">Breedte (mm)</a>
-                            <a href="{{ length_header }}">Lengte (mm)</a>
-                            {% if searched == 'tube' %}
-                                <a href="{{ diameter_header }}">Diameter (mm)</a>{% else %}
-                                <a href="{{ height_header }}">Hoogte (mm)</a>{% endif %}
-                            <a href="{{ volume_header }}">Inhoud (L)</a>
-
-                            {% if show_match_header %}
-                                <a href="{{ match_header }}">Zoekmatch</a>{% endif %}
-                            {#            <a href="{{ wall_thickness_header }}">Kwaliteit</a>#}
-                            {#            <a href="{{ color_header }}">Kleur</a>#}
-                            {#            <a href="{{ bottles_header }}">Aantal flesen</a>#}
-                            {#            <a href="{{ standard_size_header }}">Standaard formaat</a>#}
-                            <a href="{{ price_header }}">Prijs ex. BTW</a>
-                            <a href="{{ lowest_price_header }}">Bulkprijs</a>
+                    <a href="{% if user.is_authenticated %}{{ liked_filter.url }}{% else %}{% url 'account_login' %}{% endif %}" class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
+                    <div class="pagination-bottom-mobile">
+                        <div class="pagination-block">
+                            {% include "products/pagination.html" %}
                         </div>
                     </div>
-                    {% if show_sort_order_link %}
-                        <a class="sortOrder" href="{{ sort_order_link }}">
-                            <div>
-                                <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"
-                                   {% else %}class="fas fa-sort-amount-down-alt"{% endif %}></i>
+                    <div class="pagination-bottom-mobile">
+
+                        <div class="orderOps">
+                            <button class="orderbtn small">SORTEER OP:
+                                {% if current_sort %}{{ current_sort }}{% endif %}</button>
+                            <div class="orderOps-content">
+                                <a href="{{ category_header }}">Doos type</a>
+                                <a href="{{ width_header }}">Breedte (mm)</a>
+                                <a href="{{ length_header }}">Lengte (mm)</a>
+                                {% if searched == 'tube' %}
+                                    <a href="{{ diameter_header }}">Diameter (mm)</a>{% else %}
+                                    <a href="{{ height_header }}">Hoogte (mm)</a>{% endif %}
+                                <a href="{{ volume_header }}">Inhoud (L)</a>
+
+                                {% if show_match_header %}
+                                    <a href="{{ match_header }}">Zoekmatch</a>{% endif %}
+                                {#            <a href="{{ wall_thickness_header }}">Kwaliteit</a>#}
+                                {#            <a href="{{ color_header }}">Kleur</a>#}
+                                {#            <a href="{{ bottles_header }}">Aantal flesen</a>#}
+                                {#            <a href="{{ standard_size_header }}">Standaard formaat</a>#}
+                                <a href="{{ price_header }}">Prijs ex. BTW</a>
+                                <a href="{{ lowest_price_header }}">Bulkprijs</a>
                             </div>
-                        </a>
-                    {% endif %}
+                        </div>
+                        {% if show_sort_order_link %}
+                            <a class="sortOrder" href="{{ sort_order_link }}">
+                                <div>
+                                    <i {% if sort == "DESC" %}class="fas fa-sort-amount-down"
+                                       {% else %}class="fas fa-sort-amount-down-alt"{% endif %}></i>
+                                </div>
+                            </a>
+                        {% endif %}
+                    </div>
+
+
                 </div>
 
             </div>
@@ -442,6 +450,7 @@
                         <h4 class="filter-title">RESULTATEN:{% if products %}
                             <span> {{ products_found }}</span>{% else %}
                             <span class="no-results"> 0</span>{% endif %}</h4>
+
                         <div class="pagination-block">
                             {% include "products/pagination.html" %}
                         </div>
@@ -513,7 +522,9 @@
                                 <div {% if order_by == '-company' %}class="arrowDown"
                                      {% elif order_by == 'company' %}class="arrowUp"{% else %}{% endif %}></div>
                             </th>
-                            <th>Bewaar</th>
+                            <th>
+                                <a href="{% if user.is_authenticated %}{{ liked_filter.url }}{% else %}{% url 'account_login' %}{% endif %}" class="show-liked-boxes">{{ liked_filter.text }}</a>
+                            </th>
                         </tr>
 
 
@@ -603,7 +614,7 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="col-lg-1 d-none d-lg-block"></div>
+            {#            <div class="col-1"></div>#}
         </div>
     </div>
 

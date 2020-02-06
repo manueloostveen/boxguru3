@@ -88,6 +88,26 @@ class Filter2:
 
         self.url = request.path + '?' + GET_copy.urlencode() + "#filter"
 
+class FilterLikedBoxes:
+
+    def __init__(self, request):
+        GET_copy = request.GET.copy()
+        liked = GET_copy.pop('liked', None)
+        GET_copy.pop('initial_search', None)
+
+        if liked:
+            self.url = request.path + '?' + GET_copy.urlencode() + "#table"
+            self.css_class = 'active'
+            self.text = 'TOON ALLE ZOEKRESULTATEN'
+            self.text_alt = self.text
+
+        else:
+            GET_copy['liked'] = 1
+            self.url = request.path + '?' + GET_copy.urlencode() + "#table"
+            self.css_class = ''
+            self.text = 'MIJN BEWAARDE DOZEN'
+            self.text_alt = 'ALLEEN MIJN BEWAARDE DOZEN'
+
 
 class FilterVarHeight:
     def __init__(self, request, remaining_filters):
@@ -292,6 +312,7 @@ def create_queryset(request, form, context, initial_product_type=None):
     bottles = request.GET.getlist('bottles')
     companies = request.GET.getlist('company')
     variable_height = form.cleaned_data.get('variable_height')
+    only_liked_boxes = request.GET.get('liked')
 
     if initial_product_type:
         product_types = [initial_product_type]
@@ -300,6 +321,15 @@ def create_queryset(request, form, context, initial_product_type=None):
 
 
     qobjects = []
+
+    # Show liked boxes
+    if only_liked_boxes:
+        if request.user.id:
+            qliked = Q(users=request.user.id)
+        else:
+            qliked = Q()
+        qobjects.append(qliked)
+        print(qliked)
 
     # Deal with variable height
     qvariable_height = Q()
@@ -740,9 +770,12 @@ def create_filters(request, context, queryset, browse=False):
         request.session['filter_company'] = no_filter + list(
             Company.objects.filter(product__in=queryset).values_list('id', 'company').distinct())
 
+
+
         # Add initial search data to session. Used for clear all filter
         request.session['initial_search_data'] = {query: value for query, value in request.GET.items() if
                                                   not query == 'initial_search'}
+
 
         # Add minimum and maximum dimensions of initial results to session. Used to refine results on size
         min_max_dimensions = get_min_max_dimensions(queryset)
@@ -756,14 +789,14 @@ def create_filters(request, context, queryset, browse=False):
     # todo Make aggregation that counts all filter product amounts in a single query
 
     filters = ['product_type__product_type_id', 'color', 'wall_thickness', 'standard_size', 'bottles', 'company']
-    all_filter_values_but_producttype = queryset.order_by().values_list(*filters)
+    all_filter_values = queryset.order_by().values_list(*filters)
 
     filters_value_lists = [set([value
                                 for value
                                 in value_list
                                 if value])
                            for value_list
-                           in zip(*all_filter_values_but_producttype)]
+                           in zip(*all_filter_values)]
 
 
     remaining_filters = []
@@ -825,7 +858,6 @@ def create_filters(request, context, queryset, browse=False):
                 context['filter_count'] += 1
 
     context['products_found'] = len(queryset)
-
 
 def get_min_max_dimensions(queryset):
     """
