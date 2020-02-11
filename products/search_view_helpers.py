@@ -312,7 +312,6 @@ def create_queryset(request, form, context, initial_product_type=None):
     bottles = request.GET.getlist('bottles')
     companies = request.GET.getlist('company')
     variable_height = form.cleaned_data.get('variable_height')
-    only_liked_boxes = request.GET.get('liked')
 
     if initial_product_type:
         product_types = [initial_product_type]
@@ -323,13 +322,19 @@ def create_queryset(request, form, context, initial_product_type=None):
     qobjects = []
 
     # Show liked boxes
+    only_liked_boxes = request.GET.get('liked')
+    no_saved_boxes_message = '<h4>Je hebt nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
     if only_liked_boxes:
-        if request.user.id:
-            qliked = Q(users=request.user.id)
+        saved_boxes = request.session.get('saved_boxes')
+        if saved_boxes:
+            qsaved = Q(pk__in=saved_boxes)
+            if not len(saved_boxes):
+                context['saved_boxes_message'] = no_saved_boxes_message
         else:
-            qliked = Q()
-        qobjects.append(qliked)
-        print(qliked)
+            context['saved_boxes_message'] = no_saved_boxes_message
+            qsaved = Q(pk__in=[])
+
+        qobjects.append(qsaved)
 
     # Deal with variable height
     qvariable_height = Q()
@@ -624,6 +629,22 @@ def create_queryset_product_fit(request, form, context):
 
     qobjects = []
 
+    # Show liked boxes
+    only_liked_boxes = request.GET.get('liked')
+    no_saved_boxes_message = '<h4>Je hebt nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
+    if only_liked_boxes:
+        saved_boxes = request.session.get('saved_boxes')
+        if saved_boxes:
+            qsaved = Q(pk__in=saved_boxes)
+            if not len(saved_boxes):
+                context['saved_boxes_message'] = no_saved_boxes_message
+        else:
+            context['saved_boxes_message'] = no_saved_boxes_message
+            qsaved = Q(pk__in=[])
+
+        qobjects.append(qsaved)
+
+
     # Q objects query
     if colors:
         qcolors = Q(color__in=colors)
@@ -815,6 +836,7 @@ def create_filters(request, context, queryset, browse=False):
                count_dictionary[field][object[field]] = object['the_count']
 
     # Add filters to context, first check if filter keys are still in session
+    context['filters'] = {}
     if 'filter_product_type' in request.session:
         context['filters'] = {
             'Product types': create_filter_list2(Filter2, request, 'product_type__product_type_id',

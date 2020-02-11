@@ -231,9 +231,10 @@ h6.logout {
 
 .table-wrapper {
     margin-top: 50px;
-    box-shadow: 0 -15px 15px -15px #333;
+    /*box-shadow: 0 -15px 15px -15px #333;*/
     overflow: auto;
     overflow-y: hidden;
+    /*border-top: 10px solid #73AD21;*/
 
 
 }
@@ -1151,6 +1152,9 @@ html, body {
     height: 100%;
     width: 100%;
     margin: 0;
+    /*for pop up*/
+    position: relative;
+    z-index: -1;
 }
 
 .wrap {

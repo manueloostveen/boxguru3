@@ -6,13 +6,15 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 
     <script src="https://kit.fontawesome.com/fcfd91d41d.js" crossorigin="anonymous"></script>
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-{#            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"#}
+            {#            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"#}
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
@@ -25,21 +27,19 @@
     <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
 
 
-    <!--Plugin CSS file with desired skin-->
+    <!--Plugin CSS file with desired skin Rangeslider-->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
 
-    <!--Plugin JavaScript file-->
+    <!--Plugin JavaScript file Rangeslider-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
-
-    {#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
 
     {% load static %}
 
 
     {#    <!-- Add additional CSS in static file -->#}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'cookielaw/css/cookielaw.css' %}">
+    <link rel="stylesheet" href="{% static 'cookielaw2.css' %}">
 
 
     <!-- Additional fonts -->
@@ -49,8 +49,10 @@
 
 </head>
 <body>
-{% load cookielaw_tags %}
-{% cookielaw_banner %}
+
+{#{% load cookielaw_tags %}#}
+{#{% cookielaw_banner %}#}
+
 <div class="wrap">
     <div class="container-fluid main">
 
@@ -62,19 +64,22 @@
                     <a href="{% url 'index' %}"><img
                             src="{% static 'products/images/logo/boxguru_logo_v1.svg' %}"
                             alt="BOXGURU"></a></div>
-                {% if user.is_authenticated %}
-                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">
-                        Uitloggen: {{ user }}</h6></a>
-                    </div>
-                    <a href="{% url 'search-product' %}?liked=1&form=box&initial_search=1"><h4>MIJN BEWAARDE DOZEN</h4></a>
+{#                {% if user.is_authenticated %}#}
+{#                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">#}
+{#                        Uitloggen: {{ user }}</h6></a>#}
+{#                    </div>#}
+{#                    <a href="{% url 'search-product' %}?liked=1&form=box&initial_search=1"><h4>MIJN BEWAARDE DOZEN</h4>#}
+{#                    </a>#}
+{##}
+{#                {% else %}#}
+{#                    <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>#}
+{#                    </div>#}
+{#                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Registreren</h4></a>#}
+{#                    </div>#}
+{##}
+{#                {% endif %}#}
+                <a href="{% url 'search-product' %}?liked=1&form=box&initial_search=1"><h4>AL MIJN BEWAARDE DOZEN</h4></a>
 
-                {% else %}
-                    <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>
-                    </div>
-                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Registreren</h4></a>
-                    </div>
-
-                {% endif %}
 
             </div>
 

@@ -197,7 +197,8 @@
         <div class="results-mobile">
             <div class="col d-flex justify-content-center">
                 <div class="mobile-table-top mt-3">
-                    <a href="{% if user.is_authenticated %}{{ liked_filter.url }}{% else %}{% url 'account_login' %}{% endif %}" class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
+                    <a href="{{ liked_filter.url }}"
+                       class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
                     <div class="pagination-bottom-mobile">
                         <div class="pagination-block">
                             {% include "products/pagination.html" %}
@@ -357,7 +358,7 @@
                         <td>{{ object.color }}
                         </td>
                         <td>{{ object.wall_thickness }}</td>
-                        <td rowspan="2">{% include 'products/like_unlike_product_form.html' %}</td>
+                        <td rowspan="2">{% include 'products/like_unlike_product_form_session.html' %}</td>
                     </tr>
                     {#            <tr>#}
                     {#                <td class="d-none d-sm-table-cell"><a href="{{ bottles_header }}">Flessen</a> /#}
@@ -432,6 +433,12 @@
                 </div>
             </div>
         </div>
+    {% elif request.GET.liked %}
+        {% autoescape off %}
+            {{ saved_boxes_message }}
+        {% endautoescape %}
+        <a href="{{ liked_filter.url }}"
+           class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
     {% endif %}
 
 
@@ -456,6 +463,9 @@
                         </div>
                     </div>
                 {% endif %}
+                {% autoescape off %}
+                    {{ saved_boxes_message }}
+                {% endautoescape %}
                 {% if products %}
                     <table class="table table-center">
                         <thead>
@@ -523,7 +533,7 @@
                                      {% elif order_by == 'company' %}class="arrowUp"{% else %}{% endif %}></div>
                             </th>
                             <th>
-                                <a href="{% if user.is_authenticated %}{{ liked_filter.url }}{% else %}{% url 'account_login' %}{% endif %}" class="show-liked-boxes">{{ liked_filter.text }}</a>
+                                <a href="{{ liked_filter.url }}" class="show-liked-boxes">{{ liked_filter.text }}</a>
                             </th>
                         </tr>
 
@@ -599,7 +609,7 @@
                                 <td><a class="lowercase" href="{{ object.url }}" target="_blank"
                                        rel="noopener noreferrer">{{ object.company }}<i
                                         class="fas fa-external-link-alt"></i></a></td>
-                                <td>{% include 'products/like_unlike_product_form.html' %}</td>
+                                <td>{% include 'products/like_unlike_product_form_session.html' %}</td>
 
                             </tr>
                         {% endfor %}

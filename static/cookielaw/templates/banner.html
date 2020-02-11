@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<div id="CookielawBanner">
+    <div class="container">
+        <h6>{% trans "COOKIE_INFO_HEADER" %}</h6>
+        <p>
+            Boxguru.nl maakt gebruik van <a href="{% url 'cookie-explained' %}">eigen cookies en cookies van derde partijen</a> om de website te verbeteren en om relevante informatie en advertenties af te stemmen op jouw voorkeuren. Ga je akkoord met het gebruik van cookies?
+        </p>
+
+
+        <p>
+            <a class="btn btn-primary pull-right" href="javascript:Cookielaw.createCookielawCookie();">{% trans "COOKIE_INFO_OK" %}</a>
+            {% trans "COOKIE_INFO_PARA" %}
+        </p>
+    </div>
+</div>

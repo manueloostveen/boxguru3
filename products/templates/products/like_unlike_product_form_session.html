@@ -1,0 +1,11 @@
+{% load to_class_name %}
+{% if object|to_class_name == 'Product' %}
+
+    <form action="{% url 'like-unlike-product' pk=object.pk %}" method="POST">
+        {% csrf_token %}
+        <button {% if object.pk in request.session.saved_boxes %} class="show-liked-boxes delete" type="submit">VERWIJDER</button>
+        {% else %}<button class="show-liked-boxes" type="submit">BEWAAR</button>{% endif %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}#table">
+    </form>
+
+{% endif %}

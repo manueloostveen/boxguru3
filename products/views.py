@@ -674,6 +674,7 @@ def search_product_OLD(request):
 
     return render(request, template_name, context)
 
+
 def home(request):
     context = {}
     template_name = 'products/home.html'
@@ -681,13 +682,10 @@ def home(request):
     if request.method == 'GET':
         context['box_form'] = SearchBoxForm()
         context['fit_product_form'] = FitProductForm()
-        context['boxes'] = Product.objects.filter(product_type__main_category__category_id__in=range(1,11)).count()
+        context['boxes'] = Product.objects.filter(product_type__main_category__category_id__in=range(1, 11)).count()
         context['companies'] = Company.objects.count()
-        print(context['boxes'], context['companies'])
 
     return render(request, template_name, context)
-
-
 
 
 def search_product(request, category_name=None):
@@ -698,6 +696,8 @@ def search_product(request, category_name=None):
 
         product_type_footer = None
         browse = False
+        form = None
+
         if category_name:
             category, product_type_footer = get2cat[category_name]
             browse = True
@@ -715,6 +715,7 @@ def search_product(request, category_name=None):
 
             elif request.GET['form'] == 'fitbox':
                 context['fit_product_form'] = FitProductForm(request.GET)
+                context['box_form'] = SearchBoxForm()
                 context['searched'] = 'fitbox'
                 form = context['fit_product_form']
 
@@ -733,7 +734,8 @@ def search_product(request, category_name=None):
                     queryset_qobjects, max_match_possible = create_queryset_product_fit(request, form, context)
 
                 else:
-                    queryset_qobjects, max_match_possible = create_queryset(request, form, context, initial_product_type=product_type_footer)
+                    queryset_qobjects, max_match_possible = create_queryset(request, form, context,
+                                                                            initial_product_type=product_type_footer)
 
                 # Filter queryset based on "Afmetingen" filter
                 if request.GET.get('filter_width'):
@@ -830,3 +832,21 @@ def bootstrap(request):
     template_name = 'products/bootstrap2.html'
     context['queryset'] = Product.objects.all()
     return render(request, template_name, context)
+
+
+def like_unlike_box(request, pk):
+    if request.method == 'POST':
+        next = request.POST.get('next', '/')
+
+        saved_boxes = request.session.get('saved_boxes')
+        if saved_boxes:
+            if pk in saved_boxes:
+                saved_boxes.remove(pk)
+            else:
+                saved_boxes.append(pk)
+        else:
+            saved_boxes = [pk]
+
+        request.session['saved_boxes'] = saved_boxes
+
+        return HttpResponseRedirect(next)
