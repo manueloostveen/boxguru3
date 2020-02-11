@@ -23,6 +23,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
 from .populate_db import get_parameter_to_category_product_type_id as get2cat
+import json
 
 
 # Create your views here.
@@ -836,17 +837,43 @@ def bootstrap(request):
 
 def like_unlike_box(request, pk):
     if request.method == 'POST':
+
         next = request.POST.get('next', '/')
+        response = redirect(next)
 
-        saved_boxes = request.session.get('saved_boxes')
-        if saved_boxes:
-            if pk in saved_boxes:
-                saved_boxes.remove(pk)
+        # cookie version
+        saved_boxes_json = request.COOKIES.get('saved_boxes')
+
+        if saved_boxes_json:
+            deserialized_list = json.loads(saved_boxes_json)
+
+            if pk in deserialized_list:
+                deserialized_list.remove(pk)
             else:
-                saved_boxes.append(pk)
+                deserialized_list.append(pk)
+
+            reserialized_list = json.dumps(deserialized_list)
+
         else:
-            saved_boxes = [pk]
+            saved_boxes_list = [pk]
+            reserialized_list = json.dumps(saved_boxes_list)
 
-        request.session['saved_boxes'] = saved_boxes
 
-        return HttpResponseRedirect(next)
+
+        response.set_cookie(key='saved_boxes', value=reserialized_list, max_age=60*60*24*360)
+
+        # # Sessions version
+        # saved_boxes = request.session.get('saved_boxes')
+        # if saved_boxes:
+        #     if pk in saved_boxes:
+        #         saved_boxes.remove(pk)
+        #     else:
+        #         saved_boxes.append(pk)
+        # else:
+        #     saved_boxes = [pk]
+        #
+        # request.session['saved_boxes'] = saved_boxes
+
+
+        return response
+

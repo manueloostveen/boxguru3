@@ -934,8 +934,10 @@ a.show-liked-boxes {
 }
 
 a.show-liked-boxes.big {
-    font-size: 20px;
+    font-size: 14px;
     margin-bottom: 20px;
+    width: 214px;
+    box-sizing: content-box;
 }
 
 a.show-liked-boxes:hover {

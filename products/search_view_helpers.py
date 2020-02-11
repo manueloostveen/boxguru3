@@ -1,19 +1,11 @@
 from collections import defaultdict
-from os.path import join
-
 from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField, Min, FloatField, Max, Count
-from urllib.parse import unquote
-from urllib.parse import urlencode as urlencodeP
-
 from django.db.models.functions import Greatest
 from django.utils.http import urlencode
-from django.utils.datastructures import MultiValueDict
-
 from products.models import Product, ProductType, Color, Company, WallThickness
-
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from products.product_fit_logic import RectangularProduct, CylindricalProduct
+import json
 
 
 class Filter:
@@ -53,8 +45,6 @@ class Filter2:
             except KeyError:
                 self.count = ''
 
-
-
         GET_copy = request.GET.copy()
         # remove initial search parameter
         GET_copy.pop('initial_search', None)
@@ -87,6 +77,7 @@ class Filter2:
         GET_copy['page'] = 1
 
         self.url = request.path + '?' + GET_copy.urlencode() + "#filter"
+
 
 class FilterLikedBoxes:
 
@@ -316,17 +307,24 @@ def create_queryset(request, form, context, initial_product_type=None):
     if initial_product_type:
         product_types = [initial_product_type]
     else:
-        product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if product_type]
-
+        product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if
+                         product_type]
 
     qobjects = []
 
     # Show liked boxes
     only_liked_boxes = request.GET.get('liked')
-    no_saved_boxes_message = '<h4>Je hebt nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
+
+    context['saved_boxes'] = json.loads(request.COOKIES.get('saved_boxes'))
+
     if only_liked_boxes:
-        saved_boxes = request.session.get('saved_boxes')
+        if only_liked_boxes == '2':
+            no_saved_boxes_message = '<h4>Je hebt nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
+        else:
+            no_saved_boxes_message = '<h4>Je hebt nog geen dozen bewaard om te vergelijken!</h4><p> Bewaar dozen in de zoekresultaten met de "bewaarknop".</p>'
+        saved_boxes = request.COOKIES.get('saved_boxes')
         if saved_boxes:
+            saved_boxes = json.loads(saved_boxes)
             qsaved = Q(pk__in=saved_boxes)
             if not len(saved_boxes):
                 context['saved_boxes_message'] = no_saved_boxes_message
@@ -644,7 +642,6 @@ def create_queryset_product_fit(request, form, context):
 
         qobjects.append(qsaved)
 
-
     # Q objects query
     if colors:
         qcolors = Q(color__in=colors)
@@ -791,12 +788,9 @@ def create_filters(request, context, queryset, browse=False):
         request.session['filter_company'] = no_filter + list(
             Company.objects.filter(product__in=queryset).values_list('id', 'company').distinct())
 
-
-
         # Add initial search data to session. Used for clear all filter
         request.session['initial_search_data'] = {query: value for query, value in request.GET.items() if
                                                   not query == 'initial_search'}
-
 
         # Add minimum and maximum dimensions of initial results to session. Used to refine results on size
         min_max_dimensions = get_min_max_dimensions(queryset)
@@ -819,12 +813,10 @@ def create_filters(request, context, queryset, browse=False):
                            for value_list
                            in zip(*all_filter_values)]
 
-
     remaining_filters = []
     for index in range(len(filters_value_lists)):
         for value in filters_value_lists[index]:
             remaining_filters.append((value, filters[index]))
-
 
     count_dictionary = {field: {} for field in filters}
     remaining_fields = set()
@@ -833,23 +825,26 @@ def create_filters(request, context, queryset, browse=False):
     for field in remaining_fields:
         count_queryset = queryset.values(field).order_by(field).annotate(the_count=Count(field))
         for object in count_queryset:
-               count_dictionary[field][object[field]] = object['the_count']
+            count_dictionary[field][object[field]] = object['the_count']
 
     # Add filters to context, first check if filter keys are still in session
     context['filters'] = {}
     if 'filter_product_type' in request.session:
         context['filters'] = {
             'Product types': create_filter_list2(Filter2, request, 'product_type__product_type_id',
-                                                 request.session['filter_product_type'], remaining_filters, count_dictionary),
+                                                 request.session['filter_product_type'], remaining_filters,
+                                                 count_dictionary),
             'Kwaliteit': create_filter_list2(Filter2, request, 'wall_thickness',
-                                             request.session['filter_wall_thickness'], remaining_filters, count_dictionary),
+                                             request.session['filter_wall_thickness'], remaining_filters,
+                                             count_dictionary),
             'Kleuren': create_filter_list2(Filter2, request, 'color', request.session['filter_color'],
                                            remaining_filters, count_dictionary),
             'Standaard formaat': create_filter_list2(Filter2, request, 'standard_size',
                                                      request.session['filter_standard_size'],
                                                      remaining_filters, count_dictionary),
             'Aantal flessen': create_filter_list2(Filter2, request, 'bottles',
-                                                  request.session['filter_bottles'], remaining_filters, count_dictionary),
+                                                  request.session['filter_bottles'], remaining_filters,
+                                                  count_dictionary),
             'Producenten': create_filter_list2(Filter2, request, 'company',
                                                request.session['filter_company'], remaining_filters, count_dictionary),
         }
@@ -880,6 +875,7 @@ def create_filters(request, context, queryset, browse=False):
                 context['filter_count'] += 1
 
     context['products_found'] = len(queryset)
+
 
 def get_min_max_dimensions(queryset):
     """

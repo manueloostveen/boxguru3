@@ -358,7 +358,7 @@
                         <td>{{ object.color }}
                         </td>
                         <td>{{ object.wall_thickness }}</td>
-                        <td rowspan="2">{% include 'products/like_unlike_product_form_session.html' %}</td>
+                        <td rowspan="2">{% include 'products/like_unlike_product_form_cookies.html' %}</td>
                     </tr>
                     {#            <tr>#}
                     {#                <td class="d-none d-sm-table-cell"><a href="{{ bottles_header }}">Flessen</a> /#}
@@ -434,11 +434,17 @@
             </div>
         </div>
     {% elif request.GET.liked %}
-        {% autoescape off %}
-            {{ saved_boxes_message }}
-        {% endautoescape %}
-        <a href="{{ liked_filter.url }}"
-           class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
+        <div class="results-mobile">
+
+            {% autoescape off %}
+                {{ saved_boxes_message }}
+            {% endautoescape %}
+
+            {% if request.GET.liked != '2' %}
+                <a href="{{ liked_filter.url }}"
+                   class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
+            {% endif %}
+        </div>
     {% endif %}
 
 
@@ -463,9 +469,15 @@
                         </div>
                     </div>
                 {% endif %}
-                {% autoescape off %}
-                    {{ saved_boxes_message }}
-                {% endautoescape %}
+                {% if not products and request.GET.liked %}
+                    {% autoescape off %}
+                        {{ saved_boxes_message }}
+                    {% endautoescape %}
+                    {% if request.GET.liked != '2' %}
+                        <a href="{{ liked_filter.url }}"
+                           class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
+                    {% endif %}
+                {% endif %}
                 {% if products %}
                     <table class="table table-center">
                         <thead>
@@ -609,7 +621,7 @@
                                 <td><a class="lowercase" href="{{ object.url }}" target="_blank"
                                        rel="noopener noreferrer">{{ object.company }}<i
                                         class="fas fa-external-link-alt"></i></a></td>
-                                <td>{% include 'products/like_unlike_product_form_session.html' %}</td>
+                                <td>{% include 'products/like_unlike_product_form_cookies.html' %}</td>
 
                             </tr>
                         {% endfor %}
