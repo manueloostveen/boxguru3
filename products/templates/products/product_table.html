@@ -197,8 +197,10 @@
         <div class="results-mobile">
             <div class="col d-flex justify-content-center">
                 <div class="mobile-table-top mt-3">
-                    <a href="{{ liked_filter.url }}"
-                       class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
+                    <div class="pagination-bottom-mobile">
+                        <a href="{{ liked_filter.url }}"
+                           class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
+                    </div>
                     <div class="pagination-bottom-mobile">
                         <div class="pagination-block">
                             {% include "products/pagination.html" %}
@@ -436,7 +438,7 @@
     {% elif request.GET.liked %}
         <div class="results-mobile">
 
-            {% autoescape off %}
+            {% autoescape off %}d
                 {{ saved_boxes_message }}
             {% endautoescape %}
 
@@ -482,6 +484,9 @@
                     <table class="table table-center">
                         <thead>
                         <tr>
+                            <th>
+                                <a href="{{ liked_filter.url }}" class="show-liked-boxes">{{ liked_filter.text }}</a>
+                            </th>
                             <th rowspan="2">afb.</th>
                             <th rowspan="2"><a href="{{ category_header }}">Categorie</a>
                                 <div {% if order_by == '-product_type' %}class="arrowDown"
@@ -544,9 +549,7 @@
                                 <div {% if order_by == '-company' %}class="arrowDown"
                                      {% elif order_by == 'company' %}class="arrowUp"{% else %}{% endif %}></div>
                             </th>
-                            <th>
-                                <a href="{{ liked_filter.url }}" class="show-liked-boxes">{{ liked_filter.text }}</a>
-                            </th>
+
                         </tr>
 
 
@@ -556,6 +559,7 @@
                         {% for object in products %}
 
                             <tr>
+                                <td>{% include 'products/like_unlike_product_form_cookies.html' %}</td>
                                 <td>
                                     <a class="product-thumb" data-toggle="popover-hover"
                                             {% with 'products/images/'|add:object.get_product_image as image_static %}
@@ -563,7 +567,7 @@
                                                                                  src="{% static image_static %}"
                                                                                  alt="product">{% endwith %}</a>
                                 </td>
-                                <td>{{ object.display_product_types }}
+                                <td class="staffel">{{ object.display_product_types }}
                                     <span class="tooltiptext">{{ object.description }}</span></td>
                                 <td>{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %}</td>
                                 <td>{% if searched == 'tube' %}{{ object.inner_dim2 }}
@@ -621,7 +625,6 @@
                                 <td><a class="lowercase" href="{{ object.url }}" target="_blank"
                                        rel="noopener noreferrer">{{ object.company }}<i
                                         class="fas fa-external-link-alt"></i></a></td>
-                                <td>{% include 'products/like_unlike_product_form_cookies.html' %}</td>
 
                             </tr>
                         {% endfor %}

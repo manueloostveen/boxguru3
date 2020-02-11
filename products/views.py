@@ -23,6 +23,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
 from .populate_db import get_parameter_to_category_product_type_id as get2cat
+from products.category_texts import main_category_texts
 import json
 
 
@@ -679,6 +680,9 @@ def search_product_OLD(request):
 def home(request):
     context = {}
     template_name = 'products/home.html'
+
+    # Add category texts to context
+    context['category_texts'] = main_category_texts
 
     if request.method == 'GET':
         context['box_form'] = SearchBoxForm()

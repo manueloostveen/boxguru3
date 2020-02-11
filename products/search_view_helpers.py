@@ -319,9 +319,9 @@ def create_queryset(request, form, context, initial_product_type=None):
 
     if only_liked_boxes:
         if only_liked_boxes == '2':
-            no_saved_boxes_message = '<h4>Je hebt nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
+            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
         else:
-            no_saved_boxes_message = '<h4>Je hebt nog geen dozen bewaard om te vergelijken!</h4><p> Bewaar dozen in de zoekresultaten met de "bewaarknop".</p>'
+            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Bewaar dozen in de zoekresultaten met de "bewaarknop".</p>'
         saved_boxes = request.COOKIES.get('saved_boxes')
         if saved_boxes:
             saved_boxes = json.loads(saved_boxes)

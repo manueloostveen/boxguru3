@@ -1,0 +1,16 @@
+<div class="box-categories">
+    {% for category_id, main_category_dict in category_texts.items %}
+        <div class="category-section" id="category_{{ category_id }}">
+{#            <h1>#}
+{#                {% for category_tuple in main_category_dict.values %}#}
+{#                    {{ category_tuple.0 }}#}
+{#                {% endfor %}#}
+{#            </h1>#}
+            {% for category_tuple in main_category_dict.values %}
+                <h4>{{ category_tuple.0 }}</h4>
+                <p>{{ category_tuple.1 }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+</div>

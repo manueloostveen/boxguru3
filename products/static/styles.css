@@ -905,21 +905,6 @@ a.show-liked-boxes:hover {
     color: white;
 }
 
-/*a.show-liked-boxes {*/
-/*    font-family: Arvo, Charcoal, sans-serif;*/
-/*    padding: 0.5rem 0rem 0.5rem 0rem;*/
-/*    background-color: white;*/
-/*    color: #73AD21;*/
-/*    cursor: pointer;*/
-/*    border-radius: 0.2rem;*/
-/*    border: 1px solid #73AD21;*/
-/*    font-size: 12px;*/
-/*    white-space: normal;*/
-/*    text-decoration: none;*/
-/*    display: inline-flex;*/
-/*    font-weight: bold;*/
-/*}*/
-
 a.show-liked-boxes {
     display: block;
     border-radius: 0.2rem;
@@ -1876,3 +1861,11 @@ div.card-body {
     text-decoration-color: white;
 }
 
+/*HOME styles*/
+h1.welcome-message span {
+    color: #73AD21;
+}
+
+.category-section {
+    display: none;
+}
