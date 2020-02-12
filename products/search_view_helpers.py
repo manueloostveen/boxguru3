@@ -315,16 +315,20 @@ def create_queryset(request, form, context, initial_product_type=None):
     # Show liked boxes
     only_liked_boxes = request.GET.get('liked')
 
-    context['saved_boxes'] = json.loads(request.COOKIES.get('saved_boxes'))
+    saved_boxes_json = request.COOKIES.get('saved_boxes')
+    if saved_boxes_json:
+        saved_boxes = json.loads(saved_boxes_json)
+        context['saved_boxes'] = saved_boxes
+    else:
+        saved_boxes = None
 
     if only_liked_boxes:
         if only_liked_boxes == '2':
             no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
         else:
             no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Bewaar dozen in de zoekresultaten met de "bewaarknop".</p>'
-        saved_boxes = request.COOKIES.get('saved_boxes')
+
         if saved_boxes:
-            saved_boxes = json.loads(saved_boxes)
             qsaved = Q(pk__in=saved_boxes)
             if not len(saved_boxes):
                 context['saved_boxes_message'] = no_saved_boxes_message
@@ -629,9 +633,20 @@ def create_queryset_product_fit(request, form, context):
 
     # Show liked boxes
     only_liked_boxes = request.GET.get('liked')
-    no_saved_boxes_message = '<h4>Je hebt nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
+
+    saved_boxes_json = request.COOKIES.get('saved_boxes')
+    if saved_boxes_json:
+        saved_boxes = json.loads(saved_boxes_json)
+        context['saved_boxes'] = saved_boxes
+    else:
+        saved_boxes = None
+
     if only_liked_boxes:
-        saved_boxes = request.session.get('saved_boxes')
+        if only_liked_boxes == '2':
+            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
+        else:
+            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Bewaar dozen in de zoekresultaten met de "bewaarknop".</p>'
+
         if saved_boxes:
             qsaved = Q(pk__in=saved_boxes)
             if not len(saved_boxes):

@@ -1868,4 +1868,66 @@ h1.welcome-message span {
 
 .category-section {
     display: none;
+    color: black;
+    font-size: 12px;
 }
+
+.box-categories.show {
+    display: block;
+}
+
+.category-section.show {
+    display: block;
+}
+
+.box-categories {
+    background-color: #cbea99;
+    /*margin-top: -10px;*/
+    margin-bottom: -8px;
+    padding: 10px 30px 2px 30px;
+    display: none;
+}
+
+.box-categories h4 {
+    margin-top: 2px;
+    font-size: 15px;
+}
+
+.close {
+  position: absolute;
+  right: 32px;
+  /*top: 32px;*/
+  width: 20px;
+  height: 20px;
+  opacity: 0.3;
+}
+.close:hover {
+  opacity: 1;
+}
+.close:before, .close:after {
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 20px;
+  width: 2px;
+  background-color: #333;
+}
+.close:before {
+  transform: rotate(45deg);
+}
+.close:after {
+  transform: rotate(-45deg);
+}
+
+.info-icon {
+    position: absolute;
+    color: white;
+    top: 10px;
+    right: -10px;
+    opacity: 0.5;
+}
+
+.info-icon:hover {
+    opacity: 1;
+}
+

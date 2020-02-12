@@ -64,21 +64,22 @@
                     <a href="{% url 'index' %}"><img
                             src="{% static 'products/images/logo/boxguru_logo_v1.svg' %}"
                             alt="BOXGURU"></a></div>
-{#                {% if user.is_authenticated %}#}
-{#                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">#}
-{#                        Uitloggen: {{ user }}</h6></a>#}
-{#                    </div>#}
-{#                    <a href="{% url 'search-product' %}?liked=1&form=box&initial_search=1"><h4>MIJN BEWAARDE DOZEN</h4>#}
-{#                    </a>#}
-{##}
-{#                {% else %}#}
-{#                    <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>#}
-{#                    </div>#}
-{#                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Registreren</h4></a>#}
-{#                    </div>#}
-{##}
-{#                {% endif %}#}
-                <a href="{% url 'search-product' %}?liked=2&form=box&initial_search=1"><h4>AL MIJN BEWAARDE DOZEN</h4></a>
+                {#                {% if user.is_authenticated %}#}
+                {#                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">#}
+                {#                        Uitloggen: {{ user }}</h6></a>#}
+                {#                    </div>#}
+                {#                    <a href="{% url 'search-product' %}?liked=1&form=box&initial_search=1"><h4>MIJN BEWAARDE DOZEN</h4>#}
+                {#                    </a>#}
+                {##}
+                {#                {% else %}#}
+                {#                    <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>#}
+                {#                    </div>#}
+                {#                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Registreren</h4></a>#}
+                {#                    </div>#}
+                {##}
+                {#                {% endif %}#}
+                <a href="{% url 'search-product' %}?liked=2&form=box&initial_search=1"><h4>AL MIJN BEWAARDE DOZEN</h4>
+                </a>
 
 
             </div>
@@ -169,6 +170,63 @@
 
 
 {% block js %}
+{% endblock %}
+
+{% block js_searchAndHome %}
+    <script>
+        {% if force_show_categories %}
+            $('#id_category').change(function () {
+
+                    var categoryWrapper = $('.box-categories');
+                    categoryWrapper.find('.category-section:visible').hide();
+                    categoryWrapper.show();
+
+                    var selected_value = $(this).val();
+                    var category_text_element = $('#category_' + selected_value);
+                    category_text_element.show();
+                    if (selected_value === '') {
+                        categoryWrapper.hide();
+                    }
+                }
+            );
+        {% else %}
+            $('#id_category').change(function () {
+
+                    var categoryWrapper = $('.box-categories');
+                    categoryWrapper.find('.category-section:visible').hide();
+                    categoryWrapper.hide();
+
+                    {% comment %}var selected_value = $(this).val();
+                    var category_text_element = $('#category_' + selected_value);
+                    category_text_element.show();
+                    if (selected_value === '') {
+                        categoryWrapper.hide();
+                    }{% endcomment %}
+                }
+            );
+
+        {% endif %}
+
+        $('.close').click(function () {
+            var categoryWrapper = $('.box-categories');
+            categoryWrapper.find('.category-section:visible').toggle();
+            categoryWrapper.hide();
+        });
+
+        $('.info-icon').click(function () {
+
+            var categoryWrapper = $('.box-categories');
+
+            var selected_category = $('#id_category').val();
+            var category_text_element = $('#category_' + selected_category);
+            category_text_element.toggle();
+            if (selected_category) {
+                categoryWrapper.toggle();
+            }
+
+        })
+
+    </script>
 {% endblock %}
 
 </body>

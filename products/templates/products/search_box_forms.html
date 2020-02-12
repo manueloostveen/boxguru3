@@ -21,13 +21,15 @@
                     <h4 class="text-center text-white m-2">TYPE DOOS</h4>
                     <div class="col-lg">
                         <div class="mb-2 capitalize">
-                            {{ box_form.category }}
+                            {{ box_form.category }}<i class="info-icon far fa-question-circle"></i>
                         </div>
                     </div>
 
 
                 </div>
             </div>
+
+            {% include 'products/box_category_texts.html' %}
 
             <div class="row info-block-2 mt-2 p-2">
                 <div class="col">

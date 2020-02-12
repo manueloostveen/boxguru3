@@ -19,6 +19,31 @@ box_main_categories = {
     (10,'koeldozen'): [(21, 'koeldozen', 'koeldozen')],  # Koeldozen
 }
 
+box_cat_2_main_cat = {
+    1: 1,
+    2: 1,
+    3: 1,
+    4: 2,
+    5: 2,
+    22: 2,
+    6: 3,
+    7: 4,
+    8:4,
+    9:4,
+    10:5,
+    11:5,
+    12: 5,
+    13: 5,
+    14: 6,
+    15:6,
+    16: 7,
+    17: 7,
+    18: 7,
+    19: 8,
+    20: 9,
+    21: 10
+}
+
 get_parameter_to_category_product_type_id = {}
 for category, product_types in box_main_categories.items():
     for product_type_tuple in product_types:

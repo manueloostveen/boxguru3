@@ -22,7 +22,7 @@ from products.search_view_helpers import Round, Abs, Filter, Filter2, create_fil
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
-from .populate_db import get_parameter_to_category_product_type_id as get2cat
+from .populate_db import get_parameter_to_category_product_type_id as get2cat, box_cat_2_main_cat
 from products.category_texts import main_category_texts
 import json
 
@@ -689,6 +689,7 @@ def home(request):
         context['fit_product_form'] = FitProductForm()
         context['boxes'] = Product.objects.filter(product_type__main_category__category_id__in=range(1, 11)).count()
         context['companies'] = Company.objects.count()
+        context['force_show_categories'] = True
 
     return render(request, template_name, context)
 
@@ -696,6 +697,7 @@ def home(request):
 def search_product(request, category_name=None):
     context = {}
     template_name = 'products/search_products.html'
+    context['category_texts'] = main_category_texts
 
     if request.method == 'GET':
 
@@ -710,6 +712,11 @@ def search_product(request, category_name=None):
             context['box_form'] = form
             context['fit_product_form'] = FitProductForm()
             context['category_name'] = category_name
+
+            # translate category_id to main_category_id
+            context['show_initial_category'] = category
+
+
 
         elif 'form' in request.GET:
             if request.GET['form'] == 'box':

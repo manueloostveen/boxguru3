@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    {% include 'products/box_category_texts.html' %}
+{#    {% include 'products/box_category_texts.html' %}#}
 
     <div class="row d-flex justify-content-center">
         <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
@@ -24,16 +24,4 @@
     </div>
 {% endblock %}
 
-{% block js %}
-    <script>
-        $('#id_category').change(function () {
 
-                $('.box-categories').find('.category-section:visible').toggle();
-
-                var category_text = $('#category_' + $(this).val());
-                category_text.toggle()
-            }
-        );
-
-    </script>
-{% endblock %}
