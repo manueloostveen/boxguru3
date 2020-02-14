@@ -50,9 +50,6 @@
 </head>
 <body>
 
-{#{% load cookielaw_tags %}#}
-{#{% cookielaw_banner %}#}
-
 <div class="wrap">
     <div class="container-fluid main">
 
@@ -85,13 +82,13 @@
             </div>
 
 
-        {% endblock %}
+        {% endblock navigation %}
 
         {% block site-info %}
-        {% endblock %}
+        {% endblock site-info %}
 
         {% block content %}
-        {% endblock %}
+        {% endblock content %}
 
         {% block pagination %}
             {% if is_paginated %}
@@ -110,62 +107,52 @@
                 </div>
             {% endif %}
         {% endblock %}
+
+
+        {% block footerspacer %}
+            <div class="row footer-spacer"></div>
+        {% endblock footerspacer %}
+
+        {% block footer %}
+            {#        <div class="wrap">#}
+            {#            <div class="container-fluid main">#}
+
+            <footer class="footer">
+
+                <div class="row all-boxes">
+                    <div class="col">
+                    <div class="p-3">
+                        <h4>ALLE SOORTEN DOZEN</h4>
+                        {% for url in footer_urls %}
+                            <div><a href="{% url 'footer-search' category_name=url.2 %}">{{ url.0 }}</a></div>
+                        {% endfor %}
+                    </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="p-3">
+                        <h4>CONTACT</h4>
+                        <p class="email">
+                            Vragen, opmerkingen of feedback?<br>
+                            info@boxguru.nl</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row bottom">
+                    <div class="col-1"></div>
+                    <div class="col-10">
+                        <p>Goedkope dozen | Vergelijk verzendverpakkingen | Vergelijk gratis op Boxguru.nl</p>
+                        <p>&copy Boxguru 2020</p>
+                    </div>
+                    <div class="col-1"></div>
+
+
+                </div>
+
+            </footer>
+        {% endblock footer %}
+
     </div>
 </div>
-
-
-{% block footer %}
-
-    <footer class="footer">
-        <div class="row footer-spacer"></div>
-        <div class="row all-boxes">
-            <div class="col-1"></div>
-            <div class="col-7">
-                <h4>ALLE SOORTEN DOZEN</h4>
-                {% for url in footer_urls %}
-                    <div><a href="{% url 'footer-search' category_name=url.2 %}">{{ url.0 }}</a></div>
-                    {#                    {% url 'panel_person_form' person_id=item.id %}#}
-                {% endfor %}
-            </div>
-            <div class="col"><a href=""><h4>CONTACT</h4></a></div>
-            <div class="col-1"></div>
-        </div>
-        <div class="row bottom">
-            <div class="col-1"></div>
-            <div class="col-10">
-                <p>Goedkope dozen | Vergelijk verzendverpakkingen | Vergelijk gratis op Boxguru.nl</p>
-                <p>&copy Boxguru 2019-2020</p>
-            </div>
-            <div class="col-1"></div>
-
-
-        </div>
-
-    </footer>
-{% endblock %}
-
-{#{% load i18n static %}#}
-
-{#<div id="CookielawBanner">#}
-{#<div class="cookie-content">#}
-{#    <div class="cookie-text">#}
-{#        {% trans 'This website uses cookies to make your experience better.' %}#}
-{#    </div>#}
-{#    <div class="cookie-buttons">#}
-{#         <a class="btn-blue" href="">{% trans "What are the cookies?" %}</a>#}
-{#         <a class="btn-orange" href="javascript:Cookielaw.createCookielawCookie();">{% trans "Ok, understood" %}</a>#}
-{#    </div>#}
-{#    <div class="close-cookies"></div>#}
-{#</div>#}
-{#</div>#}
-
-<script type="application/javascript">
-    $(document).ready(function () {
-        $('.close-cookies').click(function () {
-            $(this).parent().hide();
-        });
-    });
-</script>
 
 
 
@@ -174,6 +161,7 @@
 
 {% block js_searchAndHome %}
     <script>
+
         {% if force_show_categories %}
             $('#id_category').change(function () {
 

@@ -4,7 +4,7 @@
 
     <div class="row d-flex justify-content-center">
         <div class="text-center col-xs-12 col-sm-8">
-            <h1 class="welcome-message mt-5">Zoek tussen <span>{{ boxes }}</span> dozen van
+            <h1 class="welcome-message mt-5">Zoek tussen <span>{{ boxes }}</span> dozen en vergelijk het aanbod van
                 <span>{{ companies }}</span>
                 leveranciers!</h1>
             <p>Gebruik de widget om dozen op maat te zoeken,
@@ -13,7 +13,7 @@
         </div>
     </div>
 
-{#    {% include 'products/box_category_texts.html' %}#}
+    {#    {% include 'products/box_category_texts.html' %}#}
 
     <div class="row d-flex justify-content-center">
         <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
@@ -22,6 +22,44 @@
 
         </div>
     </div>
+
+    <div class="row about-space">
+        <div class="col text-center"><h1>OVER BOXGURU</h1></div>
+    </div>
+    <div class="row about">
+
+
+        <div class=" col-sm-12 col-md">
+            <div class="p-3">
+                <h4>DOZEN OP MAAT</h4>
+                <p>
+                    Een doos op maat laten maken betekent vaak offertes aanvragen, hoge opstartkosten en grote minimale
+                    bestelhoeveelheden (en dus onnodige voorraadkosten). Het kan een stuk voordeliger zijn om een doos te gebruiken die bij een leverancier op
+                    voorraad
+                    ligt. Helaas is het vinden van de juiste doos
+                    in het enorme online aanbod een vervelende klus. Daarom verzamelt Boxguru het aanbod voor jou.
+                    Zoek naar dozen op maat, bewaar interessante dozen en vergelijk het aanbod om de juiste verpakking
+                    te vinden.
+                </p>
+            </div>
+        </div>
+        <div class=" col-sm-12 col-md">
+            <div class="p-3">
+                <h4>EEN PERFECT PASSENDE OMDOOS</h4>
+                <p>
+                    Een omdoos nodig? Een doos op maat kan onnodig duur zijn. Een goed passende omdoos vinden tussen het enore online aanbod is een ellendige klus, laat staan om vervolgens een passende doos met het beste prijsje te vinden. <br>
+                    Boxguru regelt dit voor je. Je voert de hoeveelheid en de maten van een product in, en het algoritme van Boxguru doet de rest. Kies de doos met de kleinste inhoud of die met de laagste prijs.
+                </p>
+            </div>
+
+
+        </div>
+    </div> {% comment %}closing div home content{% endcomment %}
+{% endblock content %}
+
+{% block footerspacer %}
+{#                <div class="row footer-spacer"></div>#}
+
 {% endblock %}
 
 

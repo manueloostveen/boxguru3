@@ -1,6 +1,6 @@
 AUTOLOCKDOZEN = 'Autolockdozen zijn stevige kartonnen vouwdozen met een automatische bodem. Autolock dozen worden vaak gebruikt door webwinkels en andere bedrijven die graag tijd besparen tijdens het inpakken van hun pakketten. De dozen zijn in een handomdraai uit te vouwen en kunnen eenvoudig gesloten worden, soms doormiddel van een zelfklevende sluiting.'
 DEKSELDOZEN = 'Dekseldozen bestaan uit twee delen die naadloos over elkaar passen. De dozen zijn snel op te zetten en hebben een variabele vulhoogte.'
-STANDAARDDOZEN = 'De standaard doos, ook wel de Amerikaanse vouwdoos (Fefco 0201) is de ideale  om producten mee te verzenden. Dit type doos wordt het meest gebruikt. De doos heeft aan twee kanten kleppen die worden dichtgevouwen en afgesloten met tape. De stevige dozen beschermen jouw producten optimaal tijdens het transport.'
+STANDAARDDOZEN = 'De standaard doos, ook wel de Amerikaanse vouwdoos (Fefco 0201) is de ideale doos om producten mee te verzenden. De doos heeft aan twee kanten kleppen die worden dichtgevouwen en afgesloten met tape. De stevige dozen beschermen jouw producten optimaal tijdens het transport.'
 ORDNERDOZEN = 'Ordnerdozen zijn kruiswikkelverpakkingen die speciaal gemaakt zijn voor het verpakken van ordners of ringmappen. Meestal voorzien van een zelfklevende sluitstrip.'
 VERHUISDOZEN = 'Verhuisdozen zijn speciaal gemaakt voor verhuizingen. De dozen zijn zwaar te belasting en hebben een vlakke bodem die volledig dicht is. De dozen zijn voorzien van handvaten en vaak van dubbelgolf karton.'
 ARCHIEFDOZEN = 'Archiefdozen zijn speciaal geschikt voor het bewaren van documenten. De dozen zijn eenvoudig in elkaar te zetten.'
@@ -17,21 +17,22 @@ WIJNDOZEN = 'Wijndozen hebben precies de juiste afmeting voor een bepaalde hoeve
 UNDOZEN = 'UN dozen zijn dozen met een UN keurmerk. UN dozen zijn speciaal gemaakt om gevaarlijke stoffen of goederen te bewaren en te vervoeren.'
 FIXEERDOZEN = 'Fixeerverpakkingen en zweefverpakkingen zijn kartonnen verzendverpakkingen die voorzien van extra schuim of folie. De extra versteviging zorgt voor goede fixatie van het te verzenden product en zijn extra schokbestendig.'
 SCHUIMDOZEN = 'Schuimdozen zijn verzenddozen die zijn voorzien van een dikke laag schuim aan de binnenzijde, deze dozen zijn uitermate geschikt voor het verzenden van kwetsbare producten.'
-KRUISWIKKEL = 'Kruiswikkelverpakkingen of boekverpakkingen zijn uitermate geschikt voor het verpakken van boeken of vergelijkbare producten. Doordat het boek in de verpakking wordt "gewikkeld" heeft de verpakking een variabele hoogte. Wikkelverpakkingen komen vaak met een zelfklevende sluitstrip.'
+KRUISWIKKEL = 'Kruiswikkelverpakkingen of boekverpakkingen zijn uitermate geschikt voor het verpakken van boeken of vergelijkbare producten. Doordat het boek in de verpakking wordt "gewikkeld" heeft de verpakking een variabele hoogte. Wikkelverpakkingen zijn vaak voorzien van een zelfklevende sluitstrip.'
 SCHUIFDOZEN = 'Schuifdozen bestaan uit twee delen, een omdoos en een bodem. De twee onderdelen zijn eenvoudig in elkaar te schuiven.'
 KOELDOZEN = 'Koeldozen zijn uitermate geschikt voor het vervoeren of verzenden van gekoelde of bevroren producten. De dozen worden van speciaal isolerend materiaal gemaakt, dit kan EPS, tempex of piepschuim zijn.'
 
 main_category_texts = {
     1: {
+        '3': ('Standaard dozen', STANDAARDDOZEN),
         '1': ('Autolockdozen', AUTOLOCKDOZEN),
         '2': ('Dekseldozen', DEKSELDOZEN),
-        '3': ('Standaard dozen', STANDAARDDOZEN),
+
     },
     2: {
-        '4': ('Ordnerdozen',
-              ORDNERDOZEN),
         '5': ('Verhuisdozen',
               VERHUISDOZEN),
+        '4': ('Ordnerdozen',
+              ORDNERDOZEN),
         '22': ('Archiefdozen',
                ARCHIEFDOZEN
                ),
@@ -41,12 +42,13 @@ main_category_texts = {
               PALLETDOZEN),
     },
     4: {
+        '9': ('Postdozen',
+              POSTDOZEN),
         '7': ('Brievenbusdozen',
               BRIEVENBUSDOZEN),
         '8': ('Envolobox',
               ENVELOBOX),
-        '9': ('Postdozen',
-              POSTDOZEN),
+
     },
     5: {
         '10': ('Geschenkdozen',

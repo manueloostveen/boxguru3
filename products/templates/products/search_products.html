@@ -42,6 +42,8 @@
 
 {% endblock %}
 
+
+
 {% block js %}
     <script>
         // Script to store selected tab when refreshing
@@ -290,6 +292,20 @@
             }
         );
 
+    </script>
+
+    {% comment %} Javascript for ajax call to save click in database {% endcomment %}
+    <script>
+        $('.company-link').click(function () {
+            var clicked_link = $(this).attr('href');
+            $.ajax({
+                url: $(this).attr('data-collect-url'),
+                data: {
+                    'link': clicked_link
+                },
+                dataType: 'json'
+            });
+        });
     </script>
 
 

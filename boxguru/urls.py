@@ -27,6 +27,9 @@ urlpatterns = [
 # Use include() to add paths from the catalog application
 urlpatterns += [path('', include('products.urls'))]
 
+# Inluce analysis urls
+urlpatterns += [path('', include('analysis.urls'))]
+
 
 # Add URL maps to redirect the base URL to our application
 # urlpatterns += [path('', RedirectView.as_view(url='/catalog/', permanent=True))]

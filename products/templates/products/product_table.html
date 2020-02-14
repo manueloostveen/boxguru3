@@ -416,7 +416,7 @@
                     {#                {% endif %}#}
                     {#            </tr>#}
                     <tr>
-                        <td><a class="lowercase" href="{{ object.url }}" target="_blank"
+                        <td><a data-collect-url="/ajax/collect_reffered_link/" class="company-link lowercase" href="{{ object.url }}" target="_blank"
                                rel="noopener noreferrer">{{ object.company }}<i
                                 class="fas fa-external-link-alt"></i></a></td>
                         <td style="text-transform: none;">
@@ -622,7 +622,7 @@
                                     <td>€{{ object.lowest_price }} </td>
 
                                 {% endif %}
-                                <td><a class="lowercase" href="{{ object.url }}" target="_blank"
+                                <td><a data-collect-url="/ajax/collect_reffered_link/" class="lowercase company-link" href="{{ object.url }}" target="_blank"
                                        rel="noopener noreferrer">{{ object.company }}<i
                                         class="fas fa-external-link-alt"></i></a></td>
 

@@ -1146,6 +1146,7 @@ html, body {
 
 .wrap {
     min-height: 1000px;
+    width: 100%;
 }
 
 .main {
@@ -1155,10 +1156,10 @@ html, body {
 
 .footer {
     position: relative;
-    margin-top: -150px; /* negative value of footer height */
+    /*margin-top: -150px; !* negative value of footer height *!*/
     height: 150px;
     /*clear: both;*/
-    padding-top: 10px;
+    padding-top: 0px;
 }
 
 .footer-spacer {
@@ -1170,6 +1171,11 @@ html, body {
     font-size: 12px;
     padding-top: 10px;
     text-align: center;
+}
+
+.email {
+    color: white;
+    font-size: 15px;
 }
 
 .all-boxes {
@@ -1842,6 +1848,7 @@ div.card-body {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    text-align: center;
     /*flex-wrap: nowrap;*/
     /*height: 500px;*/
 }
@@ -1882,10 +1889,11 @@ h1.welcome-message span {
 
 .box-categories {
     background-color: #cbea99;
-    /*margin-top: -10px;*/
-    margin-bottom: -8px;
+    margin-top: 8px;
     padding: 10px 30px 2px 30px;
     display: none;
+    border-radius: 5px;
+    border: 1px solid #d1f09f;
 }
 
 .box-categories h4 {
@@ -1931,3 +1939,22 @@ h1.welcome-message span {
     opacity: 1;
 }
 
+.about h4 {
+    margin-top: 5px;
+}
+
+.about {
+    background-color: #73AD21;
+}
+.about p {
+    font-size: 1rem;
+}
+.about h1 {
+    margin-top: 10px;
+}
+.about p, .about h1, .about h4 {
+    color: white;
+}
+.about-space {
+    margin-top: 80px;
+}
