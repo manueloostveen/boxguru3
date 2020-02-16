@@ -1,0 +1,9 @@
+Cache-Control: private
+Content-Type: text/html; Charset=utf-8
+Content-Encoding: gzip
+Vary: Accept-Encoding
+Server: Microsoft-IIS/8.5
+Set-Cookie: products%5Fviewed=221; expires=Wed, 12-Aug-2020 22:00:00 GMT; path=/
+Set-Cookie: ASPSESSIONIDQUAQBQQA=GLDPAMKDLBKFJIDJDFCCPOJF; secure; path=/
+X-Powered-By: ASP.NET
+Date: Sat, 15 Feb 2020 10:49:14 GMT

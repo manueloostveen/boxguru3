@@ -192,7 +192,6 @@
 
 
 <div class="resultlist">
-
     {% if products %}
         <div class="results-mobile">
             <div class="col d-flex justify-content-center">
@@ -244,7 +243,7 @@
                 </div>
 
             </div>
-
+            <h2 class="category-name">{{ category_name }}</h2>
             {% for object in products %}
                 <table class="table-mobile table">
                     {#            <tr>#}
@@ -416,7 +415,8 @@
                     {#                {% endif %}#}
                     {#            </tr>#}
                     <tr>
-                        <td><a data-collect-url="/ajax/collect_reffered_link/" class="company-link lowercase" href="{{ object.url }}" target="_blank"
+                        <td><a data-collect-url="/ajax/collect_reffered_link/" class="js-company-link lowercase"
+                               href="{{ object.url }}" target="_blank"
                                rel="noopener noreferrer">{{ object.company }}<i
                                 class="fas fa-external-link-alt"></i></a></td>
                         <td style="text-transform: none;">
@@ -451,6 +451,8 @@
 
 
     <div class="table-wrapper">
+        <h1 class="category-name">{{ category_name }}</h1>
+
         <div class="row">
             {#            <div class="col-lg-0 col-1"></div>#}
             <div class="col-md-3 col-4 filter-col">
@@ -622,7 +624,8 @@
                                     <td>€{{ object.lowest_price }} </td>
 
                                 {% endif %}
-                                <td><a data-collect-url="/ajax/collect_reffered_link/" class="lowercase company-link" href="{{ object.url }}" target="_blank"
+                                <td><a data-collect-url="/ajax/collect_reffered_link/" class="lowercase js-company-link"
+                                       href="{{ object.url }}" target="_blank"
                                        rel="noopener noreferrer">{{ object.company }}<i
                                         class="fas fa-external-link-alt"></i></a></td>
 

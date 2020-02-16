@@ -7,20 +7,22 @@
 {#{% endblock %}#}
 {% block title %}
     {% if category_name %}
-        <title>BoxGuru - {{ category_name|title }}</title>
+        <title>{{ category_name|title }} - BoxGuru</title>
     {% else %}
         <title>BoxGuru - Alle dozen en verzendverpakkingen</title>
     {% endif %}
 {% endblock %}
 
 {% block content %}
+{#    <h1 class="category-name-top">{{ category_name }}</h1>#}
 
-    <div class="row d-flex justify-content-center grey">
-
+    {% if not category_name %}
+    <div class="row d-flex justify-content-center">
         <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
             {% include 'products/search_box_forms.html' %}
         </div>
     </div>
+    {% endif %}
 
     {% if no_search %}
     {% else %}
@@ -296,14 +298,17 @@
 
     {% comment %} Javascript for ajax call to save click in database {% endcomment %}
     <script>
-        $('.company-link').click(function () {
+        $('.js-company-link').click(function () {
             var clicked_link = $(this).attr('href');
             $.ajax({
                 url: $(this).attr('data-collect-url'),
                 data: {
                     'link': clicked_link
                 },
-                dataType: 'json'
+                dataType: 'json',
+                success: function (data) {
+                    alert(data.message)
+                }
             });
         });
     </script>

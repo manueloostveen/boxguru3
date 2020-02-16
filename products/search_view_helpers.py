@@ -291,14 +291,13 @@ def create_sort_headers(request, context):
     return context
 
 
-def create_queryset(request, form, context, initial_product_type=None):
+def create_queryset(request, form, context, initial_product_type=None, initial_main_category=None):
     width = form.cleaned_data.get('width')
     length = form.cleaned_data.get('length')
     height = form.cleaned_data.get('height')
     diameter = form.cleaned_data.get('diameter')
     colors = request.GET.getlist('color')
     wall_thicknesses = request.GET.getlist('wall_thickness')
-    main_category = form.cleaned_data.get('category')
     standard_size = request.GET.getlist('standard_size')
     bottles = request.GET.getlist('bottles')
     companies = request.GET.getlist('company')
@@ -309,6 +308,13 @@ def create_queryset(request, form, context, initial_product_type=None):
     else:
         product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if
                          product_type]
+
+    if initial_main_category:
+        main_category = initial_main_category
+    else:
+        main_category = form.cleaned_data.get('category')
+
+
 
     qobjects = []
 
@@ -846,7 +852,7 @@ def create_filters(request, context, queryset, browse=False):
     context['filters'] = {}
     if 'filter_product_type' in request.session:
         context['filters'] = {
-            'Product types': create_filter_list2(Filter2, request, 'product_type__product_type_id',
+            'Type doos': create_filter_list2(Filter2, request, 'product_type__product_type_id',
                                                  request.session['filter_product_type'], remaining_filters,
                                                  count_dictionary),
             'Kwaliteit': create_filter_list2(Filter2, request, 'wall_thickness',

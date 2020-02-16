@@ -5,7 +5,11 @@ from .models import Product, WallThickness, Color, ProductType, MainCategory
 
 urlpatterns = [
     path('', views.home, name='index'),
-    path('like-unlike/<int:pk>', views.like_unlike_box, name='like-unlike-product'),
+    path('like-unlike/<int:pk>/', views.like_unlike_box, name='like-unlike-product'),
+
+    path('dozen/<str:hoofdcategorie>/', views.search_product, name='browse-maincategory'),
+
+    path('dozen/<str:hoofdcategorie>/<str:subcategorie>', views.search_product, name='browse-subcategory'),
 
     path('products/', views.GenericListView.as_view(model=Product), name='products'),
     path('products/<int:pk>', views.ProductDetailView.as_view(), name='product-detail'),
@@ -14,7 +18,7 @@ urlpatterns = [
     path('categories/product-type/<int:pk>', views.product_type_detail_view, name='producttype-detail'),
 
     path('categories', views.main_category_view, name='categories'),
-    path('categories/<int:pk>', views.main_category_detail_view, name='categories-detail'),
+    path('categories/<int:pk>/', views.main_category_detail_view, name='categories-detail'),
 
     path('colors/', views.GenericListView.as_view(
         model=Color

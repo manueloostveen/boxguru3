@@ -3,7 +3,7 @@ DEKSELDOZEN = 'Dekseldozen bestaan uit twee delen die naadloos over elkaar passe
 STANDAARDDOZEN = 'De standaard doos, ook wel de Amerikaanse vouwdoos (Fefco 0201) is de ideale doos om producten mee te verzenden. De doos heeft aan twee kanten kleppen die worden dichtgevouwen en afgesloten met tape. De stevige dozen beschermen jouw producten optimaal tijdens het transport.'
 ORDNERDOZEN = 'Ordnerdozen zijn kruiswikkelverpakkingen die speciaal gemaakt zijn voor het verpakken van ordners of ringmappen. Meestal voorzien van een zelfklevende sluitstrip.'
 VERHUISDOZEN = 'Verhuisdozen zijn speciaal gemaakt voor verhuizingen. De dozen zijn zwaar te belasting en hebben een vlakke bodem die volledig dicht is. De dozen zijn voorzien van handvaten en vaak van dubbelgolf karton.'
-ARCHIEFDOZEN = 'Archiefdozen zijn speciaal geschikt voor het bewaren van documenten. De dozen zijn eenvoudig in elkaar te zetten.'
+ARCHIEFDOZEN = 'Archiefdozen zijn speciaal geschikt voor het bewaren van documenten, ordners of ringmappen. De dozen zijn eenvoudig in elkaar te zetten.'
 PALLETDOZEN = 'Palletdozen zijn groot formaat dozen die precies op een europallet of blokpallet passen. De dozen zijn extra sterk en geschikt voor langdurig opslag of transport. Palletdozen komen in verschillende uitvoeringen, soms met laadklep.'
 BRIEVENBUSDOZEN = 'Brievenbusdozen zijn verzenddozen of postdozen die klein genoeg zijn om door de brievenbus te passen. De standaard brievenbusdoos heeft een makkelijk te sluiten bovenklep en komt soms met een zelfklevende sluit- of retourstrip.'
 ENVELOBOX = 'De Envolobox is eenvoudig te vullen en te sluiten door middel van de sluitstrip. De Envelobox past door de brievenbus en is geschikt voor retourzendingen.'
@@ -29,13 +29,8 @@ main_category_texts = {
 
     },
     2: {
-        '5': ('Verhuisdozen',
-              VERHUISDOZEN),
-        '4': ('Ordnerdozen',
+        '4': ('Archiefdozen',
               ORDNERDOZEN),
-        '22': ('Archiefdozen',
-               ARCHIEFDOZEN
-               ),
     },
     3: {
         '6': ('Palletdozen',
@@ -83,5 +78,9 @@ main_category_texts = {
     10: {
         '21': ('Koeldozen',
                KOELDOZEN)
+    },
+    11: {
+        '5': ('Verhuisdozen',
+              VERHUISDOZEN),
     }
 }

@@ -22,8 +22,9 @@ from products.search_view_helpers import Round, Abs, Filter, Filter2, create_fil
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
-from .populate_db import get_parameter_to_category_product_type_id as get2cat, box_cat_2_main_cat
+from .populate_db import get_parameter_to_category_product_type_id as get2cat, get_parameter_to_main_category_id as get2main_cat
 from products.category_texts import main_category_texts
+
 import json
 
 
@@ -681,6 +682,9 @@ def home(request):
     context = {}
     template_name = 'products/home.html'
 
+    # Initialize session
+    request.session['welcome'] = True
+
     # Add category texts to context
     context['category_texts'] = main_category_texts
 
@@ -694,7 +698,10 @@ def home(request):
     return render(request, template_name, context)
 
 
-def search_product(request, category_name=None):
+def search_product(request, category_name=None,
+                   hoofdcategorie=None,
+                   subcategorie=None,
+):
     context = {}
     template_name = 'products/search_products.html'
     context['category_texts'] = main_category_texts
@@ -702,21 +709,33 @@ def search_product(request, category_name=None):
     if request.method == 'GET':
 
         product_type_footer = None
+        main_category_footer = None
         browse = False
         form = None
 
-        if category_name:
-            category, product_type_footer = get2cat[category_name]
+        if subcategorie:
+            category, product_type_footer, nice_name = get2cat[subcategorie]
             browse = True
             form = SearchBoxForm({'category': category})
             context['box_form'] = form
             context['fit_product_form'] = FitProductForm()
-            context['category_name'] = category_name
+            context['category_name'] = nice_name
 
             # translate category_id to main_category_id
             context['show_initial_category'] = category
+            context['show_initial_subcategory'] = str(product_type_footer)
+            print(subcategorie, 'SUBCATEGORIE')
 
+        elif hoofdcategorie:
+            main_category_footer, nice_name = get2main_cat[hoofdcategorie]
+            browse = True
+            form = SearchBoxForm({'category': main_category_footer})
+            context['box_form'] = form
+            context['fit_product_form'] = FitProductForm()
+            context['category_name'] = nice_name
 
+            # translate category_id to main_category_id
+            context['show_initial_category'] = main_category_footer
 
         elif 'form' in request.GET:
             if request.GET['form'] == 'box':
@@ -747,7 +766,9 @@ def search_product(request, category_name=None):
 
                 else:
                     queryset_qobjects, max_match_possible = create_queryset(request, form, context,
-                                                                            initial_product_type=product_type_footer)
+                                                                            initial_product_type=product_type_footer,
+                                                                            initial_main_category=main_category_footer
+                                                                            )
 
                 # Filter queryset based on "Afmetingen" filter
                 if request.GET.get('filter_width'):

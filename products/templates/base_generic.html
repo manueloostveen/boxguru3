@@ -82,6 +82,32 @@
             </div>
 
 
+            <div class="menu">
+
+                {% for main_tuple, sub_list in footer_all_categories.items %}
+                    <div class="dropdown {% if show_initial_category == main_tuple.0 %}active{% endif %}">
+                        {% if sub_list|length == 1 %}
+                            <a href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">
+                                <button class="dropbtn">{{ main_tuple.1 }}</button>
+                            </a>
+                        {% else %}
+                            <button class="dropbtn">{{ main_tuple.1 }}</button>
+                        {% endif %}
+                        <div class="dropdown-content">
+
+                            {% if sub_list|length > 1 %}
+                                <a class="all-cat-link"
+                                   href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">ALLE {{ main_tuple.1 }}</a>
+                                {% for category_tuple in sub_list %}
+                                    <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.1 }}</a>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+
         {% endblock navigation %}
 
         {% block site-info %}
@@ -120,22 +146,64 @@
             <footer class="footer">
 
                 <div class="row all-boxes">
-                    <div class="col">
-                    <div class="p-3">
-                        <h4>ALLE SOORTEN DOZEN</h4>
-                        {% for url in footer_urls %}
-                            <div><a href="{% url 'footer-search' category_name=url.2 %}">{{ url.0 }}</a></div>
-                        {% endfor %}
-                    </div>
-                    </div>
                     <div class="col-sm-12 col-md-3">
                         <div class="p-3">
-                        <h4>CONTACT</h4>
-                        <p class="email">
-                            Vragen, opmerkingen of feedback?<br>
-                            info@boxguru.nl</p>
+                            <h4>CONTACT</h4>
+                            <p class="email">
+                                Vragen, opmerkingen of feedback?<br>
+                                info@boxguru.nl</p>
                         </div>
                     </div>
+                    <div class="col">
+                        <div class="p-3">
+                            <h4>ALLE SOORTEN DOZEN</h4>
+                            {#                            {% for url in footer_urls %}#}
+                            {#                                <div>#}
+                            {#                                    <a href="{% url 'browse-subcategory' hoofdcategorie='test' subcategorie=url.2 %}">{{ url.0 }}</a>#}
+                            {#                                </div>#}
+                            {#                            {% endfor %}#}
+                            <div class="footer-all-boxes">
+                                {% for main_tuple, sub_list in footer_all_categories.items %}
+                                    {% if sub_list|length > 1 %}
+                                        <div class="footer-category-section">
+                                            <a class=top-link
+                                               href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">{{ main_tuple.1 }}</a>
+
+                                            <div>
+                                                {% if sub_list|length > 1 %}
+                                                    {% for category_tuple in sub_list %}
+
+                                                        <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.2 }}</a>
+
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for main_tuple, sub_list in footer_all_categories.items %}
+                                    {% if sub_list|length == 1 %}
+
+                                        <div class="footer-category-section">
+                                            <a class=top-link
+                                               href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">{{ main_tuple.1 }}</a>
+
+                                            <div>
+                                                {% if sub_list|length > 1 %}
+                                                    {% for category_tuple in sub_list %}
+
+                                                        <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.2 }}</a>
+
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="row bottom">
                     <div class="col-1"></div>
@@ -163,6 +231,7 @@
     <script>
 
         {% if force_show_categories %}
+            {% comment %}When selecting categories on home page{% endcomment %}
             $('#id_category').change(function () {
 
                     var categoryWrapper = $('.box-categories');
@@ -178,11 +247,14 @@
                 }
             );
         {% else %}
+            {% comment %}When selecting on a sub category landing page{% endcomment %}
             $('#id_category').change(function () {
 
                     var categoryWrapper = $('.box-categories');
                     categoryWrapper.find('.category-section:visible').hide();
                     categoryWrapper.hide();
+
+                    $('.box-category-text.hidden').show();
 
                     {% comment %}var selected_value = $(this).val();
                     var category_text_element = $('#category_' + selected_value);
