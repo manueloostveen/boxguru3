@@ -2022,6 +2022,14 @@ h2.category-name {
     margin-top: 10px;
 }
 
+.breadcrumb.custom {
+    margin-left: -15px;
+    margin-right: -15px;
+    border-radius: 0;
+    text-transform: capitalize;
+
+}
+
 .close {
     position: absolute;
     right: 32px;

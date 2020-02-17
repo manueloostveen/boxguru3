@@ -56,7 +56,7 @@
         {% block navigation %}
 
 
-            <div class="row navigation-row">
+            <nav class="row navigation-row">
                 <div class="logo">
                     <a href="{% url 'index' %}"><img
                             src="{% static 'products/images/logo/boxguru_logo_v1.svg' %}"
@@ -79,10 +79,10 @@
                 </a>
 
 
-            </div>
+            </nav>
 
 
-            <div class="menu">
+            <nav class="menu">
 
                 {% for main_tuple, sub_list in footer_all_categories.items %}
                     <div class="dropdown {% if show_initial_category == main_tuple.0 %}active{% endif %}">
@@ -105,13 +105,14 @@
                         </div>
                     </div>
                 {% endfor %}
-            </div>
-
-
+            </nav>
         {% endblock navigation %}
 
         {% block site-info %}
         {% endblock site-info %}
+
+        {% block breadcrumbs %}
+        {% endblock breadcrumbs %}
 
         {% block content %}
         {% endblock content %}

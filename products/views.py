@@ -22,7 +22,8 @@ from products.search_view_helpers import Round, Abs, Filter, Filter2, create_fil
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
-from .populate_db import get_parameter_to_category_product_type_id as get2cat, get_parameter_to_main_category_id as get2main_cat
+from .populate_db import get_parameter_to_category_product_type_id as get2cat, \
+    get_parameter_to_main_category_id as get2main_cat
 from products.category_texts import main_category_texts
 
 import json
@@ -701,7 +702,7 @@ def home(request):
 def search_product(request, category_name=None,
                    hoofdcategorie=None,
                    subcategorie=None,
-):
+                   ):
     context = {}
     template_name = 'products/search_products.html'
     context['category_texts'] = main_category_texts
@@ -713,8 +714,9 @@ def search_product(request, category_name=None,
         browse = False
         form = None
 
-        if subcategorie:
+        if subcategorie and hoofdcategorie:
             category, product_type_footer, nice_name = get2cat[subcategorie]
+            _, nice_name_hoofdcat = get2main_cat[hoofdcategorie]
             browse = True
             form = SearchBoxForm({'category': category})
             context['box_form'] = form
@@ -724,7 +726,8 @@ def search_product(request, category_name=None,
             # translate category_id to main_category_id
             context['show_initial_category'] = category
             context['show_initial_subcategory'] = str(product_type_footer)
-            print(subcategorie, 'SUBCATEGORIE')
+            context['breadcrumb'] = hoofdcategorie, nice_name_hoofdcat
+            print(main_category_texts)
 
         elif hoofdcategorie:
             main_category_footer, nice_name = get2main_cat[hoofdcategorie]
@@ -736,6 +739,8 @@ def search_product(request, category_name=None,
 
             # translate category_id to main_category_id
             context['show_initial_category'] = main_category_footer
+            context['breadcrumb'] = None
+
 
         elif 'form' in request.GET:
             if request.GET['form'] == 'box':
@@ -890,9 +895,7 @@ def like_unlike_box(request, pk):
             saved_boxes_list = [pk]
             reserialized_list = json.dumps(saved_boxes_list)
 
-
-
-        response.set_cookie(key='saved_boxes', value=reserialized_list, max_age=60*60*24*360)
+        response.set_cookie(key='saved_boxes', value=reserialized_list, max_age=60 * 60 * 24 * 360)
 
         # # Sessions version
         # saved_boxes = request.session.get('saved_boxes')
@@ -906,6 +909,4 @@ def like_unlike_box(request, pk):
         #
         # request.session['saved_boxes'] = saved_boxes
 
-
         return response
-

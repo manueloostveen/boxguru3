@@ -7,8 +7,8 @@ django.setup()
 from products.models import MainCategory, ProductType
 
 box_main_categories = {
-    (4, 'verzenddozen', 'verzenddozen'): [(7, 'brievenbus dozen', 'brievenbusdozen'), (8, 'envelobox', 'envelobox'),
-                                          (9, 'post dozen', 'postdozen')],  # Verzenddozen
+    (4, 'verzenddozen', 'verzenddozen'): [(7, 'brievenbus dozen', 'brievenbusdozen'),
+                                          (9, 'post dozen', 'postdozen'), (8, 'envelobox', 'envelobox')],  # Verzenddozen
     (1, 'vouwdozen', 'vouwdozen'): [(1, 'autolock dozen', 'autolockdozen'), (2, 'deksel dozen', 'dekseldozen'),
                                     (3, 'standaard dozen', 'standaarddozen')],
     # Vouwdozen

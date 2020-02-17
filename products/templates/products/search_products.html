@@ -13,15 +13,27 @@
     {% endif %}
 {% endblock %}
 
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'categories' %}">Dozen</a></li>
+            {% if breadcrumb %}
+                <li class="breadcrumb-item"><a href="{% url 'browse-maincategory' breadcrumb.0 %}">{{ breadcrumb.1 }}</a></li>{% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{% if category_name %}{{ category_name }}{% else %}Zoek{% endif %}</li>
+        </ol>
+    </nav>
+{% endblock breadcrumbs %}
+
 {% block content %}
-{#    <h1 class="category-name-top">{{ category_name }}</h1>#}
+    {#    <h1 class="category-name-top">{{ category_name }}</h1>#}
 
     {% if not category_name %}
-    <div class="row d-flex justify-content-center">
-        <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
-            {% include 'products/search_box_forms.html' %}
+        <div class="row d-flex justify-content-center">
+            <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                {% include 'products/search_box_forms.html' %}
+            </div>
         </div>
-    </div>
     {% endif %}
 
     {% if no_search %}

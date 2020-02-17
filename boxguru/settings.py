@@ -42,13 +42,13 @@ INSTALLED_APPS = [
     'products',
     'analysis',
 
-    #3rd party
+    # 3rd party
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'cookielaw',
 
-    #local
+    # local
     'users.apps.UsersConfig',
 ]
 

@@ -17,7 +17,7 @@ urlpatterns = [
     path('categories/product-types', views.GenericListView.as_view(model=ProductType), name='producttypes'),
     path('categories/product-type/<int:pk>', views.product_type_detail_view, name='producttype-detail'),
 
-    path('categories', views.main_category_view, name='categories'),
+    path('dozen/', views.main_category_view, name='categories'),
     path('categories/<int:pk>/', views.main_category_detail_view, name='categories-detail'),
 
     path('colors/', views.GenericListView.as_view(

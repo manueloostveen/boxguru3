@@ -1,14 +1,24 @@
 {% extends "base_generic.html" %}
 
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Dozen</li>
+        </ol>
+    </nav>
+{% endblock breadcrumbs %}
+
 {% block content %}
-<h1>Product categoriën</h1>
+    <h1>Alle kartonnen dozen</h1>
     {% if categories %}
         {% for object in categories %}
-        <li>
-            <a href="{{ object.get_absolute_url }}">{{ object }}</a>
-        </li>
+            <li>
+                <a href="{% url 'browse-maincategory' hoofdcategorie=object.category_url %}">{{ object }}</a>
+
+            </li>
         {% endfor %}
     {% else %}
-    <p>There are no {{ category_name }} in the database.</p>
+        <p>There are no {{ category_name }} in the database.</p>
     {% endif %}
 {% endblock %}
