@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     {% load static %}
-    {% block title %}<title>BoxGuru - Dozen & verzendverpakkingen vergelijken</title>{% endblock %}
+    {% block title %}<title>Dozen & verzendverpakkingen vergelijken - BoxGuru</title>{% endblock %}
+    <meta name="description"
+          content="{% block description %}
+          Vind de perfecte kartonnen doos! BoxGuru heeft het aanbod voor je verzameld van populaire leveranciers. Zoek tussen duizenden dozen en vind de goedkoopste!
+{% endblock description %}">
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -61,6 +65,10 @@
                     <a href="{% url 'index' %}"><img
                             src="{% static 'products/images/logo/boxguru_logo_v1.svg' %}"
                             alt="BOXGURU"></a></div>
+                <a href="{% url 'dozen-op-maat' %}"><h4>GEEN DOOS OP MAAT MEER NODIG!</h4>
+                </a>
+
+
                 {#                {% if user.is_authenticated %}#}
                 {#                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">#}
                 {#                        Uitloggen: {{ user }}</h6></a>#}
@@ -75,11 +83,9 @@
                 {#                    </div>#}
                 {##}
                 {#                {% endif %}#}
-                <a href="{% url 'search-product' %}?liked=2&form=box&initial_search=1"><h4>AL MIJN BEWAARDE DOZEN</h4>
-                </a>
-
 
             </nav>
+
 
 
             <nav class="menu">
@@ -105,6 +111,14 @@
                         </div>
                     </div>
                 {% endfor %}
+                <div class="dropdown">
+                    <a href="{% url 'mijn-bewaarde-dozen' %}?liked=2&form=box&initial_search=1">
+                        <button class="dropbtn">MIJN BEWAARDE
+                            DOZEN
+                        </button>
+                    </a>
+                </div>
+
             </nav>
         {% endblock navigation %}
 
@@ -115,7 +129,21 @@
         {% endblock breadcrumbs %}
 
         {% block content %}
+
+            <div class="row d-flex justify-content-center">
+                <div class="text-center col-xs-12 col-sm-8">
+                    {% block welcome %}
+
+
+                    {% endblock welcome %}
+
+                </div>
+            </div>
+
         {% endblock content %}
+
+        {% block seo %}
+        {% endblock seo %}
 
         {% block pagination %}
             {% if is_paginated %}

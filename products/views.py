@@ -8,6 +8,8 @@ from django.views import generic
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
+
+from boxguru import settings
 from products.models import Product, WallThickness, Color, ProductType, Company
 from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm, FitProductForm, SignUpForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -23,7 +25,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
 from .populate_db import get_parameter_to_category_product_type_id as get2cat, \
-    get_parameter_to_main_category_id as get2main_cat
+    get_parameter_to_main_category_id as get2main_cat, box_main_categories_clean
 from products.category_texts import main_category_texts
 
 import json
@@ -154,7 +156,7 @@ class GenericListView(generic.ListView):
 def main_category_view(request):
     context = {}
     template_name = 'products/main_categories.html'
-    context['categories'] = MainCategory.objects.all()
+    context['categories'] = MainCategory.objects.all().order_by('-category')
     return render(request, template_name, context)
 
 
@@ -698,6 +700,17 @@ def home(request):
 
     return render(request, template_name, context)
 
+def doos_op_maat(request):
+    context = {}
+    template_name = 'products/doos_op_maat.html'
+
+    if request.method == 'GET':
+        context['box_form'] = SearchBoxForm()
+        context['fit_product_form'] = FitProductForm()
+        context['force_show_categories'] = True
+
+    return render(request, template_name, context)
+
 
 def search_product(request, category_name=None,
                    hoofdcategorie=None,
@@ -717,29 +730,27 @@ def search_product(request, category_name=None,
         if subcategorie and hoofdcategorie:
             category, product_type_footer, nice_name = get2cat[subcategorie]
             _, nice_name_hoofdcat = get2main_cat[hoofdcategorie]
-            browse = True
+            browse = subcategorie
             form = SearchBoxForm({'category': category})
             context['box_form'] = form
             context['fit_product_form'] = FitProductForm()
             context['category_name'] = nice_name
-
-            # translate category_id to main_category_id
             context['show_initial_category'] = category
-            context['show_initial_subcategory'] = str(product_type_footer)
+            context['show_initial_subcategory'] = product_type_footer
             context['breadcrumb'] = hoofdcategorie, nice_name_hoofdcat
-            print(main_category_texts)
 
         elif hoofdcategorie:
             main_category_footer, nice_name = get2main_cat[hoofdcategorie]
-            browse = True
+            browse = hoofdcategorie
             form = SearchBoxForm({'category': main_category_footer})
             context['box_form'] = form
             context['fit_product_form'] = FitProductForm()
             context['category_name'] = nice_name
-
-            # translate category_id to main_category_id
             context['show_initial_category'] = main_category_footer
             context['breadcrumb'] = None
+            context['sub_category_links'] = box_main_categories_clean.get(hoofdcategorie)
+            context['main_category_raw_parameter'] = hoofdcategorie
+
 
 
         elif 'form' in request.GET:

@@ -25,9 +25,20 @@
     flex-direction: row;
 }
 
+/*About category styles*/
+.about-cat-text {
+    font-size: 12px;
+}
+.about-category-section {
+    display: flex;
+    justify-content: center;
+}
+
+.about-category-section div {
+    max-width: 800px;
+}
+
 /*FORMS STYLES*/
-
-
 .input-group-text {
     width: 28px;
 }
@@ -115,7 +126,7 @@ body {
 }
 
 h1 {
-    font-size: 60px;
+    font-size: 50px;
     font-family: 'Alfa Slab One', Charcoal, sans-serif;
     letter-spacing: 1px;
     color: #5e008b;
@@ -1875,6 +1886,19 @@ div.card-body {
     /*height: 500px;*/
 }
 
+.navigation-row.horizontal {
+    background-color: #5e008b;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    /*flex-wrap: nowrap;*/
+    /*height: 500px;*/
+}
+
+
 /*.navigation-row > div {*/
 /*    display:inline-block;*/
 /*    !*margin-left: auto;*!*/
@@ -1890,6 +1914,22 @@ div.card-body {
     text-decoration-color: white;
 }
 
+.sub-cat-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.sub-cat-links .dropdown:last-child .dropbtn {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.sub-cat-links .dropdown:first-child .dropbtn {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
 /*HOME styles*/
 .menu {
     display: flex;
@@ -1898,7 +1938,7 @@ div.card-body {
     margin-left: -15px;
     margin-right: -15px;
     background-color: #73AD21;
-    font-family: 'Alfa Slab One', Charcoal, sans-serif;
+    /*font-family: 'Alfa Slab One', Charcoal, sans-serif;*/
     letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 14px;
@@ -1912,7 +1952,6 @@ div.card-body {
     font-size: 14px;
     border: none;
     cursor: pointer;
-    font-family: 'Alfa Slab One', Charcoal, sans-serif;
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -1921,6 +1960,10 @@ div.card-body {
 .dropdown {
     position: relative;
     display: inline-block;
+}
+
+.menu .dropdown:last-child .dropbtn {
+font-style: oblique;
 }
 
 .dropdown.active .dropbtn {

@@ -10,7 +10,7 @@ class MainCategory(models.Model):
     category_url = models.CharField(max_length=120, verbose_name='URL-naam', null=True)
 
     def __str__(self):
-        return self.category + " " + str(self.category_id)
+        return self.category
 
     def get_absolute_url(self):
         return reverse('categories-detail', args=[str(self.id)])
@@ -42,7 +42,7 @@ class ProductType(models.Model):
     product_type_id = models.IntegerField(blank=True)
 
     def __str__(self):
-        return self.type + ' ' + str(self.product_type_id)
+        return self.type
 
     def get_absolute_url(self):
         return reverse('producttype-detail', args=[str(self.id)])

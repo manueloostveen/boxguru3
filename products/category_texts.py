@@ -1,8 +1,8 @@
 AUTOLOCKDOZEN = 'Autolockdozen zijn stevige kartonnen vouwdozen met een automatische bodem. Autolock dozen worden vaak gebruikt door webwinkels en andere bedrijven die graag tijd besparen tijdens het inpakken van hun pakketten. De dozen zijn in een handomdraai uit te vouwen en kunnen eenvoudig gesloten worden, soms doormiddel van een zelfklevende sluiting.'
-DEKSELDOZEN = 'Dekseldozen bestaan uit twee delen die naadloos over elkaar passen. De dozen zijn snel op te zetten en hebben een variabele vulhoogte.'
+DEKSELDOZEN = 'Dekseldozen bestaan uit twee delen die naadloos over elkaar passen. De dozen zijn snel in elkaar te zetten en hebben een variabele vulhoogte.'
 STANDAARDDOZEN = 'De standaard doos, ook wel de Amerikaanse vouwdoos (Fefco 0201) is de ideale doos om producten mee te verzenden. De doos heeft aan twee kanten kleppen die worden dichtgevouwen en afgesloten met tape. De stevige dozen beschermen jouw producten optimaal tijdens het transport.'
 ORDNERDOZEN = 'Ordnerdozen zijn kruiswikkelverpakkingen die speciaal gemaakt zijn voor het verpakken van ordners of ringmappen. Meestal voorzien van een zelfklevende sluitstrip.'
-VERHUISDOZEN = 'Verhuisdozen zijn speciaal gemaakt voor verhuizingen. De dozen zijn zwaar te belasting en hebben een vlakke bodem die volledig dicht is. De dozen zijn voorzien van handvaten en vaak van dubbelgolf karton.'
+VERHUISDOZEN = 'Verhuisdozen zijn speciaal gemaakt voor verhuizingen. De dozen zijn zwaar te belasten en hebben een vlakke bodem die volledig dicht is. De dozen zijn voorzien van handvaten en vaak van dubbelgolf karton.'
 ARCHIEFDOZEN = 'Archiefdozen zijn speciaal geschikt voor het bewaren van documenten, ordners of ringmappen. De dozen zijn eenvoudig in elkaar te zetten.'
 PALLETDOZEN = 'Palletdozen zijn groot formaat dozen die precies op een europallet of blokpallet passen. De dozen zijn extra sterk en geschikt voor langdurig opslag of transport. Palletdozen komen in verschillende uitvoeringen, soms met laadklep.'
 BRIEVENBUSDOZEN = 'Brievenbusdozen zijn verzenddozen of postdozen die klein genoeg zijn om door de brievenbus te passen. De standaard brievenbusdoos heeft een makkelijk te sluiten bovenklep en komt soms met een zelfklevende sluit- of retourstrip.'
@@ -21,66 +21,67 @@ KRUISWIKKEL = 'Kruiswikkelverpakkingen of boekverpakkingen zijn uitermate geschi
 SCHUIFDOZEN = 'Schuifdozen bestaan uit twee delen, een omdoos en een bodem. De twee onderdelen zijn eenvoudig in elkaar te schuiven.'
 KOELDOZEN = 'Koeldozen zijn uitermate geschikt voor het vervoeren of verzenden van gekoelde of bevroren producten. De dozen worden van speciaal isolerend materiaal gemaakt, dit kan EPS, tempex of piepschuim zijn.'
 
+
 main_category_texts = {
     1: {
-        '3': ('Standaard dozen', STANDAARDDOZEN),
-        '1': ('Autolockdozen', AUTOLOCKDOZEN),
-        '2': ('Dekseldozen', DEKSELDOZEN),
+        3: ('Standaard dozen', STANDAARDDOZEN),
+        1: ('Autolockdozen', AUTOLOCKDOZEN),
+        2: ('Dekseldozen', DEKSELDOZEN),
 
     },
     2: {
-        '4': ('Archiefdozen',
+        4: ('Archiefdozen',
               ORDNERDOZEN),
     },
     3: {
-        '6': ('Palletdozen',
+        6: ('Palletdozen',
               PALLETDOZEN),
     },
     4: {
-        '9': ('Postdozen',
+        9: ('Postdozen',
               POSTDOZEN),
-        '7': ('Brievenbusdozen',
+        7: ('Brievenbusdozen',
               BRIEVENBUSDOZEN),
-        '8': ('Envolobox',
+        8: ('Envolobox',
               ENVELOBOX),
 
     },
     5: {
-        '10': ('Geschenkdozen',
+        10: ('Geschenkdozen',
                GESCHENKDOZEN),
-        '11': ('Giftcarddozen',
+        11: ('Giftcarddozen',
                GIFTCARDDOZEN),
-        '12': ('Gondeldozen',
+        12: ('Gondeldozen',
                GONDELDOZEN),
-        '13': ('Magneetdozen', MAGNEETDOZEN),
+        13: ('Magneetdozen', MAGNEETDOZEN),
     },
     6: {
-        '14': ('Bierdozen', BIERDOZEN),
-        '15': ('Wijndozen',
+        14: ('Bierdozen', BIERDOZEN),
+        15: ('Wijndozen',
                WIJNDOZEN),
     },
     7: {
-        '16': ('UN-dozen',
+        16: ('UN-dozen',
                UNDOZEN),
-        '17': ('Fixeerverpakkingen & Zweefverpakkingen',
+        17: ('Fixeerverpakkingen & Zweefverpakkingen',
                FIXEERDOZEN),
-        '18': ('Schuimdozen',
+        18: ('Schuimdozen',
                SCHUIMDOZEN),
     },
     8: {
-        '19': ('Kruiswikkelverpakkingen & Boekverpakkingen',
+        19: ('Kruiswikkelverpakkingen & Boekverpakkingen',
                KRUISWIKKEL),
     },
     9: {
-        '20': ('Schuifdozen',
+        20: ('Schuifdozen',
                SCHUIFDOZEN),
     },
     10: {
-        '21': ('Koeldozen',
+        21: ('Koeldozen',
                KOELDOZEN)
     },
     11: {
-        '5': ('Verhuisdozen',
+        5: ('Verhuisdozen',
               VERHUISDOZEN),
     }
 }

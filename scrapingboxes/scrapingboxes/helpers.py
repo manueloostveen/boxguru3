@@ -935,10 +935,11 @@ class ItemUpdater2:
         }
 
         self.box_type_dict = {
-            'UN dozen': ['un ', 'gevaarlijke'],
-            'geschenk dozen': ['geschenk'],
-            "bier dozen": ["bier"],
-            "wijn dozen": ['fles', 'wijn'],
+            'UN-dozen': ['un ', 'gevaarlijke'],
+            # Dit waren 'feestelijke dozen'
+            'geschenkdozen': ['geschenk'] + ['kerst', "feest", 'sinterklaas', 'sint'],
+            "bierdozen": ["bier"],
+            "wijndozen": ['fles', 'wijn'],
             'enveloppen van karton': ['kartonnen enveloppen', 'verzendenvelop massief', 'verzendenvelop e-golf'],
             'luchtkussen enveloppen': ['luchtkussen envelop', 'luchtkussenenvelop'],
             'paklijst enveloppen': ['paklijst'],
@@ -946,7 +947,7 @@ class ItemUpdater2:
             'schuim enveloppen': ['foam envelop'],
             'standaard enveloppen': ['envelop'],
             'envelobox': ['envelobox'],
-            'magneet dozen': ['magneet'],
+            'magneetdozen': ['magneet'],
             'verzend zakken': ['verzendzak', 'bag', 'zak'],
             'trapezium kokers': ['trapeze', 'trapezium koker'],
             'driekhoeks kokers': ['driehoek koker'],
@@ -954,19 +955,19 @@ class ItemUpdater2:
             "ronde kokers": ['koker'],
             "dozen inserts": ['insert', 'flesinterieur', 'tray', 'interieurs'],
             "koeldozen": ['thermo', 'koel', 'isothermisch', 'cool'],
-            "post dozen": ["post", "retour", 'kleding', 'geschenk', 'schoen', 'fefco 711', 'fefco 0713', 'fefco 713'],
+            "postdozen": ["post", "retour", 'kleding', 'geschenk', 'schoen', 'fefco 711', 'fefco 0713', 'fefco 713'],
             "kruiswikkel- & boekverpakkingen": ["wikkel", "draaipak", 'lp ', 'kalender', "book", 'boek'],
-            "verhuis dozen": ["verhuis"],
-            "autolock dozen": ["autolock", "montage", "automatisch", 'speedbox', 'zweedse bodem'],
-            "deksel dozen": ["deksel", "opberg", "deksel", "easypack", 'stropdas'],
-            "archief dozen": ["archief", 'ordner'],
-            "brievenbus dozen": ["brievenbus", 'busbox'],
+            "verhuisdozen": ["verhuis"],
+            "autolockdozen": ["autolock", "montage", "automatisch", 'speedbox', 'zweedse bodem'],
+            "dekseldozen": ["deksel", "opberg", "deksel", "easypack", 'stropdas', 'paraat'],
+            "archiefdozen": ["archief", 'ordner'],
+            "brievenbusdozen": ["brievenbus", 'busbox'],
             "kisten/bakken": ["kist", 'transportbak', 'bak'],
-            "schuim dozen": ["schuim"],
+            "schuimdozen": ["schuim"],
             "fixeer- & zweefverpakkingen": ["fixeer", "fixatie", 'zweef', 'korrvu'],
             "feestelijke dozen": ['kerst', "feest", 'sinterklaas', 'sint'],
-            "stans dozen": ['stans'],
-            'gondel dozen': ['gondel'],
+            "stansdozen": ['stans'],
+            'gondeldoosjes': ['gondel'],
             'giftcard dozen': ['giftcard'],
             'schuifdozen': ['schuifdoos'],
             'magazijn doos': ['magazijn'],
@@ -974,7 +975,7 @@ class ItemUpdater2:
             # todo "karton" hier verwijderd, dat gaat ergesn fouten opeleveren# pas op: palletplaten, moet boven 'pallet box' blijven
             "pallet dozen": ['container', 'palletb', 'palletd'],
             'standaard dozen': ['vouwdoos', 'doos', 'standaarddozen', 'dozen'] + ['varibox', 'variabele hoogte', 'hoogte verstelbaar'],
-            'paraat dozen': ['paraat'],
+            'paraatdozen': ['paraat'],
             'opvulmateriaal': ['opvulmateriaal']
             #todo pluggen voor verzendkokers rajapack 'pluggen voor verzendkokers\
         }

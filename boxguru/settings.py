@@ -17,6 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Setting up static root
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+TEXT_FILES_ROOT = os.path.join(STATIC_ROOT, 'textfiles')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/

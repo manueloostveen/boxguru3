@@ -2,6 +2,8 @@
 {% load verbose_names %}
 {% load field_values %}
 {% load static %}
+{% load text_helpers %}
+
 
 {#{% block navigation %}#}
 {#{% endblock %}#}
@@ -9,9 +11,10 @@
     {% if category_name %}
         <title>{{ category_name|title }} - BoxGuru</title>
     {% else %}
-        <title>BoxGuru - Alle dozen en verzendverpakkingen</title>
+        <title>Alle dozen en verzendverpakkingen - BoxGuru</title>
     {% endif %}
 {% endblock %}
+
 
 {% block breadcrumbs %}
     <nav aria-label="breadcrumb">
@@ -19,15 +22,15 @@
             <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
             <li class="breadcrumb-item"><a href="{% url 'categories' %}">Dozen</a></li>
             {% if breadcrumb %}
-                <li class="breadcrumb-item"><a href="{% url 'browse-maincategory' breadcrumb.0 %}">{{ breadcrumb.1 }}</a></li>{% endif %}
-            <li class="breadcrumb-item active" aria-current="page">{% if category_name %}{{ category_name }}{% else %}Zoek{% endif %}</li>
+                <li class="breadcrumb-item"><a
+                        href="{% url 'browse-maincategory' breadcrumb.0 %}">{{ breadcrumb.1 }}</a></li>{% endif %}
+            <li class="breadcrumb-item active" aria-current="page">
+                {% if category_name %}{{ category_name }}{% else %}Zoek{% endif %}</li>
         </ol>
     </nav>
 {% endblock breadcrumbs %}
 
 {% block content %}
-    {#    <h1 class="category-name-top">{{ category_name }}</h1>#}
-
     {% if not category_name %}
         <div class="row d-flex justify-content-center">
             <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4">
@@ -43,7 +46,27 @@
 
         <div class="product-filter-mobile">
             <div class="filter-title">
-                <h4 class="mb-3 filter-title center">RESULTATEN:{% if products %}
+                <h2 class="category-name">{{ category_name }}</h2>
+                {% if sub_category_links %}
+                    <div class="sub-cat-links">
+                        {% if sub_category_links %}
+                            {% for category_tuple in sub_category_links %}
+                                <div class="dropdown"><a
+                                        href="{% url 'browse-subcategory' main_category_raw_parameter category_tuple.2 %}">
+                                    <button class="dropbtn">{{ category_tuple.1 }}</button>
+                                </a></div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class="about-category-section">
+                    <div class='about-cat-text'>
+                        {% if show_initial_subcategory %}{{ show_initial_subcategory|small_text_subcategory }}
+                            {% elif show_initial_category %}{{ show_initial_category|small_text_maincategory }}
+                        {% endif %}
+                    </div>
+                </div>
+                <h4 class="mb-3 filter-title center">AANTAL DOZEN:{% if products %}
                     <span> {{ products_found }}</span>{% else %}
                     <span class="no-results"> 0</span>{% endif %}</h4>
             </div>
@@ -55,6 +78,20 @@
     {% include 'products/product_table.html' %}
 
 {% endblock %}
+
+{% block seo %}
+    <div class="about-category-section">
+        <div>
+            <h4>Over {{ category_name }}</h4>
+            <div class='about-cat-text'>
+                {% if show_initial_subcategory %}{{ show_initial_subcategory|seo_text_subcategory }}
+                    {% elif show_initial_category %}{{ show_initial_category|seo_text_maincategory }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock seo %}
 
 
 

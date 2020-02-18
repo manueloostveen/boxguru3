@@ -329,6 +329,7 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
         saved_boxes = None
 
     if only_liked_boxes:
+        # context['category_name'] = 'Mijn bewaarde dozen'
         if only_liked_boxes == '2':
             no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
         else:
@@ -782,7 +783,11 @@ def order_queryset(request, context, queryset, max_match_possible=False):
 def create_filters(request, context, queryset, browse=False):
     no_filter = [('', 'x')]
 
-    if request.GET.get('initial_search') or browse:
+
+    if request.GET.get('initial_search') or browse != request.session.get('browse'):
+
+        # Set browse in session to check when a filter is clicked
+        request.session['browse'] = browse
 
         request.session['filter_product_type'] = no_filter + list(
             ProductType.objects.filter(product__in=queryset).values_list('product_type_id', 'type').distinct())

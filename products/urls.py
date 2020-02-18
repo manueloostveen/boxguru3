@@ -7,9 +7,13 @@ urlpatterns = [
     path('', views.home, name='index'),
     path('like-unlike/<int:pk>/', views.like_unlike_box, name='like-unlike-product'),
 
+    path('dozen-op-maat/', views.doos_op_maat, name='dozen-op-maat'),
+
     path('dozen/<str:hoofdcategorie>/', views.search_product, name='browse-maincategory'),
 
     path('dozen/<str:hoofdcategorie>/<str:subcategorie>', views.search_product, name='browse-subcategory'),
+
+    path('mijn-bewaarde-dozen/', views.search_product, name='mijn-bewaarde-dozen'),
 
     path('products/', views.GenericListView.as_view(model=Product), name='products'),
     path('products/<int:pk>', views.ProductDetailView.as_view(), name='product-detail'),

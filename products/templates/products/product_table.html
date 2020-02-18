@@ -1,4 +1,4 @@
-{% load static %}
+{% load static text_helpers %}
 
 
 {#            <div class="d-none d-sm-block col-xl-2 col-lg-3 col-md-4 col-sm-5 mt-5 filter-section">#}
@@ -194,6 +194,7 @@
 <div class="resultlist">
     {% if products %}
         <div class="results-mobile">
+
             <div class="col d-flex justify-content-center">
                 <div class="mobile-table-top mt-3">
                     <div class="pagination-bottom-mobile">
@@ -243,7 +244,6 @@
                 </div>
 
             </div>
-            <h2 class="category-name">{{ category_name }}</h2>
             {% for object in products %}
                 <table class="table-mobile table">
                     {#            <tr>#}
@@ -438,7 +438,7 @@
     {% elif request.GET.liked %}
         <div class="results-mobile">
 
-            {% autoescape off %}d
+            {% autoescape off %}
                 {{ saved_boxes_message }}
             {% endautoescape %}
 
@@ -452,7 +452,22 @@
 
     <div class="table-wrapper">
         <h1 class="category-name">{{ category_name }}</h1>
+        <div class="sub-cat-links">
+            {% if sub_category_links %}
+                {% for category_tuple in sub_category_links %}
+                    <div class="dropdown"><a  href="{% url 'browse-subcategory' main_category_raw_parameter category_tuple.2 %}">
+                        <button class="dropbtn">{{ category_tuple.1 }}</button></a></div>
+                {% endfor %}
+            {% endif %}
+        </div>
 
+        <div class="about-category-section">
+            <div class='about-cat-text'>
+                {% if show_initial_subcategory %}{{ show_initial_subcategory|small_text_subcategory }}
+                    {% elif show_initial_category %}{{ show_initial_category|small_text_maincategory }}
+                {% endif %}
+            </div>
+        </div>
         <div class="row">
             {#            <div class="col-lg-0 col-1"></div>#}
             <div class="col-md-3 col-4 filter-col">
@@ -464,7 +479,7 @@
                 {% if no_search %}
                 {% else %}
                     <div class="table-top-wrap">
-                        <h4 class="filter-title">RESULTATEN:{% if products %}
+                        <h4 class="filter-title">AANTAL DOZEN:{% if products %}
                             <span> {{ products_found }}</span>{% else %}
                             <span class="no-results"> 0</span>{% endif %}</h4>
 
