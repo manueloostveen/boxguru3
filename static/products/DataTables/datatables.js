@@ -12328,7 +12328,7 @@
 	
 		/**
 		 * This property can be used to read data from any data source property,
-		 * including deeply nested objects / properties. `data` can be given in a
+		 * including BoxGuruy nested objects / properties. `data` can be given in a
 		 * number of different ways which effect its behaviour:
 		 *
 		 * * `integer` - treated as an array index for the data source. This is the
@@ -12418,7 +12418,7 @@
 		 *    } );
 		 *
 		 *  @example
-		 *    // Read information from deeply nested objects
+		 *    // Read information from BoxGuruy nested objects
 		 *    // JSON structure for each row:
 		 *    //   {
 		 *    //      "engine": {value},

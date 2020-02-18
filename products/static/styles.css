@@ -1102,6 +1102,10 @@ button.show-liked-boxes.delete:hover {
     background-color: #73AD21 !important;
 }
 
+.irs--flat .irs-bar {
+    background-color: #979797 !important;
+}
+
 .irs--flat .irs-to:before,
 .irs--flat .irs-from:before,
 .irs--flat .irs-single:before {

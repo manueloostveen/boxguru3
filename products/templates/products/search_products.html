@@ -80,16 +80,19 @@
 {% endblock %}
 
 {% block seo %}
-    <div class="about-category-section">
-        <div>
-            <h4>Over {{ category_name }}</h4>
-            <div class='about-cat-text'>
-                {% if show_initial_subcategory %}{{ show_initial_subcategory|seo_text_subcategory }}
-                    {% elif show_initial_category %}{{ show_initial_category|seo_text_maincategory }}
-                {% endif %}
+    {% if category_name %}
+        <div class="about-category-section">
+            <div>
+                <h4>Over {{ category_name }}</h4>
+                <div class='about-cat-text'>
+                    {% if show_initial_subcategory %}{{ show_initial_subcategory|seo_text_subcategory }}
+                        {% elif show_initial_category %}{{ show_initial_category|seo_text_maincategory }}
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
+
 
 {% endblock seo %}
 
