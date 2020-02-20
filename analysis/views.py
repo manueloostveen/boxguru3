@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render
 from .models import Session, Referral, Visitor, VisitData, UniqueVisitWeek, UniqueVisitMonth
 import datetime
 

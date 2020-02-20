@@ -1,9 +1,4 @@
 import json
-import sys
-from urllib.parse import urlparse
-
-from django.conf import settings
-from django.http import HttpResponsePermanentRedirect
 
 from analysis import models
 from analysis.models import Visitor

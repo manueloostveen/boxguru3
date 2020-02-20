@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from scrapy_djangoitem import DjangoItem
 
 
 class ScrapingboxesItem(scrapy.Item):

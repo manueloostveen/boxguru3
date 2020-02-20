@@ -1,0 +1,11 @@
+Server: nginx
+Date: Thu, 20 Feb 2020 15:26:33 GMT
+Content-Type: text/html; charset=UTF-8
+Vary: Accept-Encoding
+Set-Cookie: frontend=2af2qdorp0q7mqs97bg6drsnne; expires=Thu, 20-Feb-2020 16:26:32 GMT; Max-Age=3600; path=/; domain=www.dozen.nl; HttpOnly
+Set-Cookie: frontend_cid=fDWANpn7Er92gZlm; expires=Thu, 20-Feb-2020 16:26:32 GMT; Max-Age=3600; path=/; domain=www.dozen.nl; secure; HttpOnly
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+X-Frame-Options: SAMEORIGIN
+Content-Encoding: gzip

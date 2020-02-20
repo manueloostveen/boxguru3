@@ -1,5 +1,5 @@
 from collections import defaultdict
-from django.db.models import Func, Q, When, Case, DecimalField, F, IntegerField, Min, FloatField, Max, Count
+from django.db.models import Func, Q, When, Case, DecimalField, F, Min, Max, Count
 from django.db.models.functions import Greatest
 from django.utils.http import urlencode
 from products.models import Product, ProductType, Color, Company, WallThickness

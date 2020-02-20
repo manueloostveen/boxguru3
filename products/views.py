@@ -1,25 +1,19 @@
-from urllib.parse import urlencode
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
-from django.urls import reverse
 
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from products.models import Product, WallThickness, Color, ProductType, Company
-from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm, FitProductForm, SignUpForm
+from .forms import SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm, FitProductForm, SignUpForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.db.models import Q, F, Max, Case, When, ExpressionWrapper, DecimalField, Avg, Func, Count
-from django.db.models.functions import Greatest, Sqrt
-from products.product_categories import box_main_category_dict
-from math import pi
-from products.search_view_helpers import Round, Abs, Filter, Filter2, create_filter_list, create_filter_list2, \
-    create_queryset, create_sort_headers, Filter3, make_pagination, order_queryset, FilterVarHeight, \
-    create_queryset_product_fit, create_filters, FilterLikedBoxes
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q, F, Case, When, DecimalField, Func
+from django.db.models.functions import Greatest
+
+from products.search_view_helpers import create_queryset, create_sort_headers, make_pagination, order_queryset, create_queryset_product_fit, create_filters, FilterLikedBoxes
 from products.models import MainCategory
 from django.contrib.auth import login, authenticate
 from .populate_db import get_parameter_to_category_product_type_id as get2cat, \
