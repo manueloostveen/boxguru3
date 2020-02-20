@@ -13,6 +13,9 @@ django.setup()
 
 FILE_PATH = Path(__file__ or ".settings.py").resolve()
 
+# Base path of scrapingboxes project
+BASE_PATH_SCRAPINGBOXES = FILE_PATH.parent.parent
+
 BOT_NAME = "scrapingboxes"
 
 SPIDER_MODULES = ["scrapingboxes.spiders"]
@@ -27,8 +30,8 @@ ROBOTSTXT_OBEY = False
 
 SELENIUM_DRIVER_NAME = "chrome"
 # SELENIUM_DRIVER_EXECUTABLE_PATH = "/usr/local/bin/chromedriver"
-SELENIUM_DRIVER_EXECUTABLE_PATH = '/Users/manueloostveen/PycharmProjects/packages/chromedriver/chromedriver'
-
+# SELENIUM_DRIVER_EXECUTABLE_PATH = '/Users/manueloostveen/PycharmProjects/packages/chromedriver/chromedriver'
+SELENIUM_DRIVER_EXECUTABLE_PATH = BASE_PATH_SCRAPINGBOXES / 'scrapingboxes' / 'selenium_driver' / 'chromedriver' / 'chromedriver'
 
 # SELENIUM_DRIVER_ARGUMENTS = [
 #     "--headless"
@@ -111,7 +114,8 @@ ITEM_PIPELINES = {
 
 }
 
-IMAGES_STORE = '/Users/manueloostveen/PycharmProjects/boxguru/products/static/products/images'
+# IMAGES_STORE = '/Users/manueloostveen/PycharmProjects/boxguru/products/static/products/images'
+IMAGES_STORE = BASE_PATH_SCRAPINGBOXES.parent / 'products' / 'static' / 'products' / 'images'
 MEDIA_ALLOW_REDIRECTS = True
 
 
@@ -138,3 +142,4 @@ HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # # custom log formatter: https://stackoverflow.com/questions/13527921/scrapy-silently-drop-an-item
 # LOG_FORMATTER = 'scrapingboxes.middlewares.BoxLogFormatter'
+

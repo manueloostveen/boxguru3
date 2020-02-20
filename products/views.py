@@ -5,11 +5,9 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 from django.views import generic
-from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
-from boxguru import settings
 from products.models import Product, WallThickness, Color, ProductType, Company
 from .forms import SearchProductForm, SearchBoxForm, SearchTubeForm, SearchEnvelopeBagForm, FitProductForm, SignUpForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView

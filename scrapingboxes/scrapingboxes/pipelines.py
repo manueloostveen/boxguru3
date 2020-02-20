@@ -4,7 +4,6 @@ from scrapy.exceptions import DropItem
 import json
 from datetime import datetime
 from products.models import Color, ProductType, WallThickness, Product, Tag, TierPrice, Company, MainCategory
-from scrapy_djangoitem import DjangoItem
 from django.forms.models import model_to_dict
 from products.product_categories import product_category_dict as pcd
 from django.core.files import File
