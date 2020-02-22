@@ -1,3 +1,10 @@
+import sys
+from pathlib import Path
+
+PATH_FILE = Path(__file__).resolve()
+PROJECT_DIR = PATH_FILE.parent.parent
+sys.path.append(str(PROJECT_DIR))
+print(sys.path, 'sys.path')
 import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'boxguru.settings')

@@ -5,7 +5,6 @@ from users.models import CustomUser
 
 
 class MainCategory(models.Model):
-    id = models.BigIntegerField(primary_key=True)
     category = models.CharField(max_length=120, verbose_name='Hoofdcategorie', null=True)
     category_id = models.IntegerField(blank=True,verbose_name='Category id')
     category_url = models.CharField(max_length=120, verbose_name='URL-naam', null=True)
@@ -37,8 +36,6 @@ class Color(models.Model):
 
 
 class ProductType(models.Model):
-    id = models.BigIntegerField(primary_key=True)
-
     type = models.CharField(max_length=120, verbose_name='Product Type')
     type_singular = models.CharField(max_length=120, verbose_name='Product Type Singular', blank=True, null=True)
     main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
