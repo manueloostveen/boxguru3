@@ -5,6 +5,7 @@ from users.models import CustomUser
 
 
 class MainCategory(models.Model):
+    id = models.BigIntegerField(primary_key=True)
     category = models.CharField(max_length=120, verbose_name='Hoofdcategorie', null=True)
     category_id = models.IntegerField(blank=True,verbose_name='Category id')
     category_url = models.CharField(max_length=120, verbose_name='URL-naam', null=True)
