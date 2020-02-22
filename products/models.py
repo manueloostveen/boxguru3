@@ -37,6 +37,8 @@ class Color(models.Model):
 
 
 class ProductType(models.Model):
+    id = models.BigIntegerField(primary_key=True)
+
     type = models.CharField(max_length=120, verbose_name='Product Type')
     type_singular = models.CharField(max_length=120, verbose_name='Product Type Singular', blank=True, null=True)
     main_category = models.ForeignKey(MainCategory, on_delete=models.SET_NULL, blank=True, null=True)
