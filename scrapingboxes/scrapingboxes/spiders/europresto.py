@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
-from scrapingboxes.utils import SeleniumRequest
+from scrapingboxes.scrapingboxes.utils import SeleniumRequest
 from time import sleep
-from scrapingboxes.items import ScrapingboxesItem
-from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler
+from scrapingboxes.scrapingboxes.items import ScrapingboxesItem
+from scrapingboxes.scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException, \
     ElementClickInterceptedException
 

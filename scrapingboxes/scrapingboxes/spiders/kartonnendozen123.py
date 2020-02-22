@@ -2,9 +2,9 @@
 import scrapy
 import re
 
-from scrapingboxes.utils import SeleniumRequest
-from scrapingboxes.items import ScrapingboxesItem
-from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2
+from scrapingboxes.scrapingboxes.utils import SeleniumRequest
+from scrapingboxes.scrapingboxes.items import ScrapingboxesItem
+from scrapingboxes.scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2
 
 
 

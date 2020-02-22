@@ -1,0 +1,13 @@
+Server: nginx
+Date: Sat, 22 Feb 2020 16:24:46 GMT
+Content-Type: text/html; charset=UTF-8
+Vary: Accept-Encoding
+Set-Cookie: frontend=nsounbq9vron86t1rkd6unp160; expires=Sun, 23-Feb-2020 16:24:46 GMT; Max-Age=86400; path=/; domain=.viv.nl; HttpOnly
+Set-Cookie: frontend_cid=kn3CpsAnXS1FSS6L; expires=Sun, 23-Feb-2020 16:24:46 GMT; Max-Age=86400; path=/; domain=.viv.nl; secure; httponly
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+X-Frame-Options: SAMEORIGIN
+Age: 0
+X-Environment: Hipex/3 main
+Content-Encoding: gzip

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
-from scrapingboxes.items import ScrapingboxesItem
-from scrapingboxes.helpers import ItemUpdater2, TableHandler
+from scrapingboxes.scrapingboxes.items import ScrapingboxesItem
+from scrapingboxes.scrapingboxes.helpers import ItemUpdater2, TableHandler
 import re
 
 def create_price_table_dozenNL(string):

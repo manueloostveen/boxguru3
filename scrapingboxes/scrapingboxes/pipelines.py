@@ -75,9 +75,9 @@ class DjangoTestPipeline(object):
 
     def open_spider(self, spider):
         if spider.name == 'viv':
-            Company.objects.get(company='Verpakkingsindustrie Veenendaal').delete()
-            # Product.objects.filter(company__company='Verpakkingsindustrie Veenendaal').delete()
-        if spider.name == 'vvs':
+            # Company.objects.get(company='Verpakkingsindustrie Veenendaal').delete()
+            Product.objects.filter(company__company='Verpakkingsindustrie Veenendaal').delete()
+        elif spider.name == 'vvs':
             Product.objects.filter(company__company='Verzendverpakkingenshop.nl').delete()
         elif spider.name == 'rajapack':
             Product.objects.filter(company__company='Rajapack').delete()

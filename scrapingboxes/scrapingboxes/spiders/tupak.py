@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from scrapingboxes.items import ScrapingboxesItem
-from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2
+from scrapingboxes.scrapingboxes.items import ScrapingboxesItem
+from scrapingboxes.scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2
 
 
 def check_url(url):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
-from scrapingboxes.items import ScrapingboxesItem
-from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2, all_text_from_elements
+from scrapingboxes.scrapingboxes.items import ScrapingboxesItem
+from scrapingboxes.scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2, all_text_from_elements
 
 class TableHandlerPaco(TableHandler):
     def __init__(self, **kwargs):

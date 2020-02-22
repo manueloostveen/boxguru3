@@ -3,8 +3,8 @@ import re
 
 import scrapy
 
-from scrapingboxes.items import ScrapingboxesItem
-from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler, all_text_from_elements, PriceHandler2
+from scrapingboxes.scrapingboxes.items import ScrapingboxesItem
+from scrapingboxes.scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler, all_text_from_elements, PriceHandler2
 
 
 def find_in_stock(description):

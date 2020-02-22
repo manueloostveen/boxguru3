@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from scrapingboxes.items import ScrapingboxesItem
-from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2, all_text_from_elements
+from scrapingboxes.scrapingboxes.items import ScrapingboxesItem
+from scrapingboxes.scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2, all_text_from_elements
 import re
 
 
