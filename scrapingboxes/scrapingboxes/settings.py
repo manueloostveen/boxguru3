@@ -18,8 +18,8 @@ BASE_PATH_SCRAPINGBOXES = FILE_PATH.parent.parent
 
 BOT_NAME = "scrapingboxes"
 
-SPIDER_MODULES = ["scrapingboxes.spiders"]
-NEWSPIDER_MODULE = "scrapingboxes.spiders"
+SPIDER_MODULES = ["scrapingboxes.scrapingboxes.spiders"]
+NEWSPIDER_MODULE = "scrapingboxes.scrapingboxes.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'scrapingboxes (+http://www.yourdomain.com)'
