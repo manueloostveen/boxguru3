@@ -89,19 +89,6 @@ class SearchBoxForm(forms.Form):
         initial=None,
     )
 
-    # wall_thicknesses = forms.ModelMultipleChoiceField(
-    #     queryset=None,
-    #     widget=forms.CheckboxSelectMultiple,
-    #     required=False,
-    #     initial=None
-    # )
-    # colors = forms.ModelMultipleChoiceField(
-    #     queryset=None,
-    #     widget=forms.CheckboxSelectMultiple,
-    #     required=False,
-    #     initial=None
-    # )
-
     def __init__(self, *args, **kwargs):
         super(SearchBoxForm, self).__init__(*args, **kwargs)
 
@@ -112,25 +99,20 @@ class SearchBoxForm(forms.Form):
         # Category choices for form
         form_choices = [(category.category_id, category.category) for category in main_category_qset] + [('', 'Alle dozen')]
 
+        #TESTING
+        form_choices = [('TE', 'test')]
+
         # All sub categories:
-        product_type_qset = ProductType.objects.filter(main_category__in=main_category_qset)
+        # product_type_qset = ProductType.objects.filter(main_category__in=main_category_qset)
 
         # Q objects & queryset for all box type products
-        q_objects_box = (Q(product_type=product_type) for product_type in
-                         product_type_qset.values_list('id', flat=True))
-        box_qset = Product.objects.filter(reduce(operator.or_, q_objects_box))
+        # q_objects_box = (Q(product_type=product_type) for product_type in
+        #                  product_type_qset.values_list('id', flat=True))
+        # box_qset = Product.objects.filter(reduce(operator.or_, q_objects_box))
 
-        # Create wallthickness and color queryset
-        wall_thickness_qset = WallThickness.objects.filter(product__in=box_qset).distinct()
-        color_qset = Color.objects.filter(product__in=box_qset).distinct()
 
         # Load queryset choices here so db calls are not made during migrations
         self.fields['category'].choices = form_choices
-        # self.fields['main_categories'].initial = [category for category in main_category_qset]
-        # self.fields['wall_thicknesses'].queryset = wall_thickness_qset
-        # self.fields['wall_thicknesses'].initial = [wall_thickness for wall_thickness in wall_thickness_qset]
-        # self.fields['colors'].queryset = color_qset
-        # self.fields['colors'].initial = [color for color in color_qset]
         self.fields['variable_height'].choices = [('', 'Maakt niet uit'), ('1', 'Alleen dozen met variabele hoogte!'), ('2', 'Geen dozen met variabele hoogte.')]
 
 
