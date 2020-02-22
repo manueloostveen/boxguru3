@@ -18,16 +18,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Setting up static root
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 TEXT_FILES_ROOT = os.path.join(STATIC_ROOT, 'textfiles')
-
-# TESTINGTESTING
-STATIC_ROOT = ''
+# STATIC_ROOT = ''
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (os.path.join('static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticmain'),)
 
 #  Add configuration for static files storage using whitenoise
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
