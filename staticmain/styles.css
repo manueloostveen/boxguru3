@@ -250,6 +250,10 @@ h6.logout {
         display: none;
     }
 
+    h1.welcome-message {
+        font-size: 40px;
+    }
+
 }
 
 .table-wrapper {
@@ -1886,10 +1890,11 @@ div.card-body {
 /*ICONS*/
 .fas.fa-bars {
     color: white;
-    position: absolute;
-    right: 20px;
-    bottom: 22px;
+    /*position: absolute;*/
+    /*right: 20px;*/
+    /*bottom: 50%;*/
     cursor: pointer;
+    margin-top: 5px;
 }
 
 
