@@ -257,7 +257,8 @@
 
 </div>
 
-
+{% block js %}
+{% endblock js %}
 
 {% block js_base %}
     <script>
@@ -278,6 +279,13 @@
 {##}
 {#    </script>#}
 
+    <script>
+        $(document).on(
+            'click touchstart', function () {
+                $('.dropbtn:focus').blur()
+            }
+        )
+    </script>
 {% endblock %}
 
 {% block js_searchAndHome %}
