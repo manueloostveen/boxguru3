@@ -107,7 +107,7 @@ PROXY_MODE = 0
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    # 'scrapingboxes.pipelines.ScrapingboxesPipeline': 300,
+    'scrapingboxes.pipelines.ScrapingboxesPipeline': 300,
     'scrapingboxes.pipelines.DjangoTestPipeline': 310,
     #  'scrapingboxes.pipelines.JsonLinesPipeline': 400,
     # 'scrapy.pipelines.images.ImagesPipeline': 1,
