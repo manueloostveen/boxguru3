@@ -1173,6 +1173,7 @@ html, body {
 .wrap {
     min-height: 1000px;
     width: 100%;
+    padding: 15px;
 }
 
 .main {
