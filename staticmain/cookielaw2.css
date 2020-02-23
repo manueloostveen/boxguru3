@@ -1,29 +1,32 @@
 #CookielawBanner {
-    background: #e9ecef;
     padding: 20px;
-    position: sticky;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
     z-index: 1000;
     /*opacity: 0.9;*/
     width: 100%;
-    color: #444444;
+    min-height: 100px;
+    /*color: #444444;*/
+    color: white;
     font-size: 14px;
-    top:0;
+    top: 0;
+    opacity: 1;
 }
 
 #CookielawBanner .container {
     position: relative;
 }
 
-#CookielawBanner #CookielawCross {
-    background: url('../img/close.png') no-repeat 0 0;
-    cursor: pointer;
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 15px;
-    height: 15px;
-}
+/*#CookielawBanner #CookielawCross {*/
+/*    background: url('../img/close.png') no-repeat 0 0;*/
+/*    cursor: pointer;*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    width: 15px;*/
+/*    height: 15px;*/
+/*}*/
 
 .cookie-law-button {
     display: inline-block;
@@ -36,7 +39,7 @@
     /*margin-left: 10px;*/
     font-family: 'Alfa Slab One', Charcoal, sans-serif;
     letter-spacing: 1px;
-    padding: 5px;
+    padding: 10px;
 }
 
 .cookie-law-button:hover {

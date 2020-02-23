@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     {% load static %}
-    {% block title %}<title>Dozen & verzendverpakkingen vergelijken - BoxGuru</title>{% endblock %}
+    <title>{% block title %}Dozen & verzendverpakkingen vergelijken - BoxGuru{% endblock %}</title>
     <meta name="description"
           content="{% block description %}
           Vind de perfecte kartonnen doos! BoxGuru heeft het aanbod voor je verzameld van populaire leveranciers. Zoek tussen duizenden dozen en vind de goedkoopste!
@@ -98,7 +98,7 @@
                                 <button class="dropbtn">{{ main_tuple.1 }}</button>
                             </a>
                         {% else %}
-                            <button class="dropbtn">{{ main_tuple.1 }}</button>
+                            <button class="dropbtn">{{ main_tuple.1 }}<div class="arrowDownMenu"></div></button>
                         {% endif %}
                         <div class="dropdown-content">
 
