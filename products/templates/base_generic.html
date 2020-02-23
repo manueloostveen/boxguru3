@@ -277,6 +277,11 @@
 {#        });#}
 {##}
 {#    </script>#}
+    <script>
+        $(document).click(function(){
+            $(document).find('.dropdown-content:visible').hide()
+        })
+    </script>
 {% endblock %}
 
 {% block js_searchAndHome %}
