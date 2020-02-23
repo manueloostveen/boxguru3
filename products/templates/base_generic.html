@@ -56,99 +56,101 @@
 
 <div class="wrap">
 
-{#    <div class="container-fluid main">#}
+    {#    <div class="container-fluid main">#}
 
-        {% block navigation %}
-
-
-            <nav class="row navigation-row">
-                <div class="logo">
-                    <a href="{% url 'index' %}"><img
-                            src="{% static 'products/images/logo/boxguru_logo_v1.svg' %}"
-                            alt="BOXGURU"></a></div>
-                <a href="{% url 'dozen-op-maat' %}"><h4>DÉ DOZENVERGELIJKER!</h4>
-                </a>
+    {% block navigation %}
 
 
-                {#                {% if user.is_authenticated %}#}
-                {#                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">#}
-                {#                        Uitloggen: {{ user }}</h6></a>#}
-                {#                    </div>#}
-                {#                    <a href="{% url 'search-product' %}?liked=1&form=box&initial_search=1"><h4>MIJN BEWAARDE DOZEN</h4>#}
-                {#                    </a>#}
-                {##}
-                {#                {% else %}#}
-                {#                    <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>#}
-                {#                    </div>#}
-                {#                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Registreren</h4></a>#}
-                {#                    </div>#}
-                {##}
-                {#                {% endif %}#}
-
-            </nav>
+        <nav class="row navigation-row">
+            <div class="logo">
+                <a href="{% url 'index' %}"><img
+                        src="{% static 'products/images/logo/boxguru_logo_v1.svg' %}"
+                        alt="BOXGURU"></a></div>
+            <a href="{% url 'dozen-op-maat' %}"><h4>DÉ DOZENVERGELIJKER!</h4>
+            </a>
 
 
+            {#                {% if user.is_authenticated %}#}
+            {#                    <div><a href="{% url 'account_logout' %}?next={{ request.get_full_path }}"><h6 class="logout">#}
+            {#                        Uitloggen: {{ user }}</h6></a>#}
+            {#                    </div>#}
+            {#                    <a href="{% url 'search-product' %}?liked=1&form=box&initial_search=1"><h4>MIJN BEWAARDE DOZEN</h4>#}
+            {#                    </a>#}
+            {##}
+            {#                {% else %}#}
+            {#                    <div><a href="{% url 'account_login' %}?next={{ request.get_full_path }}"><h4>Inloggen</h4></a>#}
+            {#                    </div>#}
+            {#                    <div><a href="{% url 'account_signup' %}?next={{ request.get_full_path }}"><h4>Registreren</h4></a>#}
+            {#                    </div>#}
+            {##}
+            {#                {% endif %}#}
+            <i class="fas fa-bars fa-lg"></i>
+        </nav>
 
-            <nav class="menu">
 
-                {% for main_tuple, sub_list in footer_all_categories.items %}
-                    <div class="dropdown {% if show_initial_category == main_tuple.0 %}active{% endif %}">
-                        {% if sub_list|length == 1 %}
-                            <a href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">
-                                <button class="dropbtn">{{ main_tuple.1 }}</button>
-                            </a>
-                        {% else %}
-                            <button class="dropbtn">{{ main_tuple.1 }}<div class="arrowDown menuArrow"></div></button>
-                        {% endif %}
-                        <div class="dropdown-content">
 
-                            {% if sub_list|length > 1 %}
-                                <a class="all-cat-link"
-                                   href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">ALLE {{ main_tuple.1 }}</a>
-                                {% for category_tuple in sub_list %}
-                                    <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.1 }}</a>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-                <div class="dropdown">
-                    <a href="{% url 'mijn-bewaarde-dozen' %}?liked=2&form=box&initial_search=1">
-                        <button class="dropbtn">MIJN BEWAARDE
-                            DOZEN
+        <nav class="menu">
+
+            {% for main_tuple, sub_list in footer_all_categories.items %}
+                <div class="dropdown {% if show_initial_category == main_tuple.0 %}active{% endif %}">
+                    {% if sub_list|length == 1 %}
+                        <a href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">
+                            <button class="dropbtn">{{ main_tuple.1 }}</button>
+                        </a>
+                    {% else %}
+                        <button class="dropbtn">{{ main_tuple.1 }}
+                            <div class="arrowDown menuArrow"></div>
                         </button>
-                    </a>
+                    {% endif %}
+                    <div class="dropdown-content">
+
+                        {% if sub_list|length > 1 %}
+                            <a class="all-cat-link"
+                               href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">ALLE {{ main_tuple.1 }}</a>
+                            {% for category_tuple in sub_list %}
+                                <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.1 }}</a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
-
-            </nav>
-        {% endblock navigation %}
-
-        {% block site-info %}
-        {% endblock site-info %}
-
-        {% block breadcrumbs %}
-        {% endblock breadcrumbs %}
-
-        {% block content %}
-
-            <div class="row d-flex justify-content-center">
-                <div class="text-center col-xs-12 col-sm-8">
-                    {% block welcome %}
-
-
-                    {% endblock welcome %}
-
-                </div>
+            {% endfor %}
+            <div class="dropdown">
+                <a href="{% url 'mijn-bewaarde-dozen' %}?liked=2&form=box&initial_search=1">
+                    <button class="dropbtn">MIJN BEWAARDE
+                        DOZEN
+                    </button>
+                </a>
             </div>
 
-        {% endblock content %}
+        </nav>
+    {% endblock navigation %}
 
-        {% block seo %}
-        {% endblock seo %}
+    {% block site-info %}
+    {% endblock site-info %}
 
-        {% block pagination %}
-            {% if is_paginated %}
-                <div class="pagination">
+    {% block breadcrumbs %}
+    {% endblock breadcrumbs %}
+
+    {% block content %}
+
+        <div class="row d-flex justify-content-center">
+            <div class="text-center col-xs-12 col-sm-8">
+                {% block welcome %}
+
+
+                {% endblock welcome %}
+
+            </div>
+        </div>
+
+    {% endblock content %}
+
+    {% block seo %}
+    {% endblock seo %}
+
+    {% block pagination %}
+        {% if is_paginated %}
+            <div class="pagination">
                 <span class="page-links">
                     {% if page_obj.has_previous %}
                         <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
@@ -160,104 +162,110 @@
                         <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
                     {% endif %}
                 </span>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+
+    {% block footerspacer %}
+        <div class="row footer-spacer"></div>
+    {% endblock footerspacer %}
+
+    {% block footer %}
+        {#        <div class="wrap">#}
+        {#            <div class="container-fluid main">#}
+
+        <footer class="footer">
+
+            <div class="row all-boxes">
+                <div class="col-sm-12 col-md-3">
+                    <div class="p-3">
+                        <h4>CONTACT</h4>
+                        <p class="email">
+                            Vragen, opmerkingen of feedback?<br>
+                            info@boxguru.nl</p>
+                    </div>
                 </div>
-            {% endif %}
-        {% endblock %}
+                <div class="col">
+                    <div class="p-3">
+                        <h4>ALLE SOORTEN DOZEN</h4>
+                        {#                            {% for url in footer_urls %}#}
+                        {#                                <div>#}
+                        {#                                    <a href="{% url 'browse-subcategory' hoofdcategorie='test' subcategorie=url.2 %}">{{ url.0 }}</a>#}
+                        {#                                </div>#}
+                        {#                            {% endfor %}#}
+                        <div class="footer-all-boxes">
+                            {% for main_tuple, sub_list in footer_all_categories.items %}
+                                {% if sub_list|length > 1 %}
+                                    <div class="footer-category-section">
+                                        <a class=top-link
+                                           href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">{{ main_tuple.1 }}</a>
 
+                                        <div>
+                                            {% if sub_list|length > 1 %}
+                                                {% for category_tuple in sub_list %}
 
-        {% block footerspacer %}
-            <div class="row footer-spacer"></div>
-        {% endblock footerspacer %}
+                                                    <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.2 }}</a>
 
-        {% block footer %}
-            {#        <div class="wrap">#}
-            {#            <div class="container-fluid main">#}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            {% for main_tuple, sub_list in footer_all_categories.items %}
+                                {% if sub_list|length == 1 %}
 
-            <footer class="footer">
+                                    <div class="footer-category-section">
+                                        <a class=top-link
+                                           href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">{{ main_tuple.1 }}</a>
 
-                <div class="row all-boxes">
-                    <div class="col-sm-12 col-md-3">
-                        <div class="p-3">
-                            <h4>CONTACT</h4>
-                            <p class="email">
-                                Vragen, opmerkingen of feedback?<br>
-                                info@boxguru.nl</p>
+                                        <div>
+                                            {% if sub_list|length > 1 %}
+                                                {% for category_tuple in sub_list %}
+
+                                                    <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.2 }}</a>
+
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="p-3">
-                            <h4>ALLE SOORTEN DOZEN</h4>
-                            {#                            {% for url in footer_urls %}#}
-                            {#                                <div>#}
-                            {#                                    <a href="{% url 'browse-subcategory' hoofdcategorie='test' subcategorie=url.2 %}">{{ url.0 }}</a>#}
-                            {#                                </div>#}
-                            {#                            {% endfor %}#}
-                            <div class="footer-all-boxes">
-                                {% for main_tuple, sub_list in footer_all_categories.items %}
-                                    {% if sub_list|length > 1 %}
-                                        <div class="footer-category-section">
-                                            <a class=top-link
-                                               href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">{{ main_tuple.1 }}</a>
-
-                                            <div>
-                                                {% if sub_list|length > 1 %}
-                                                    {% for category_tuple in sub_list %}
-
-                                                        <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.2 }}</a>
-
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                                {% for main_tuple, sub_list in footer_all_categories.items %}
-                                    {% if sub_list|length == 1 %}
-
-                                        <div class="footer-category-section">
-                                            <a class=top-link
-                                               href="{% url 'browse-maincategory' hoofdcategorie=main_tuple.2 %}">{{ main_tuple.1 }}</a>
-
-                                            <div>
-                                                {% if sub_list|length > 1 %}
-                                                    {% for category_tuple in sub_list %}
-
-                                                        <a href="{% url 'browse-subcategory' subcategorie=category_tuple.2 hoofdcategorie=main_tuple.2 %}">{{ category_tuple.2 }}</a>
-
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="row bottom">
-                    <div class="col-1"></div>
-                    <div class="col-10">
-                        <p>Goedkope dozen | Vergelijk verzendverpakkingen | Vergelijk gratis op Boxguru.nl</p>
-                        <p>&copy Boxguru 2020</p>
-                    </div>
-                    <div class="col-1"></div>
-
-
                 </div>
 
-            </footer>
-        {% endblock footer %}
+            </div>
+            <div class="row bottom">
+                <div class="col-1"></div>
+                <div class="col-10">
+                    <p>Goedkope dozen | Vergelijk verzendverpakkingen | Vergelijk gratis op Boxguru.nl</p>
+                    <p>&copy Boxguru 2020</p>
+                </div>
+                <div class="col-1"></div>
 
-    </div>
 
-    {% cookielaw_banner %}
+            </div>
+
+        </footer>
+    {% endblock footer %}
+
+</div>
+
+{% cookielaw_banner %}
 
 </div>
 
 
 
 {% block js %}
+    <script>
+        $('.fas.fa-bars').click(function () {
+                $('nav.menu').toggle();
+            }
+        )
+    </script>
 {% endblock %}
 
 {% block js_searchAndHome %}
