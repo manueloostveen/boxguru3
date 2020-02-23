@@ -114,9 +114,9 @@ ITEM_PIPELINES = {
 
 }
 
-# IMAGES_STORE = '/Users/manueloostveen/PycharmProjects/boxguru/products/static/products/images'
-IMAGES_STORE = str(BASE_PATH_SCRAPINGBOXES.parent / 'products' / 'static' / 'products' / 'images')
-MEDIA_ALLOW_REDIRECTS = True
+# # IMAGES SETTINGS // DISABLED FOR HEROKU
+# IMAGES_STORE = str(BASE_PATH_SCRAPINGBOXES.parent / 'products' / 'static' / 'products' / 'images')
+# MEDIA_ALLOW_REDIRECTS = True
 
 
 # Enable and configure the AutoThrottle extension (disabled by default)
