@@ -266,6 +266,17 @@
             }
         )
     </script>
+    <script>
+        $(window).resize(function () {
+            if ($(window).width() > 785) {
+                console.log($(window).width());
+                $('nav.menu').show()
+            } else {
+                $('nav.menu').hide()
+            }
+        });
+
+    </script>
 {% endblock %}
 
 {% block js_searchAndHome %}
