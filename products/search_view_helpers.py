@@ -364,7 +364,7 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
         qobjects.append(qwall_thicknesses)
 
     if main_category:
-        qmain_category = Q(product_type__main_category=main_category)
+        qmain_category = Q(product_type__main_category__category_id=main_category)
         qobjects.append(qmain_category)
 
     else:
