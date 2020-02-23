@@ -147,10 +147,10 @@ class DjangoTestPipeline(object):
         new_product.price_table.clear()
         new_product.price_table.add(*tier_prices)
 
-        # add image to product
-        if len(item['images']):
-            new_product.product_image = item['images'][0]['path']
-            new_product.save()
+        # # add image to product
+        # if len(item['images']):
+        #     new_product.product_image = item['images'][0]['path']
+        #     new_product.save()
 
         return item
 
