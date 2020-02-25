@@ -111,16 +111,22 @@ class DjangoTestPipeline(object):
             tag, _ = Tag.objects.get_or_create(tag=item_tag)
             tags.append(tag)
 
-        tier_prices = []
-        for tier, price in item.get('price_table').items():
-            try:
-                tier_price, _ = TierPrice.objects.get_or_create(tier=tier, price=price)
-            except TierPrice.MultipleObjectsReturned:
-                tier_price = TierPrice.objects.filter(tier=tier, price=price).order_by('id').first()
-            tier_prices.append(tier_price)
+        # tier_prices = []
+        # for tier, price in item.get('price_table').items():
+        #     try:
+        #         tier_price, _ = TierPrice.objects.get_or_create(tier=tier, price=price)
+        #     except TierPrice.MultipleObjectsReturned:
+        #         tier_price = TierPrice.objects.filter(tier=tier, price=price).order_by('id').first()
+        #     tier_prices.append(tier_price)
 
-        excludable_keys = ['all_tags', 'indices_dict', 'test_field', 'price_table', 'color', 'wall_thickness',
-                           'product_type', 'company', 'images', 'image_urls']
+        price_table = {}
+        price_table_items = item['price_table'].items()
+        for key,value in price_table_items:
+            price_table[str(round(key))] = str(value)
+
+
+        excludable_keys = ['all_tags', 'indices_dict', 'test_field', 'color', 'wall_thickness',
+                           'product_type', 'company', 'images', 'image_urls', 'price_table']
         product_dict = {key: value for key, value in item.items() if key not in excludable_keys}
 
         # Calculate volume of box
@@ -139,13 +145,14 @@ class DjangoTestPipeline(object):
             wall_thickness=wall_thickness,
             company=company,
             product_type=product_type,
+            price_table=price_table
         )
 
         # Add tags and price table
         new_product.tags.clear()
         new_product.tags.add(*tags)
-        new_product.price_table.clear()
-        new_product.price_table.add(*tier_prices)
+        # new_product.price_table.clear()
+        # new_product.price_table.add(*tier_prices)
 
         # # add image to product
         # if len(item['images']):

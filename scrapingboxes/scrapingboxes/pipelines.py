@@ -111,16 +111,22 @@ class DjangoTestPipeline(object):
             tag, _ = Tag.objects.get_or_create(tag=item_tag)
             tags.append(tag)
 
-        tier_prices = []
-        for tier, price in item.get('price_table').items():
-            try:
-                tier_price, _ = TierPrice.objects.get_or_create(tier=tier, price=price)
-            except TierPrice.MultipleObjectsReturned:
-                tier_price = TierPrice.objects.filter(tier=tier, price=price).order_by('id').first()
-            tier_prices.append(tier_price)
+        # tier_prices = []
+        # for tier, price in item.get('price_table').items():
+        #     try:
+        #         tier_price, _ = TierPrice.objects.get_or_create(tier=tier, price=price)
+        #     except TierPrice.MultipleObjectsReturned:
+        #         tier_price = TierPrice.objects.filter(tier=tier, price=price).order_by('id').first()
+        #     tier_prices.append(tier_price)
 
-        excludable_keys = ['all_tags', 'indices_dict', 'test_field', 'price_table', 'color', 'wall_thickness',
-                           'product_type', 'company', 'images', 'image_urls']
+        price_table = {}
+        price_table_items = item['price_table'].items()
+        for key,value in price_table_items:
+            price_table[str(round(key))] = str(value)
+
+
+        excludable_keys = ['all_tags', 'indices_dict', 'test_field', 'color', 'wall_thickness',
+                           'product_type', 'company', 'images', 'image_urls', 'price_table']
         product_dict = {key: value for key, value in item.items() if key not in excludable_keys}
 
         # Calculate volume of box
@@ -139,18 +145,19 @@ class DjangoTestPipeline(object):
             wall_thickness=wall_thickness,
             company=company,
             product_type=product_type,
+            price_table=price_table
         )
 
         # Add tags and price table
         new_product.tags.clear()
         new_product.tags.add(*tags)
-        new_product.price_table.clear()
-        new_product.price_table.add(*tier_prices)
+        # new_product.price_table.clear()
+        # new_product.price_table.add(*tier_prices)
 
-        # add image to product
-        if len(item['images']):
-            new_product.product_image = item['images'][0]['path']
-            new_product.save()
+        # # add image to product
+        # if len(item['images']):
+        #     new_product.product_image = item['images'][0]['path']
+        #     new_product.save()
 
         return item
 
@@ -199,25 +206,27 @@ class TesterPipeline(object):
 class ScrapingboxesPipeline(object):
 
     def open_spider(self, spider):
-        filename_tags = "./tags/" + spider.name + datetime.now().strftime("%Y%m%d-%H%M%S") + ".jl"
-        self.tag_file = open(filename_tags, 'w')
-
-        filename_dropped_items = "./results/" + spider.name + "DroppedItems" + datetime.now().strftime(
-            "%Y%m%d-%H%M%S") + ".jl"
-        self.dropped_items_file = open(filename_dropped_items, 'w', encoding='utf-8', newline="\n")
-
-        self.total_of_tags = []
+        # filename_tags = "./tags/" + spider.name + datetime.now().strftime("%Y%m%d-%H%M%S") + ".jl"
+        # self.tag_file = open(filename_tags, 'w')
+        #
+        # filename_dropped_items = "./results/" + spider.name + "DroppedItems" + datetime.now().strftime(
+        #     "%Y%m%d-%H%M%S") + ".jl"
+        # self.dropped_items_file = open(filename_dropped_items, 'w', encoding='utf-8', newline="\n")
+        #
+        # self.total_of_tags = []
         self.dropped_items = 0
 
+
     def close_spider(self, spider):
-        for tag in self.total_of_tags:
-            line = json.dumps(tag) + "\n"
-            self.tag_file.write(line)
-
-        print('Dropped Items: ', self.dropped_items)
-
-        self.dropped_items_file.write(f"Dropped Items: {self.dropped_items}")
-        self.tag_file.close()
+        # for tag in self.total_of_tags:
+        #     line = json.dumps(tag) + "\n"
+        #     self.tag_file.write(line)
+        #
+        # print('Dropped Items: ', self.dropped_items)
+        #
+        # self.dropped_items_file.write(f"Dropped Items: {self.dropped_items}")
+        # self.tag_file.close()
+        pass
 
     inner_dimensions = [
         "inner_dim1",
@@ -244,13 +253,15 @@ class ScrapingboxesPipeline(object):
     def drop_item(self, item, error, error_count=None):
         if error == "DimensionError":
             drop_string = f"Dimension error in item: \n inner_dims: {self.inner_dims} \n inner_variable_dims: {self.inner_variable_dims} \n url: {item.get('url')}"
+        else:
+            drop_string = 'em'
 
         drop_item = DropItem(drop_string)
         self.dropped_items += 1
 
-        self.dropped_items_file.write("--- DROPPED ITEM ---\n")
+        # self.dropped_items_file.write("--- DROPPED ITEM ---\n")
 
-        json.dump(dict(item), self.dropped_items_file, ensure_ascii=False, indent=4)
+        # json.dump(dict(item), self.dropped_items_file, ensure_ascii=False, indent=4)
 
         error_strings = [
             f"Dimension error in item:",
@@ -259,11 +270,11 @@ class ScrapingboxesPipeline(object):
             f'error_number: {error_count}'
         ]
 
-        for string in error_strings:
-            self.dropped_items_file.write("\n")
-            self.dropped_items_file.write(
-                json.dumps(string, indent=2))
-        self.dropped_items_file.write("\n________________________________________________________________\n\n")
+        # for string in error_strings:
+        #     self.dropped_items_file.write("\n")
+        #     self.dropped_items_file.write(
+        #         json.dumps(string, indent=2))
+        # self.dropped_items_file.write("\n________________________________________________________________\n\n")
 
         raise drop_item
 
@@ -391,10 +402,10 @@ class ScrapingboxesPipeline(object):
         if not item.get('product_type'):
             self.drop_item(item, error='None')
 
-        # gather item tags for analysing purposes
-        for tag in item.get('all_tags'):
-            if tag not in self.total_of_tags:
-                self.total_of_tags.append(tag)
+        # # gather item tags for analysing purposes
+        # for tag in item.get('all_tags'):
+        #     if tag not in self.total_of_tags:
+        #         self.total_of_tags.append(tag)
 
         # if product has no wall thickness, wall thickness is set to single wall
         if not item.get('wall_thickness'):
