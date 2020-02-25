@@ -367,8 +367,8 @@
                                 {{ object.inner_variable_dimension_MAX }}{% endif %}
                             <span> ({{ object.volume|floatformat }}L)</span>
                         </td>
-                        <td colspan="3">{% if show_match_header %}
-                            Match: {{ object.max_match }}%{% endif %}
+                        <td colspan="3">Matenmatch:{% if show_match_header %}
+                            {{ object.max_match }}%{% else %} -{% endif %}
                         </td>
                     </tr>
                     <tr>
@@ -506,7 +506,7 @@
                             </th>
 
                             {% if show_match_header %}
-                                <th><a href="{{ match_header }}">Zoekmatch</a>
+                                <th><a href="{{ match_header }}">Matenmatch</a>
                                     <div {% if order_by == '-max_match' %}class="arrowDown"
                                          {% elif order_by == 'max_match' %}class="arrowUp"{% else %}{% endif %}></div>
                                 </th>{% endif %}
