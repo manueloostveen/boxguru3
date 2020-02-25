@@ -305,7 +305,7 @@ table.table-mobile {
     margin-top: 20px;
     font-size: 12px;
     /*font-family: Arial, sans-serif;*/
-    box-shadow: 0 -5px 15px -5px #333;
+    box-shadow: 0 2px 6px 0 rgba(32, 33, 36, 0.28);
     border-radius: 10px;
 }
 
@@ -314,28 +314,59 @@ table.table-mobile td {
     width: 35%;
 }
 
+table.table-mobile tr:first-child {
+    background-color: #73AD21;
+    color: white;
+}
+
+table.table-mobile tr:last-child {
+    background-color: #73AD21;
+}
+
+/*table.table-mobile tr:last-child a {*/
+/*    color: white;*/
+/*}*/
+
+table.table-mobile tr:last-child a {
+    background-color: #73AD21;
+    color: white;
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    margin: 0.25rem 0.25rem 0 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.2rem;
+    /*width: available;*/
+    font-size: .875rem;
+    white-space: normal;
+    text-decoration: none;
+    display: inline-flex;
+    font-weight: bold;
+}
+
 table.table-mobile td:nth-child(3) {
     width: 15%;
 }
 
 table.table-mobile tr:first-child td:first-child {
-    border-radius: 10px 0 0 0;
+    border-radius: 10px 10px 0 0;
+    color: white;
+    text-transform: uppercase;
 }
 
-table.table-mobile tr:first-child td:last-child {
-    border-radius: 0 10px 0 0;
-}
+/*table.table-mobile tr:first-child td:last-child {*/
+/*    border-radius: 0 10px 0 0;*/
+/*}*/
 
 table.table-mobile tr:last-child td:first-child {
     border-radius: 0 0 0 10px;
 }
 
-table.table-mobile tr:nth-child(3) td:last-child {
-    border-radius: 0 0 10px 0;
+table.table-mobile tr:last-child td:last-child {
+    border-radius: 0 0 10px 10px;
 }
 
 th {
-    border-radius: 10px 0 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
 td {
@@ -448,7 +479,7 @@ img.product-thumb:hover {
     margin-bottom: 1rem;
     width: 100%;
     /*padding: 5px;*/
-    box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
+    box-shadow: 0 6px 6px 0 rgba(32, 33, 36, .28);
     border-radius: 5px;
 }
 
@@ -713,13 +744,15 @@ span.price-staffel {
     padding: 5px;
     border-radius: 6px 6px 6px 6px;
     position: absolute;
-    z-index: 1;
+    z-index: 10;
     bottom: 0px;
     left: 50%;
     transform: translate(-50%, 100%);
     font-family: Arvo, Charcoal, sans-serif;
     font-size: 12px;
     line-height: 15px;
+    box-shadow: 0 2px 6px 0 rgba(32, 33, 36, 0.28);
+
     /*text-align: justify;*/
     /*text-align-last: justify;*/
 }

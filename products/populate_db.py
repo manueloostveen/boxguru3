@@ -93,7 +93,7 @@ for main_cat_tuple in box_main_categories.keys():
 
 def create_main_box_categories():
     for tuple in box_main_categories.keys():
-        MainCategory.objects.get_or_create(category_id=tuple[0], category=tuple[1])
+        MainCategory.objects.get_or_create(category_id=tuple[0], category=tuple[1], category_url=tuple[2])
 
 
 def create_product_types():
