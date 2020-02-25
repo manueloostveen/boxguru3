@@ -247,10 +247,13 @@
             {% for object in products %}
                 <table class="table-mobile table">
                     <tr>
-                        <td colspan="3">{{ object.product_type }}
+                        <td colspan="2">{{ object.product_type }}
                         </td>
+                        {% include 'products/like_unlike_product_form_cookies_MOBILE.html' %}
                     </tr>
                     <tr>
+{#                        <td colspan="1">{% include 'products/like_unlike_product_form_cookies.html' %}</td>#}
+
                         <td colspan="2">
                             <a class="product-thumb" data-toggle="popover-hover"
                                     {% with 'products/images/'|add:object.get_product_image as image_static %}
@@ -258,12 +261,7 @@
                                                                          src="{% static image_static %}"
                                                                          alt="product">{% endwith %}</a>
                         </td>
-                    <td colspan="1">{% include 'products/like_unlike_product_form_cookies.html' %}</td>
-
-
-                    </tr>
-                    <tr>
-                        <td {% if object.popover_tierprices|length > 0 %}class="staffel"{% endif %}>
+                        <td colspan="1" {% if object.popover_tierprices|length > 0 %}class="staffel"{% endif %}>
                             €{{ object.price_ex_BTW }}
                             {% if object.popover_tierprices|length > 0 %}
                                 - €{{ object.lowest_price }}
@@ -277,7 +275,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for tier, price in object.popover_tierprices_dict.items %}
+                                        {% for tier, price in object.price_table.items %}
                                             <tr>
                                             <td>{{ tier }}</td>
                                             <td></td>
@@ -287,7 +285,12 @@
                                 </div>
                             {% endif %}
                         </td>
-                        <td>{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times
+
+
+                    </tr>
+                    <tr>
+
+                        <td {% if show_match_header %}colspan="2"{% else %}colspan="3"{% endif %}>{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times
                             {% if object.inner_dim2 %}{{ object.inner_dim2 }}{% else %}-{% endif %}
                             &times
                             {% if object.inner_dim3 %}
@@ -296,9 +299,9 @@
                                 {{ object.inner_variable_dimension_MAX }}{% endif %}
                             <span> ({{ object.volume|floatformat }}L)</span>
                         </td>
-                        <td>{% if show_match_header %}
+                        {% if show_match_header %}<td>
                             Match: {{ object.max_match }}%
-                        {% endif %}</td>
+                        </td>{% endif %}
                     </tr>
                     <tr>
                         <td>{{ object.color }}

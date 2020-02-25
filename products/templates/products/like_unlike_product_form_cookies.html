@@ -4,7 +4,7 @@
     <form action="{% url 'like-unlike-product' pk=object.pk %}" method="POST">
         {% csrf_token %}
         <button {% if object.pk in saved_boxes %} class="show-liked-boxes delete" type="submit">VERWIJDER</button>
-        {% else %}<button class="show-liked-boxes" type="submit">BEWAAR</button>{% endif %}
+        {% else %} class="show-liked-boxes" type="submit">BEWAAR</>{% endif %}
         <input type="hidden" name="next" value="{{ request.get_full_path }}#table">
     </form>
 

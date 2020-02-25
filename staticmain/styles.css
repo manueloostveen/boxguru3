@@ -254,6 +254,10 @@ h6.logout {
         font-size: 40px;
     }
 
+    h2.category-name {
+        font-size: 35px;
+    }
+
 }
 
 .table-wrapper {
@@ -314,8 +318,7 @@ table.table-mobile td {
 }
 
 table.table-mobile tr:first-child {
-    background-color: #73AD21;
-    color: white;
+    background-color: #e9ecef;
 }
 
 table.table-mobile tr:last-child {
@@ -342,14 +345,23 @@ table.table-mobile tr:last-child a {
     font-weight: bold;
 }
 
-table.table-mobile td:nth-child(3) {
-    width: 15%;
+table.table-mobile tr:nth-child(3) {
+    /*font-size: 20px;*/
+    /*background-color: #73AD21;*/
+    /*color: white;*/
 }
 
 table.table-mobile tr:first-child td:first-child {
-    border-radius: 10px 10px 0 0;
-    color: white;
+    border-radius: 10px 0px 0 0;
+    color: #6c757d;
     text-transform: uppercase;
+}
+
+table.table-mobile tr:first-child td:last-child {
+    border-radius: 0px 10px 0 0;
+    color: #6c757d;
+    text-transform: uppercase;
+    width: 30%;
 }
 
 /*table.table-mobile tr:first-child td:last-child {*/
@@ -998,6 +1010,15 @@ a.show-liked-boxes:hover {
 
 }
 
+td.saveTD {
+    background-color: #5e008b;
+}
+
+td.saveTD.delete {
+    background-color: #d5006b;
+
+}
+
 button.show-liked-boxes {
     display: inline-block;
     border-radius: 0.2rem;
@@ -1010,6 +1031,11 @@ button.show-liked-boxes {
     font-size: 10px;
     border: none;
     text-align: center;
+}
+
+button.show-liked-boxes.mobile {
+    background-color: transparent;
+    margin: 0;
 }
 
 button.show-liked-boxes:hover {
