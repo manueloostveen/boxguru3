@@ -245,23 +245,90 @@
 
             </div>
             {% for object in products %}
+
+{#                <div class="container mobile-results-wrapper">#}
+{#                    <div class="row">#}
+{#                        <div class="col-9">{{ object.product_type }}</div>#}
+{#                        <div class="col-3">{% include 'products/like_unlike_product_form_cookies.html' %}</div>#}
+{#                    </div>#}
+{#                    <div class="row">#}
+{#                        <div class="col-6"><a class="product-thumb" data-toggle="popover-hover"#}
+{#                                    {% with 'products/images/'|add:object.get_product_image as image_static %}#}
+{#                               data-img="{% static image_static %}"><img class="product-thumb"#}
+{#                                                                         src="{% static image_static %}"#}
+{#                                                                         alt="product">{% endwith %}</a></div>#}
+{#                        <div class="col-6 {% if object.popover_tierprices|length > 0 %} staffel{% endif %}">€{{ object.price_ex_BTW }}#}
+{#                            {% if object.popover_tierprices|length > 0 %}#}
+{#                                - €{{ object.lowest_price }}#}
+{#                                    <table class="tooltiptext popover-table">#}
+{#                                        <thead>#}
+{#                                        <tr>#}
+{#                                            <th>Aantal</th>#}
+{#                                            <th></th>#}
+{#                                            <th>Prijs</th>#}
+{#                                        </tr>#}
+{#                                        </thead>#}
+{#                                        <tbody>#}
+{#                                        {% for tier, price in object.price_table.items %}#}
+{#                                            <tr>#}
+{#                                            <td>{{ tier }}</td>#}
+{#                                            <td></td>#}
+{#                                            <td>{{ price }}</td>{% endfor %}</tr>#}
+{#                                        </tbody>#}
+{#                                    </table>#}
+{#                            {% endif %}</div>#}
+{#                    </div>#}
+{#                    <div class="row">#}
+{#                        <div class="col-8">{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times#}
+{#                            {% if object.inner_dim2 %}{{ object.inner_dim2 }}{% else %}-{% endif %}#}
+{#                            &times#}
+{#                            {% if object.inner_dim3 %}#}
+{#                                {{ object.inner_dim3 }}{% elif object.inner_variable_dimension_MAX %}#}
+{#                                {{ object.inner_variable_dimension_MIN }} -#}
+{#                                {{ object.inner_variable_dimension_MAX }}{% endif %}#}
+{#                            <span> ({{ object.volume|floatformat }}L)</span></div>#}
+{#                        <div class="col-4">{% if show_match_header %}#}
+{#                            Match: {{ object.max_match }}%{% endif %}</div>#}
+{#                    </div>#}
+{#                    <div class="row">#}
+{#                        <div class="col-4">{{ object.color }}</div>#}
+{#                        <div class="col-4">{{ object.wall_thickness }}</div>#}
+{#                        <div class="col-4">{% if object.standard_size %}                        {{ object.standard_size }}{% elif object.bottles %}#}
+{#                                {% if object.bottles > 1 %}{{ object.bottles }} flessen#}
+{#                                {% else %}{{ object.bottles }} fles{% endif %}{% else %}-{% endif %}</div>#}
+{#                    </div>#}
+{#                    <div class="row">#}
+{#                        <div class="col"><a style="word-break: break-all;"#}
+{#                                           data-collect-url="/ajax/collect_reffered_link/"#}
+{#                                           class="js-company-link lowercase"#}
+{#                                           href="{{ object.url }}" target="_blank"#}
+{#                                           rel="noopener noreferrer">{{ object.company }}<i#}
+{#                                class="fas fa-external-link-alt"></i></a></div>#}
+{#                    </div>#}
+{#                </div>#}
+
                 <table class="table-mobile table">
+
                     <tr>
-                        <td colspan="2">{{ object.product_type }}
+                        <td colspan="4">{{ object.product_type }}
                         </td>
-                        {% include 'products/like_unlike_product_form_cookies_MOBILE.html' %}
+
+                        <td></td>
+
+
+                        <td>{% include 'products/like_unlike_product_form_cookies.html' %}</td>
                     </tr>
                     <tr>
-{#                        <td colspan="1">{% include 'products/like_unlike_product_form_cookies.html' %}</td>#}
+                        {#                        <td colspan="1">{% include 'products/like_unlike_product_form_cookies.html' %}</td>#}
 
-                        <td colspan="2">
+                        <td colspan="3">
                             <a class="product-thumb" data-toggle="popover-hover"
                                     {% with 'products/images/'|add:object.get_product_image as image_static %}
                                data-img="{% static image_static %}"><img class="product-thumb"
                                                                          src="{% static image_static %}"
                                                                          alt="product">{% endwith %}</a>
                         </td>
-                        <td colspan="1" {% if object.popover_tierprices|length > 0 %}class="staffel"{% endif %}>
+                        <td colspan="3" {% if object.popover_tierprices|length > 0 %}class="staffel"{% endif %}>
                             €{{ object.price_ex_BTW }}
                             {% if object.popover_tierprices|length > 0 %}
                                 - €{{ object.lowest_price }}
@@ -288,9 +355,10 @@
 
 
                     </tr>
+
                     <tr>
 
-                        <td {% if show_match_header %}colspan="2"{% else %}colspan="2"{% endif %}>{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times
+                        <td colspan="3">{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times
                             {% if object.inner_dim2 %}{{ object.inner_dim2 }}{% else %}-{% endif %}
                             &times
                             {% if object.inner_dim3 %}
@@ -299,15 +367,15 @@
                                 {{ object.inner_variable_dimension_MAX }}{% endif %}
                             <span> ({{ object.volume|floatformat }}L)</span>
                         </td>
-                        <td>{% if show_match_header %}
+                        <td colspan="3">{% if show_match_header %}
                             Match: {{ object.max_match }}%{% endif %}
                         </td>
                     </tr>
                     <tr>
-                        <td>{{ object.color }}
+                        <td colspan="2">{{ object.color }}
                         </td>
-                        <td>{{ object.wall_thickness }}</td>
-                        <td style="text-transform: none;">
+                        <td colspan="2">{{ object.wall_thickness }}</td>
+                        <td colspan="2" style="text-transform: none;">
                             {% if object.standard_size %}Geschikt voor:
                                 {{ object.standard_size }}{% elif object.bottles %}
                                 {% if object.bottles > 1 %}Geschikt voor: {{ object.bottles }} flessen
@@ -317,7 +385,7 @@
 
                     </tr>
                     <tr>
-                        <td colspan="3"><a style="word-break: break-all;"
+                        <td colspan="6"><a style="word-break: break-all;"
                                            data-collect-url="/ajax/collect_reffered_link/"
                                            class="js-company-link lowercase"
                                            href="{{ object.url }}" target="_blank"

@@ -349,6 +349,10 @@ table.table-mobile tr:last-child a {
     font-weight: bold;
 }
 
+table.table-mobile td {
+    width: 30px!important;
+}
+
 table.table-mobile tr:nth-child(3) {
     /*font-size: 20px;*/
     /*background-color: #73AD21;*/
@@ -365,7 +369,6 @@ table.table-mobile > tbody > tr:first-child td:last-child {
     border-radius: 0px 10px 0 0;
     color: #6c757d;
     text-transform: uppercase;
-    width: 30%;
 }
 
 /*table.table-mobile tr:first-child td:last-child {*/
@@ -783,6 +786,10 @@ span.price-staffel {
     left: 50%;
     top: 0;
     transform: translate(-50%, -100%);
+}
+
+.staffel:hover .tooltiptext {
+    visibility: visible;
 }
 
 td.staffel:hover .tooltiptext {
@@ -2255,4 +2262,18 @@ h2.category-name {
 
 .about-space {
     margin-top: 80px;
+}
+
+
+.mobile-results-wrapper {
+    text-align: center;
+    border: 1px solid black
+}
+.mobile-results-wrapper div {
+    border: 1px solid red;
+}
+
+.mobile-results div.col-6.staffel {
+    display: table-cell!important;
+    vertical-align: middle;
 }
