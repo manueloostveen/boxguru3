@@ -311,7 +311,6 @@ table.table-mobile {
 
 table.table-mobile td {
     border: none;
-    width: 35%;
 }
 
 table.table-mobile tr:first-child {
@@ -1987,6 +1986,14 @@ div.card-body {
     justify-content: center;
 }
 
+.sub-cat-links.mobile .dropbtn {
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 20px;
+    margin: 5px;
+
+}
+
 .sub-cat-links .dropdown:last-child .dropbtn {
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -2083,6 +2090,15 @@ div.card-body {
 h1.welcome-message span {
     color: #73AD21;
 }
+
+h1.welcome-message {
+    text-align: left;
+}
+
+.welcome-message + p {
+    text-align: left;
+}
+
 
 .category-section {
     display: none;
