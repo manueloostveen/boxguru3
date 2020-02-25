@@ -37,7 +37,7 @@ SECRET_KEY = ')udxer79(350b(crjy8-1c7xatq&mmjlku3^ti2v*bjj2u(m32'
 DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.8.100', '127.0.0.1', '0.0.0.0', 'herokuboxguru.herokuapp.com',
-                 'testboxguru.herokuapp.com']
+                 'testboxguru.herokuapp.com', 'boxguru.herokuapp.com']
 
 # Application definition
 
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.postgres',
     'products',
     # 'analysis',
     'privacy',
@@ -103,10 +104,10 @@ WSGI_APPLICATION = 'boxguru.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'boxgurutest1',
+        'NAME': 'boxgurutest2',
         'USER': 'manueloostveen',
         'PASSWORD': '',
-        'HOST': 'localhost',''
+        'HOST': 'localhost',
         'PORT': '',
     }
 }

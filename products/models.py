@@ -1,7 +1,9 @@
+from django.contrib.postgres.fields import HStoreField
 from django.db import models
 from django.urls import reverse
 # from django.contrib.auth.models import User
 from users.models import CustomUser
+from django.contrib.postgres.operations import HStoreExtension
 
 
 class MainCategory(models.Model):
@@ -124,7 +126,8 @@ class Product(models.Model):
     price_ex_BTW = models.DecimalField(decimal_places=2, max_digits=1000, verbose_name="Price/box ex. BTW")
     price_incl_BTW = models.DecimalField(decimal_places=2, max_digits=1000, verbose_name="Price/box incl. BTW")
     minimum_purchase = models.PositiveIntegerField(blank=True, null=True, verbose_name='Bundle size')
-    price_table = models.ManyToManyField('TierPrice')
+    # price_table = models.ManyToManyField('TierPrice')
+    price_table = HStoreField()
     lowest_price = models.DecimalField(decimal_places=2, max_digits=1000, null=True, blank=True, verbose_name="Lowest price/box ex. BTW")
 
     tags = models.ManyToManyField(Tag)
@@ -157,7 +160,7 @@ class Product(models.Model):
 
     def display_tierprices(self):
         """Create string for TierPrice's. This is required to display the tier-prices in Admin"""
-        return ' | '.join(str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.all())
+        return ' | '.join(tier + ' á €' + price for tier,price in self.price_table.items())
 
     def display_product_types(self):
         return self.product_type
@@ -168,10 +171,10 @@ class Product(models.Model):
         # return ''.join(str(product_type.type_singular) for product_type in self.product_type.all() if product_type.pk != 115)
 
     def popover_tierprices(self):
-        return [str(tierprice.tier) + ' á €' + str(tierprice.price) for tierprice in self.price_table.order_by('-price').all()]
+        return [tier + ' á €' + price for tier, price in self.price_table.items()]
 
-    def popover_tierprices_dict(self):
-        return {str(tierprice.tier): str(tierprice.price) for tierprice in self.price_table.order_by('-price').all()}
+    # def popover_tierprices_dict(self):
+    #     return {str(tierprice.tier): str(tierprice.price) for tierprice in self.price_table.order_by('-price').all()}
 
     def display_users(self):
         """Create string for Users that liked this product."""
