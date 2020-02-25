@@ -1045,7 +1045,7 @@ button.show-liked-boxes {
 }
 
 button.show-liked-boxes.mobile {
-    background-color: transparent;
+    /*background-color: transparent;*/
     margin: 0;
 }
 
