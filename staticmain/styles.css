@@ -311,6 +311,7 @@ table.table-mobile {
     /*font-family: Arial, sans-serif;*/
     box-shadow: 0 2px 6px 0 rgba(32, 33, 36, 0.28);
     border-radius: 10px;
+
 }
 
 table.table-mobile td {
@@ -325,6 +326,10 @@ table.table-mobile tr:last-child {
     background-color: #73AD21;
 }
 
+table.table-mobile tr:nth-child(3) td {
+    border-bottom: 1px solid #dcdcdc;
+}
+
 /*table.table-mobile tr:last-child a {*/
 /*    color: white;*/
 /*}*/
@@ -332,13 +337,12 @@ table.table-mobile tr:last-child {
 table.table-mobile tr:last-child a {
     background-color: #73AD21;
     color: white;
-    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-    margin: 0.25rem 0.25rem 0 0;
+    /*padding: 0.25rem 0.5rem 0.25rem 0.5rem;*/
     border: none;
     cursor: pointer;
     border-radius: 0.2rem;
     /*width: available;*/
-    font-size: .875rem;
+    /*font-size: .875rem;*/
     white-space: normal;
     text-decoration: none;
     display: inline-flex;

@@ -290,7 +290,7 @@
                     </tr>
                     <tr>
 
-                        <td {% if show_match_header %}colspan="2"{% else %}colspan="3"{% endif %}>{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times
+                        <td {% if show_match_header %}colspan="2"{% else %}colspan="2"{% endif %}>{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times
                             {% if object.inner_dim2 %}{{ object.inner_dim2 }}{% else %}-{% endif %}
                             &times
                             {% if object.inner_dim3 %}
@@ -299,9 +299,9 @@
                                 {{ object.inner_variable_dimension_MAX }}{% endif %}
                             <span> ({{ object.volume|floatformat }}L)</span>
                         </td>
-                        {% if show_match_header %}<td>
-                            Match: {{ object.max_match }}%
-                        </td>{% endif %}
+                        <td>{% if show_match_header %}
+                            Match: {{ object.max_match }}%{% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td>{{ object.color }}
