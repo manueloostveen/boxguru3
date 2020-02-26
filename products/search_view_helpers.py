@@ -331,7 +331,7 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
     if only_liked_boxes:
         # context['category_name'] = 'Mijn bewaarde dozen'
         if only_liked_boxes == '2':
-            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
+            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaar" knop.</p>'
         else:
             no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Bewaar dozen in de zoekresultaten met de "bewaarknop".</p>'
 

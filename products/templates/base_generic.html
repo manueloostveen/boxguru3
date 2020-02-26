@@ -267,17 +267,17 @@
             }
         )
     </script>
-{#    <script>#}
-{#        $(window).resize(function () {#}
-{#            if ($(window).width() > 785) {#}
-{#                console.log($(window).width());#}
-{#                $('nav.menu').show()#}
-{#            } else {#}
-{#                $('nav.menu').hide()#}
-{#            }#}
-{#        });#}
-{##}
-{#    </script>#}
+    {#    <script>#}
+    {#        $(window).resize(function () {#}
+    {#            if ($(window).width() > 785) {#}
+    {#                console.log($(window).width());#}
+    {#                $('nav.menu').show()#}
+    {#            } else {#}
+    {#                $('nav.menu').hide()#}
+    {#            }#}
+    {#        });#}
+    {##}
+    {#    </script>#}
 
     <script>
         $(document).on(
@@ -285,6 +285,35 @@
                 $('.dropbtn:focus').blur()
             }
         )
+    </script>
+
+    <script>
+        var Cookielaw2 = {
+
+            createCookie: function (name, value, days) {
+                var date = new Date(),
+                    expires = '';
+                if (days) {
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toGMTString();
+                } else {
+                    expires = "";
+                }
+                document.cookie = name + "=" + value + expires + "; path=/";
+            },
+
+            createCookielawCookie: function () {
+
+                this.createCookie('cookielaw_accepted', '1', 10 * 365);
+
+                if (typeof (window.jQuery) === 'function') {
+                    jQuery('#CookielawBanner').fadeToggle();
+                } else {
+                    document.getElementById('CookielawBanner').style.display = 'none';
+                }
+            }
+
+        };
     </script>
 
 {% endblock %}
