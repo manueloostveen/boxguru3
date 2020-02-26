@@ -6,12 +6,16 @@ import os
 
 sys.path.append(os.path.dirname(os.path.abspath('.')))
 
+FILE_PATH = Path(__file__ or ".settings.py").resolve()
+
+ROOT_DJANGO_PROJECT = FILE_PATH.parent.parent.parent
+sys.path.append(str(ROOT_DJANGO_PROJECT))
+
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'boxguru.settings'
 import django
 django.setup()
 
-FILE_PATH = Path(__file__ or ".settings.py").resolve()
 
 # Base path of scrapingboxes project
 BASE_PATH_SCRAPINGBOXES = FILE_PATH.parent.parent

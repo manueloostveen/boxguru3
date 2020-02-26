@@ -1,0 +1,12 @@
+Server: nginx
+Date: Wed, 26 Feb 2020 11:47:32 GMT
+Content-Type: text/html; charset=UTF-8
+Vary: Accept-Encoding
+Set-Cookie: X-Magento-Vary=4725f41c3be38021377d3f05914fbf52e61a3b71; expires=Wed, 26-Feb-2020 12:47:32 GMT; Max-Age=3600; path=/; secure; HttpOnly
+Pragma: no-cache
+Cache-Control: max-age=0, must-revalidate, no-cache, no-store
+Expires: Tue, 26 Feb 2019 11:47:32 GMT
+X-Content-Type-Options: nosniff
+X-Xss-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+Content-Encoding: gzip
