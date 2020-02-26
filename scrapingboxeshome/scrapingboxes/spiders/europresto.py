@@ -37,7 +37,7 @@ class EuroprestoSpider(scrapy.Spider):
     allowed_domains = ['www.europresto.nl']
     custom_settings = {
         "SELENIUM_DRIVER_ARGUMENTS": [
-            # "--headless",
+            "--headless",
         ], "DOWNLOADER_MIDDLEWARES": {
             "scrapingboxes.middlewares.SeleniumMiddleware": 80,
         }
