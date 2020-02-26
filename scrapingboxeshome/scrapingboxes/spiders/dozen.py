@@ -3,6 +3,7 @@ import scrapy
 
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler
+from scrapingboxes import settings
 import re
 
 def create_price_table_dozenNL(string):
@@ -45,6 +46,7 @@ class DozenSpider(scrapy.Spider):
         "DOWNLOAD_DELAY": 1
     }
 
+    TESTING = settings.TESTING
 
     def parse(self, response):
         category_links = response.xpath("//*[@id='category-nav']/li/a/@href").getall()

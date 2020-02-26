@@ -42,7 +42,6 @@ class EuroprestoSpider(scrapy.Spider):
             "scrapingboxes.middlewares.SeleniumMiddleware": 80,
         }
     }
-    # todo
 
     def start_requests(self):
         url = "https://www.europresto.nl/catalogus/verpakkingen/dozen.html"

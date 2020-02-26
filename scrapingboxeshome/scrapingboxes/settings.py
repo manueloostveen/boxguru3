@@ -34,13 +34,12 @@ ROBOTSTXT_OBEY = False
 
 SELENIUM_DRIVER_NAME = "chrome"
 
-# SELENIUM_DRIVER_EXECUTABLE_PATH = BASE_PATH_SCRAPINGBOXES / 'scrapingboxes' / 'selenium_driver' / 'chromedriver' / 'chromedriver'
-SELENIUM_DRIVER_EXECUTABLE_PATH = '/app/.chromedriver/bin/chromedriver'
+SELENIUM_DRIVER_EXECUTABLE_PATH = os.environ.get('CHROMEDRIVER_PATH', BASE_PATH_SCRAPINGBOXES / 'selenium_driver' / 'chromedriver' / 'chromedriver')
+print(SELENIUM_DRIVER_EXECUTABLE_PATH, 'SELENIUM_DRIVER_EXECUTABLE_PATH')
+# SELENIUM_DRIVER_EXECUTABLE_PATH = '/app/.chromedriver/bin/chromedriver'
 
-SELENIUM_BROWSER_EXECUTABLE_PATH = '/app/.apt/usr/bin/google-chrome'
-# SELENIUM_DRIVER_ARGUMENTS = [
-#     "--headless"
-# ]  # '--headless' if using chrome instead of firefox
+if os.environ.get('GOOGLE_CHROME_BIN'):
+    SELENIUM_BROWSER_EXECUTABLE_PATH = os.environ['GOOGLE_CHROME_BIN']
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 1
@@ -139,7 +138,7 @@ MEDIA_ALLOW_REDIRECTS = True
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-HTTPCACHE_ENABLED = True
+HTTPCACHE_ENABLED = False
 HTTPCACHE_EXPIRATION_SECS = 0
 HTTPCACHE_DIR = 'httpcache'
 HTTPCACHE_IGNORE_HTTP_CODES = [429]
@@ -148,3 +147,5 @@ HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 # # custom log formatter: https://stackoverflow.com/questions/13527921/scrapy-silently-drop-an-item
 # LOG_FORMATTER = 'scrapingboxes.middlewares.BoxLogFormatter'
 
+# TESTING
+TESTING = True
