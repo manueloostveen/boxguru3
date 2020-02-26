@@ -33,10 +33,11 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36
 ROBOTSTXT_OBEY = False
 
 SELENIUM_DRIVER_NAME = "chrome"
-# SELENIUM_DRIVER_EXECUTABLE_PATH = "/usr/local/bin/chromedriver"
-# SELENIUM_DRIVER_EXECUTABLE_PATH = '/Users/manueloostveen/PycharmProjects/packages/chromedriver/chromedriver'
-SELENIUM_DRIVER_EXECUTABLE_PATH = BASE_PATH_SCRAPINGBOXES / 'scrapingboxes' / 'selenium_driver' / 'chromedriver' / 'chromedriver'
 
+# SELENIUM_DRIVER_EXECUTABLE_PATH = BASE_PATH_SCRAPINGBOXES / 'scrapingboxes' / 'selenium_driver' / 'chromedriver' / 'chromedriver'
+SELENIUM_DRIVER_EXECUTABLE_PATH = '/app/.chromedriver/bin/chromedriver'
+
+SELENIUM_BROWSER_EXECUTABLE_PATH = '/app/.apt/usr/bin/google-chrome'
 # SELENIUM_DRIVER_ARGUMENTS = [
 #     "--headless"
 # ]  # '--headless' if using chrome instead of firefox
