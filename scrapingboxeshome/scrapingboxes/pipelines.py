@@ -206,14 +206,14 @@ class TesterPipeline(object):
 class ScrapingboxesPipeline(object):
 
     def open_spider(self, spider):
-        # filename_tags = "./tags/" + spider.name + datetime.now().strftime("%Y%m%d-%H%M%S") + ".jl"
-        # self.tag_file = open(filename_tags, 'w')
-        #
-        # filename_dropped_items = "./results/" + spider.name + "DroppedItems" + datetime.now().strftime(
-        #     "%Y%m%d-%H%M%S") + ".jl"
-        # self.dropped_items_file = open(filename_dropped_items, 'w', encoding='utf-8', newline="\n")
-        #
-        # self.total_of_tags = []
+        filename_tags = "./tags/" + spider.name + datetime.now().strftime("%Y%m%d-%H%M%S") + ".jl"
+        self.tag_file = open(filename_tags, 'w')
+
+        filename_dropped_items = "./results/" + spider.name + "DroppedItems" + datetime.now().strftime(
+            "%Y%m%d-%H%M%S") + ".jl"
+        self.dropped_items_file = open(filename_dropped_items, 'w', encoding='utf-8', newline="\n")
+
+        self.total_of_tags = []
         self.dropped_items = 0
 
 
@@ -222,11 +222,10 @@ class ScrapingboxesPipeline(object):
         #     line = json.dumps(tag) + "\n"
         #     self.tag_file.write(line)
         #
-        # print('Dropped Items: ', self.dropped_items)
+        print('Dropped Items: ', self.dropped_items)
         #
-        # self.dropped_items_file.write(f"Dropped Items: {self.dropped_items}")
+        self.dropped_items_file.write(f"Dropped Items: {self.dropped_items}")
         # self.tag_file.close()
-        pass
 
     inner_dimensions = [
         "inner_dim1",

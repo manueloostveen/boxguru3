@@ -38,8 +38,8 @@ SELENIUM_DRIVER_EXECUTABLE_PATH = os.environ.get('CHROMEDRIVER_PATH', BASE_PATH_
 # SELENIUM_DRIVER_EXECUTABLE_PATH = '/app/.chromedriver/bin/chromedriver'
 
 if os.environ.get('GOOGLE_CHROME_BIN'):
-    print(os.environ.get('GOOGLE_CHROME_BIN', 'Google chrome bin environment variable found!!!!'))
     SELENIUM_BROWSER_EXECUTABLE_PATH = os.environ['GOOGLE_CHROME_BIN']
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 1
 
@@ -110,11 +110,10 @@ PROXY_MODE = 0
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'scrapingboxes.pipelines.ScrapingboxesPipeline': 300,
+    # 'scrapingboxes.pipelines.ScrapingboxesPipeline': 300,
     'scrapingboxes.pipelines.DjangoTestPipeline': 310,
     #  'scrapingboxes.pipelines.JsonLinesPipeline': 400,
     # 'scrapy.pipelines.images.ImagesPipeline': 1,
-
 }
 
 # IMAGES_STORE = '/Users/manueloostveen/PycharmProjects/boxguru/products/static/products/images'
@@ -147,4 +146,11 @@ HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 # LOG_FORMATTER = 'scrapingboxes.middlewares.BoxLogFormatter'
 
 # TESTING
-TESTING = True
+class TestSettings:
+    TESTING = True
+    SETTINGS = {
+        'ITEM_PIPELINES': {
+            'scrapingboxes.pipelines.ScrapingboxesPipeline': 300,
+        }
+    }
+    MAX_ROWS = 3

@@ -3,7 +3,7 @@ import scrapy
 
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler
-from scrapingboxes import settings
+from scrapingboxes.settings import TestSettings
 import re
 
 def create_price_table_dozenNL(string):
@@ -42,11 +42,13 @@ class DozenSpider(scrapy.Spider):
     name = 'dozen'
     allowed_domains = ['www.dozen.nl']
     start_urls = ["https://www.dozen.nl/kartonnen-dozen/standaarddozen.html"]
-    custom_settings = {
-        "DOWNLOAD_DELAY": 1
-    }
+    custom_settings = {}
 
-    TESTING = settings.TESTING
+    TESTING = TestSettings.TESTING
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
+
+    custom_settings['DOWNLOAD_DELAY'] = 1
 
     def parse(self, response):
         category_links = response.xpath("//*[@id='category-nav']/li/a/@href").getall()
