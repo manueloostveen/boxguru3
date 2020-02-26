@@ -39,6 +39,7 @@ print(SELENIUM_DRIVER_EXECUTABLE_PATH, 'SELENIUM_DRIVER_EXECUTABLE_PATH')
 # SELENIUM_DRIVER_EXECUTABLE_PATH = '/app/.chromedriver/bin/chromedriver'
 
 if os.environ.get('GOOGLE_CHROME_BIN'):
+    print(os.environ.get('GOOGLE_CHROME_BIN', 'Google chrome bin environment variable found!!!!'))
     SELENIUM_BROWSER_EXECUTABLE_PATH = os.environ['GOOGLE_CHROME_BIN']
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
