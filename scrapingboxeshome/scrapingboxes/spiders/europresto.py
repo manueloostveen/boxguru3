@@ -43,8 +43,6 @@ class EuroprestoSpider(scrapy.Spider):
         }
     }
 
-    # todo: also extract verzendkokers
-
     def start_requests(self):
         url = "https://www.europresto.nl/catalogus/verpakkingen/dozen.html"
         yield SeleniumRequest(url=url, callback=self.parse)
