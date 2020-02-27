@@ -177,7 +177,7 @@ class VivSpider(scrapy.Spider):
         price_handler = PriceHandlerViv(box)
 
         box['price_ex_BTW'] = round((price_handler.create_base_price_manually(response.xpath(
-            '//*/div[@class="product-view"]//*[@class="per-one"]//span[@class="price"]'
+            '//div[@class="product-shop"]//*[@class="per-one"]//*[@class="price-excluding-tax"]/*[@class="price"]'
         )
         ) / 121) * 100, 2)
 

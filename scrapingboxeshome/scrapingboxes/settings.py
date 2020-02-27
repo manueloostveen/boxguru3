@@ -147,7 +147,7 @@ HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # TESTING
 class TestSettings:
-    TESTING = True
+    TESTING = False if os.environ.get('DEPLOYED') else True
     SETTINGS = {
         'ITEM_PIPELINES': {
             'scrapingboxes.pipelines.ScrapingboxesPipeline': 300,
