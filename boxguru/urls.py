@@ -28,7 +28,7 @@ urlpatterns = [
 urlpatterns += [path('', include('products.urls'))]
 
 # Inluce analysis urls
-# urlpatterns += [path('', include('analysis.urls'))]
+urlpatterns += [path('', include('analysis.urls'))]
 
 urlpatterns += [path('', include('privacy.urls'))]
 

@@ -352,6 +352,7 @@
     <script>
         $('.js-company-link').click(function () {
             var clicked_link = $(this).attr('href');
+            console.log('function reached')
             $.ajax({
                 url: $(this).attr('data-collect-url'),
                 data: {
