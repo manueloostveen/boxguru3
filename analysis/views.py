@@ -18,6 +18,24 @@ def is_valid_url(url):
     return True
 
 # Create your views here.
+def save_clicked_link_simple(request):
+    # Save referral in database
+    clicked_link = request.GET.get('link')
+    if is_valid_url(clicked_link):
+        pass
+    else:
+        return JsonResponse({'message': 'Oeps! Er is iets mis met de link.'})
+
+    domain = clicked_link.split('/')[2]
+
+    Referral.objects.get_or_create(
+        url=clicked_link,
+        domain=domain,
+        sessionid=request.COOKIES.get('sessionid', 'unknown sessionid')
+    )
+
+    return HttpResponse()
+
 def save_clicked_link(request):
 
     # Save referral in database
@@ -29,7 +47,6 @@ def save_clicked_link(request):
         return JsonResponse({'message': 'Oeps! Er is iets mis met de link.'})
 
     domain = clicked_link.split('/')[2]
-
 
     referral, referral_created = Referral.objects.get_or_create(
         url=clicked_link,

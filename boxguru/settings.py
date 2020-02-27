@@ -18,7 +18,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Setting up static root
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 TEXT_FILES_ROOT = os.path.join(STATIC_ROOT, 'textfiles')
-# STATIC_ROOT = ''
 
 STATIC_URL = '/static/'
 
@@ -34,7 +33,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 SECRET_KEY = ')udxer79(350b(crjy8-1c7xatq&mmjlku3^ti2v*bjj2u(m32'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if os.environ.get('DEPLOYED') else True
 
 ALLOWED_HOSTS = ['192.168.8.100', '127.0.0.1', '0.0.0.0', 'herokuboxguru.herokuapp.com',
                  'testboxguru.herokuapp.com', 'boxguru.herokuapp.com']
@@ -51,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.postgres',
     'products',
-    # 'analysis',
+    'analysis',
     'privacy',
 
     # 3rd party
