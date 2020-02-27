@@ -6,6 +6,7 @@ import scrapy
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler, PriceHandler2, all_text_from_elements
 from scrapingboxes.settings import TestSettings
+
 TESTING = TestSettings.TESTING
 
 
@@ -16,6 +17,7 @@ class TableHandlerRajapack(TableHandler):
         self.measurement_words += ['opening', 'rug']
         self.standard_size_words += ['aanbevolen']
         self.skip_words += ["prijs"]
+        self.bundle_words += ['(ve)']
         self.create_indices_dict()
 
 
@@ -169,7 +171,7 @@ class RajapackSpider(scrapy.Spider):
             # create data from product description
             box_data.update_item(
                 "tags",
-                "wall_thickness", #todo driedubbelgolf wordt niet gepakt, palletdozen
+                "wall_thickness",  # todo driedubbelgolf wordt niet gepakt, palletdozen
                 "description",
                 "color",
                 'product_type',
@@ -195,11 +197,22 @@ class RajapackSpider(scrapy.Spider):
             price_handler = PriceHandlerRajapack(item=box,
                                                  # price_multiplier=box['minimum_purchase']
                                                  )
-            #Todo: check 'prijs per doos' of 'prijs per pak' for price multiplier
+
             box["price_table"] = price_handler.create_price_table(
                 tier_elements=response.xpath('//*[@id="thead_1"]/tr[2]/th'),
                 price_elements=row.xpath('./td[contains(@class, "nobdr")]')
             )
+
+            # HANDLE 'Prijs per doos/pak'
+            per_text = response.xpath('//th[contains(@class, "promo")]/b[1]/text()').get()
+            multiplier = box.get('minimum_purchase', 1)
+
+            if 'pak' in per_text:
+                new_price_table = {}
+                for key, value in box['price_table'].items():
+                    new_price_table[ key * multiplier ] = round(value / multiplier, 2)
+                box['price_table'] = new_price_table
+                price_handler.price_table = new_price_table
 
             box['price_ex_BTW'] = price_handler.get_base_price_from_price_table()
 

@@ -470,6 +470,7 @@ class TableHandler:
 
         self.measurement_unit = "cm"
 
+
         # # initialize indices dictionary
         # self.create_indices_dict()
 
@@ -935,6 +936,7 @@ class ItemUpdater2:
         }
 
         self.box_type_dict = {
+            "kisten/bakken": ["kist", 'transportbak', 'bak'],
             'UN-dozen': ['un ', 'gevaarlijke'],
             # Dit waren 'feestelijke dozen'
             'geschenkdozen': ['geschenk'] + ['kerst', "feest", 'sinterklaas', 'sint'],
@@ -959,10 +961,10 @@ class ItemUpdater2:
             "kruiswikkel- & boekverpakkingen": ["wikkel", "draaipak", 'lp ', 'kalender', "book", 'boek'],
             "verhuisdozen": ["verhuis"],
             "autolockdozen": ["autolock", "montage", "automatisch", 'speedbox', 'zweedse bodem'],
+            "pallet dozen": ['container', 'palletb', 'palletd'],
             "dekseldozen": ["deksel", "opberg", "deksel", "easypack", 'stropdas', 'paraat'],
             "archiefdozen": ["archief", 'ordner'],
             "brievenbusdozen": ["brievenbus", 'busbox'],
-            "kisten/bakken": ["kist", 'transportbak', 'bak'],
             "schuimdozen": ["schuim"],
             "fixeer- & zweefverpakkingen": ["fixeer", "fixatie", 'zweef', 'korrvu'],
             "feestelijke dozen": ['kerst', "feest", 'sinterklaas', 'sint'],
@@ -973,7 +975,6 @@ class ItemUpdater2:
             'magazijn doos': ['magazijn'],
             'kartonnen platen': ['platen', 'golfkarton (grijs)karton en papier'],
             # todo "karton" hier verwijderd, dat gaat ergesn fouten opeleveren# pas op: palletplaten, moet boven 'pallet box' blijven
-            "pallet dozen": ['container', 'palletb', 'palletd'],
             'standaard dozen': ['vouwdoos', 'doos', 'standaarddozen', 'dozen'] + ['varibox', 'variabele hoogte', 'hoogte verstelbaar'],
             'paraatdozen': ['paraat'],
             'opvulmateriaal': ['opvulmateriaal']

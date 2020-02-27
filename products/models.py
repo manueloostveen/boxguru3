@@ -121,7 +121,7 @@ class Product(models.Model):
                                        verbose_name='Wall-thickness')
     in_stock = models.BooleanField(null=True, blank=True)
 
-    url = models.URLField(max_length=120, blank=True, verbose_name='URL')
+    url = models.URLField(max_length=300, blank=True, verbose_name='URL')
 
     price_ex_BTW = models.DecimalField(decimal_places=2, max_digits=1000, verbose_name="Price/box ex. BTW")
     price_incl_BTW = models.DecimalField(decimal_places=2, max_digits=1000, verbose_name="Price/box incl. BTW")
