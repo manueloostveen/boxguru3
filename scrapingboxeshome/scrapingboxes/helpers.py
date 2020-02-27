@@ -961,7 +961,7 @@ class ItemUpdater2:
             "kruiswikkel- & boekverpakkingen": ["wikkel", "draaipak", 'lp ', 'kalender', "book", 'boek'],
             "verhuisdozen": ["verhuis"],
             "autolockdozen": ["autolock", "montage", "automatisch", 'speedbox', 'zweedse bodem'],
-            "pallet dozen": ['container', 'palletb', 'palletd'],
+            "palletdozen": ['container', 'palletb', 'palletd'],
             "dekseldozen": ["deksel", "opberg", "deksel", "easypack", 'stropdas', 'paraat'],
             "archiefdozen": ["archief", 'ordner'],
             "brievenbusdozen": ["brievenbus", 'busbox'],

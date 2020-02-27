@@ -683,6 +683,22 @@ def home(request):
     # Add category texts to context
     context['category_texts'] = main_category_texts
 
+    # Add companies string to context
+    companies = Company.objects.all()
+    company_string = ''
+    first = True
+    idx_last_company = len(companies) - 1
+    for idx, company in enumerate(companies):
+        if first:
+            company_string += company.company
+            first = False
+        elif idx == idx_last_company:
+            company_string += " & " + company.company
+        else:
+            company_string += ", " + company.company
+
+    context['company_string'] = company_string
+
     if request.method == 'GET':
         context['box_form'] = SearchBoxForm()
         context['fit_product_form'] = FitProductForm()
