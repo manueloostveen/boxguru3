@@ -3,8 +3,10 @@ import scrapy
 
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler
-from scrapingboxes.settings import TestSettings
 import re
+
+from scrapingboxes.settings import TestSettings
+TESTING = TestSettings.TESTING
 
 def create_price_table_dozenNL(string):
     """
@@ -44,7 +46,6 @@ class DozenSpider(scrapy.Spider):
     start_urls = ["https://www.dozen.nl/kartonnen-dozen/standaarddozen.html"]
     custom_settings = {}
 
-    TESTING = TestSettings.TESTING
     if TESTING:
         custom_settings = TestSettings.SETTINGS
 
@@ -58,8 +59,10 @@ class DozenSpider(scrapy.Spider):
         # add show all
         all_links_show_all = [link.replace(".html", "/show/all.html") for link in all_links]
 
-        for link in all_links_show_all:
+        for idx, link in enumerate(all_links_show_all):
             if not "vulmateriaal" in link and not "tape" in link:
+                if idx > TestSettings.MAX_ROWS and TESTING:
+                    break
                 yield response.follow(url=link, callback=self.parse_category)
 
     def parse_category(self, response):
@@ -68,8 +71,9 @@ class DozenSpider(scrapy.Spider):
 
             # iterate over table rows
             table_rows = response.xpath("//*[@class='table products-view']/tbody/tr")
-            for row in table_rows:
-
+            for idx, row in enumerate(table_rows):
+                if idx > TestSettings.MAX_ROWS and TESTING:
+                    break
                 box = ScrapingboxesItem()
                 box_data = ItemUpdaterDozen(item=box, measured_in="mm")
                 header_indices_object = TableHandlerDozen(

@@ -5,8 +5,8 @@ import re
 from scrapingboxes.utils import SeleniumRequest
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2
-
-
+from scrapingboxes.settings import TestSettings
+TESTING = TestSettings.TESTING
 
 
 class TableHandlerTest(TableHandler):
@@ -53,13 +53,14 @@ def get_bundle_size(text):
 class Kartonnendozen123Spider(scrapy.Spider):
     name = 'kartonnendozen123'
     allowed_domains = ['www.123kartonnendozen.nl']
+    custom_settings = {}
 
-    custom_settings = {
-        "SELENIUM_DRIVER_ARGUMENTS": [],
-        "DOWNLOADER_MIDDLEWARES": {"scrapingboxes.middlewares.SeleniumMiddleware": 80},
-        # 'ITEM_PIPELINES': {'scrapingboxes.pipelines.TesterPipeline': 310},
-        'DOWNLOAD_DELAY': 4,
-    }
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
+    custom_settings["SELENIUM_DRIVER_ARGUMENTS"] = [
+        "--headless", '--no-sandbox']
+    custom_settings["DOWNLOADER_MIDDLEWARES"] = {"scrapingboxes.middlewares.SeleniumMiddleware": 80}
+    custom_settings['DOWNLOAD_DELAY'] = 4
 
     def start_requests(self):
         start_urls = [
@@ -77,8 +78,11 @@ class Kartonnendozen123Spider(scrapy.Spider):
 
     def parse_category(self, response):
         product_links = response.xpath('//a[@class="article"]/@href').getall()
-        for link in product_links:
-            yield SeleniumRequest(url=link, callback=self.parse_box)
+        for idx, link in enumerate(product_links):
+            if idx > TestSettings.MAX_ROWS and TESTING:
+                break
+            else:
+                yield SeleniumRequest(url=link, callback=self.parse_box)
 
         next_page = response.xpath('//a[@class="listforward"]/@href').get()
         if next_page:
@@ -92,7 +96,7 @@ class Kartonnendozen123Spider(scrapy.Spider):
             'description', 'all_inner_dimensions', 'tags', 'standard_size', 'product_type',
             description_element=response.xpath('//div[@class="detailcontainer"]//span[@itemprop="name"]')
         )
-        #todo ItemUpdater pakt foute maten 'Brievenbuskoker met dop A3 - 330 x 30 mm - 100 stuks  Doos' => vardim 3.0 - 330
+        # todo ItemUpdater pakt foute maten 'Brievenbuskoker met dop A3 - 330 x 30 mm - 100 stuks  Doos' => vardim 3.0 - 330
 
         box_data.update_item(
             'wall_thickness', 'color',

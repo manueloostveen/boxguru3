@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapingboxes.items import ScrapingboxesItem
-from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2, all_text_from_elements
-import re
+from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2
+from scrapingboxes.settings import TestSettings
+
+TESTING = TestSettings.TESTING
 
 
 class TableHandlerTarra(TableHandler):
@@ -29,13 +31,15 @@ class TableHandlerTarra(TableHandler):
 class ItemUpdaterTarra(ItemUpdater2):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        new_wall_thickness_dict = {} # {'website word': 'single/double/triple wall'}
+        new_wall_thickness_dict = {}  # {'website word': 'single/double/triple wall'}
         self.wall_thickness_dict = {**self.wall_thickness_dict, **new_wall_thickness_dict}
 
 
 class TarraSpider(scrapy.Spider):
     name = 'tarra'
     allowed_domains = ['tarra-pack.nl']
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
     start_urls = [
         'https://tarra-pack.nl/dozen-karton/enkel-golf/?product_list_limit=30',
         'https://tarra-pack.nl/dozen-karton/vouwdozen-dubbel-golfkarton/?product_list_limit=30',
@@ -44,13 +48,14 @@ class TarraSpider(scrapy.Spider):
 
     def parse(self, response):
         product_links = response.xpath('//a[@class="product-item-link"]/@href').getall()
-        for link in product_links:
+        for idx, link in enumerate(product_links):
+            if idx > TestSettings.MAX_ROWS and TESTING:
+                break
             yield response.follow(link, self.parse_box)
 
         next_page = response.xpath('//a[@class="link  next"]/@href').get()
         if next_page:
             yield response.follow(next_page, self.parse)
-
 
     def parse_box(self, response):
         box = ScrapingboxesItem()
@@ -82,5 +87,3 @@ class TarraSpider(scrapy.Spider):
         box['company'] = 'Tarra-pack'
 
         yield box
-
-

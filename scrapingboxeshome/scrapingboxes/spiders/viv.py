@@ -5,6 +5,9 @@ import scrapy
 
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler, all_text_from_elements, PriceHandler2
+from scrapingboxes.settings import TestSettings
+
+TESTING = TestSettings.TESTING
 
 
 def find_in_stock(description):
@@ -33,6 +36,7 @@ class TableHandlerViv(TableHandler):
         self.wall_thickness_words += ['kwaliteit']
         self.multiple_inner_dimensions_words += ["afmeting"]
         self.create_indices_dict()
+
 
 class PriceHandlerViv(PriceHandler2):
 
@@ -124,23 +128,29 @@ class PriceHandlerViv(PriceHandler2):
 
         try:
             # Divided by 121 and multiplied with 100 to get price ex BTW
-            self.price_table = {tiers_cleaned[index]: round((prices_cleaned[index] / 121) * 100, 2) for index in range(len(tiers_cleaned))}
+            self.price_table = {tiers_cleaned[index]: round((prices_cleaned[index] / 121) * 100, 2) for index in
+                                range(len(tiers_cleaned))}
         except IndexError:
             print("tiers_cleaned: ", tiers_cleaned, "prices_cleaned: ", prices_cleaned)
             raise IndexError
 
         return self.price_table
 
+
 class VivSpider(scrapy.Spider):
     name = "viv"
     allowed_domains = ["webshop.viv.nl"]
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
     start_urls = [
         "https://webshop.viv.nl/kartonnen-dozen/show/all",
         "https://webshop.viv.nl/verzendverpakkingen",
     ]
 
     def parse(self, response):
-        for href in response.xpath("//h2/a/@href"):
+        for idx, href in enumerate(response.xpath("//h2/a/@href")):
+            if idx > TestSettings.MAX_ROWS and TESTING:
+                break
             yield response.follow(href, callback=self.parse_box)
 
         for href in response.xpath('//*[@class="subcategories"]//@href'):
@@ -169,8 +179,7 @@ class VivSpider(scrapy.Spider):
         box['price_ex_BTW'] = round((price_handler.create_base_price_manually(response.xpath(
             '//*/div[@class="product-view"]//*[@class="per-one"]//span[@class="price"]'
         )
-        ) / 121 ) * 100, 2)
-
+        ) / 121) * 100, 2)
 
         box['price_table'] = price_handler.create_price_table(
             tier_elements=response.xpath("//*[@class='tier-prices product-pricing']/li"),

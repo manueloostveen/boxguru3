@@ -3,6 +3,9 @@ import scrapy
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2, all_text_from_elements
 import re
+from scrapingboxes.settings import TestSettings
+
+TESTING = TestSettings.TESTING
 
 
 class TableHandlerVvs(TableHandler):
@@ -191,10 +194,14 @@ class VvsSpider(scrapy.Spider):
         'https://www.verzendverpakkingenshop.nl/kartonnen-dozen',
         'https://www.verzendverpakkingenshop.nl/enveloppen'
     ]
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
 
     def parse(self, response):
         product_links = response.xpath('//*[@class="product-item-info"]/div[1]/a/@href').getall()
-        for link in product_links:
+        for idx, link in enumerate(product_links):
+            if idx > TestSettings.MAX_ROWS and TESTING:
+                break
             yield response.follow(link, self.parse_box)
 
         next_page = response.xpath('//*[@class="action  next"]/@href').get()

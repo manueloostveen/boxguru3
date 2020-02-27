@@ -3,6 +3,8 @@ import scrapy
 import re
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2, all_text_from_elements
+from scrapingboxes.settings import TestSettings
+TESTING = TestSettings.TESTING
 
 class TableHandlerPaco(TableHandler):
     def __init__(self, **kwargs):
@@ -142,13 +144,17 @@ class PacoverpakkingenSpider(scrapy.Spider):
     name = 'pacoverpakkingen'
     allowed_domains = ['www.pacoverpakkingen.nl']
     start_urls = ['https://www.pacoverpakkingen.nl/dozen/']
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
 
     def parse(self, response):
         # selectors
         product_links = response.xpath('//section[@id="products"]//div[@class="product-description "]//@href').getall()
         next_page = response.xpath('//a[@rel="next"]/@href').get()
 
-        for link in product_links:
+        for idx, link in enumerate(product_links):
+            if idx > TestSettings.MAX_ROWS and TESTING:
+                break
             yield response.follow(url=link, callback=self.parse_box)
 
         for times in range(16):

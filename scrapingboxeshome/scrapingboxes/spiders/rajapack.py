@@ -5,6 +5,8 @@ import scrapy
 
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler, PriceHandler2, all_text_from_elements
+from scrapingboxes.settings import TestSettings
+TESTING = TestSettings.TESTING
 
 
 class TableHandlerRajapack(TableHandler):
@@ -117,6 +119,9 @@ class PriceHandlerRajapack(PriceHandler2):
 class RajapackSpider(scrapy.Spider):
     name = "rajapack"
     allowed_domains = ['www.rajapack.nl']
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
+
     start_urls = [
         'https://www.rajapack.nl/kartonnen-dozen-verzenddozen-exportcontainers/kartonnen-dozen_C1010.html',
         'https://www.rajapack.nl/kartonnen-dozen-verzenddozen-exportcontainers/postdozen-verzenddozen_C1040.html',
@@ -136,7 +141,9 @@ class RajapackSpider(scrapy.Spider):
         links = response.xpath(
             '//div[@class="product__item-grid"]/div[@class="name"]/a/@href'
         ).getall()
-        for link in links:
+        for idx, link in enumerate(links):
+            if idx > TestSettings.MAX_ROWS and TESTING:
+                break
             yield response.follow(link, callback=self.parse_box_table)
 
         # follow next page button
@@ -146,10 +153,10 @@ class RajapackSpider(scrapy.Spider):
             yield response.follow(next_page.strip(), callback=self.parse)
 
     def parse_box_table(self, response):
-
         # iterate over box rows
         boxes_rows = response.xpath('//*[@id="tbody_1"]/tr')
-        for row in boxes_rows:
+        for idx, row in enumerate(boxes_rows):
+
             # initialize Item and data object
             box = ScrapingboxesItem()
             table_handler = TableHandlerRajapack(

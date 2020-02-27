@@ -8,8 +8,9 @@ from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException, \
     ElementClickInterceptedException
 
+from scrapingboxes.settings import TestSettings
+TESTING = TestSettings.TESTING
 
-# todo: make spider to also extract verzendkokers. They have missing dimension values in product description..
 
 class ItemUpdaterEuropresto(ItemUpdater2):
     def __init__(self, **kwargs):
@@ -35,13 +36,14 @@ class TableHandlerEuropresto(TableHandler):
 class EuroprestoSpider(scrapy.Spider):
     name = 'europresto'
     allowed_domains = ['www.europresto.nl']
-    custom_settings = {
-        "SELENIUM_DRIVER_ARGUMENTS": [
-            "--headless", '--no-sandbox',
-        ], "DOWNLOADER_MIDDLEWARES": {
-            "scrapingboxes.middlewares.SeleniumMiddleware": 80,
-        }
-    }
+    custom_settings = {}
+
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
+
+    custom_settings["SELENIUM_DRIVER_ARGUMENTS"] = [
+            "--headless", '--no-sandbox']
+    custom_settings["DOWNLOADER_MIDDLEWARES"] = {"scrapingboxes.middlewares.SeleniumMiddleware": 80}
 
     def start_requests(self):
         url = "https://www.europresto.nl/catalogus/verpakkingen/dozen.html"
@@ -60,7 +62,7 @@ class EuroprestoSpider(scrapy.Spider):
         ).getall()
 
         for link in category_links:
-            # go to category page
+                        # go to category page
             driver.get(link)
             sleep(3)
 
@@ -79,10 +81,10 @@ class EuroprestoSpider(scrapy.Spider):
             box_elements = driver.find_elements_by_xpath("//*[@class='hProduct name']/a")
             box_links = [box_elements[index].get_attribute('href') for index in range(len(box_elements))]
 
-            for box_link in box_links:
+            for idx, box_link in enumerate(box_links):
+                if idx > TestSettings.MAX_ROWS and TESTING:
+                    break
                 yield scrapy.Request(box_link, self.parse_box)
-
-            # todo: add verzendkokers
 
     def parse_box(self, response):
         # initialize item

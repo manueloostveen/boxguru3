@@ -2,7 +2,8 @@
 import scrapy
 from scrapingboxes.helpers import ItemUpdater2, PriceHandler2
 from scrapingboxes.items import ScrapingboxesItem
-import re
+from scrapingboxes.settings import TestSettings
+TESTING = TestSettings.TESTING
 
 
 class ItemUpdaterPaardekooper(ItemUpdater2):
@@ -21,11 +22,15 @@ class ItemUpdaterPaardekooper(ItemUpdater2):
 class PaardekooperSpider(scrapy.Spider):
     name = 'paardekooper'
     allowed_domains = ['www.paardekooper.nl']
-    custom_settings = {
-        'DOWNLOAD_DELAY': 1,
-        'RANDOMIZE_DOWNLOAD_DELAY': False,
-        'CONCURRENT_REQUESTS_PER_IP': 1,
-    }
+    custom_settings = {}
+
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
+
+    custom_settings['DOWNLOAD_DELAY'] = 1
+    custom_settings['RANDOMIZE_DONWLOAD_DEALY'] = False
+    custom_settings['CONCURRENT_REQUESTS_PER_IP'] = 1
+
     start_urls = [
         'https://www.paardekooper.nl/nl_NL/industrie-dozen-en-bakken/2635/',
         'https://www.paardekooper.nl/nl_NL/industrie-verzendverpakkingen/2712/',
@@ -36,7 +41,9 @@ class PaardekooperSpider(scrapy.Spider):
             yield response.follow(link, self.parse_category)
 
     def parse_category(self, response):
-        for link in response.xpath("//*[@class='h4 article-title']/a/@href"):
+        for idx, link in enumerate(response.xpath("//*[@class='h4 article-title']/a/@href")):
+            if idx > TestSettings.MAX_ROWS and TESTING:
+                break
             yield response.follow(link, self.parse_box)
 
         next_button_link = response.xpath("//*[@class='next']/a/@href").get()

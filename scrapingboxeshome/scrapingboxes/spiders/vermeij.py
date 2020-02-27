@@ -2,6 +2,9 @@
 import scrapy
 from scrapingboxes.items import ScrapingboxesItem
 from scrapingboxes.helpers import ItemUpdater2, TableHandler, PriceHandler2
+from scrapingboxes.settings import TestSettings
+
+TESTING = TestSettings.TESTING
 
 class TableHandlerVermeij(TableHandler):
     def __init__(self, **kwargs):
@@ -50,6 +53,8 @@ class ItemUpdaterVermeij(ItemUpdater2):
 class VermeijSpider(scrapy.Spider):
     name = 'vermeij'
     allowed_domains = ['www.vermeij.com']
+    if TESTING:
+        custom_settings = TestSettings.SETTINGS
     start_urls = [
         'https://www.vermeij.com/dozen.html',
         # 'https://www.vermeij.com/enveloppen.html',
@@ -57,6 +62,7 @@ class VermeijSpider(scrapy.Spider):
         # 'https://www.vermeij.com/geschenkverpakking.html',
         'https://www.vermeij.com/flesverpakking.html'
     ]
+
 
     def parse(self, response):
 
@@ -76,12 +82,13 @@ class VermeijSpider(scrapy.Spider):
     def parse_category(self, response):
 
         product_links = response.xpath('//*[@class="product-table-productname"]//@href').getall()
-        for link in product_links:
+        for idx, link in enumerate(product_links):
+            if idx > TestSettings.MAX_ROWS and TESTING:
+                break
             box = response.meta['item']
             yield response.follow(link, self.parse_box, meta={'item': box})
 
     def parse_box(self, response):
-        #todo get box_type from category page!
 
         box = response.meta['item'].copy()
         # table_handler = TableHandlerTest(header_elements=None)
