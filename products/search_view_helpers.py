@@ -936,7 +936,7 @@ def get_min_max_dimensions(queryset):
     elif aggregation.get('max_dim3') and not aggregation.get('max_var_height'):
         aggregation['max_height'] = aggregation['max_dim3']
     else:
-        aggregation['max_height'] = aggregation['max_var_height']
+        aggregation['max_height'] = aggregation.get('max_var_height')
 
     # Determine minimum height
     if aggregation.get('min_var_height') and aggregation.get('min_dim3'):
