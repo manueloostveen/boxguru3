@@ -728,6 +728,10 @@ def search_product(request, category_name=None,
     template_name = 'products/search_products.html'
     context['category_texts'] = main_category_texts
 
+    # template errors fix
+    context['show_initial_subcategory'] = None
+    context['show_initial_category'] = None
+
     if request.method == 'GET':
 
         product_type_footer = None
