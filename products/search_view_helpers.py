@@ -326,6 +326,7 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
         saved_boxes = json.loads(saved_boxes_json)
         context['saved_boxes'] = saved_boxes
     else:
+        context['saved_boxes'] = None
         saved_boxes = None
 
     if only_liked_boxes:
@@ -653,6 +654,7 @@ def create_queryset_product_fit(request, form, context):
         saved_boxes = json.loads(saved_boxes_json)
         context['saved_boxes'] = saved_boxes
     else:
+        context['saved_boxes'] = None
         saved_boxes = None
 
     if only_liked_boxes:
