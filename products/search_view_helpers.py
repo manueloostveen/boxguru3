@@ -399,7 +399,7 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
     for dim in [width, length, height]:
         if dim:
             if dim < error_margin:
-                error_margin = dim
+                error_margin = dim - 1
 
     error_margin_diameter = 15
     # TODO put error margin in form
