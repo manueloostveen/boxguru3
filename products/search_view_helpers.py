@@ -923,7 +923,7 @@ def get_min_max_dimensions(queryset):
         min_dim3=Min('inner_dim3'),
         min_var_height=Min('inner_variable_dimension_MIN'),
         max_dim3=Max('inner_dim3'),
-        max_var_height=Max('inner_variable_dimension_MAX')
+        # max_var_height=Max('inner_variable_dimension_MAX')
     )
 
 
