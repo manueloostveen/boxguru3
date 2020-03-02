@@ -35,21 +35,22 @@ SECRET_KEY = ')udxer79(350b(crjy8-1c7xatq&mmjlku3^ti2v*bjj2u(m32'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if os.environ.get('DEPLOYED') else True
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+if DEBUG == False:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
         },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                 'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            },
         },
-    },
-}
+    }
 
 ALLOWED_HOSTS = ['192.168.8.100', '127.0.0.1', '0.0.0.0', 'herokuboxguru.herokuapp.com',
                  'testboxguru.herokuapp.com', 'boxguru.herokuapp.com']
@@ -195,5 +196,5 @@ DATABASES['default'].update(prod_db)
 
 django_heroku.settings(locals(), logging=False)
 
-#SSL redirets
+#SSL redirects
 SECURE_SSL_REDIRECTS = True

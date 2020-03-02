@@ -819,6 +819,7 @@ def create_filters(request, context, queryset, browse=False):
                                                   not query == 'initial_search'}
 
         # Add minimum and maximum dimensions of initial results to session. Used to refine results on size
+        print('TOT HIER', 'in create_filters')
         min_max_dimensions = get_min_max_dimensions(queryset)
         request.session['min_width'] = min_max_dimensions['min_width']
         request.session['max_width'] = min_max_dimensions['max_width']
@@ -910,6 +911,8 @@ def get_min_max_dimensions(queryset):
     :return: min and max of width, length and height
     """
 
+    print(len(queryset), 'len(queryset) in get_min_max_dimensions')
+
     aggregation = queryset.aggregate(
         min_width=Min('inner_dim1'),
         max_width=Max('inner_dim1'),
@@ -918,8 +921,10 @@ def get_min_max_dimensions(queryset):
         min_dim3=Min('inner_dim3'),
         min_var_height=Min('inner_variable_dimension_MIN'),
         max_dim3=Max('inner_dim3'),
-        max_var_height=Max('inner_variable_dimension_MAX')
+        # max_var_height=Max('inner_variable_dimension_MAX')
     )
+
+    print(aggregation)
 
     # Determine maximum height
     if aggregation.get('max_var_height') and aggregation.get('max_dim3'):
