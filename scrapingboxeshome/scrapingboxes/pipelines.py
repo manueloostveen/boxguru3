@@ -298,7 +298,7 @@ class ScrapingboxesPipeline(object):
             if outer_var_dim in item:
                 self.outer_variable_dims.append(f"{outer_var_dim}: {item[outer_var_dim]}")
 
-        # Gets rid of wrong measured products (Paarekooper)
+        # Gets rid of wrong measured products (Paardekooper)
         if item.get('inner_dim1'):
             if item['inner_dim1'] > 2000:
                 raise self.drop_item(item, error="DimensionError", error_count=-1)

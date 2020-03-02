@@ -35,6 +35,8 @@ SECRET_KEY = ')udxer79(350b(crjy8-1c7xatq&mmjlku3^ti2v*bjj2u(m32'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if os.environ.get('DEPLOYED') else True
 
+#LOGGING
+# https://www.agiliq.com/blog/2017/12/configure-django-log-exceptions-production/
 if DEBUG == False:
     LOGGING = {
         'version': 1,
