@@ -395,11 +395,13 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
         qobjects.append(qcompanies)
 
     # Set error margin for query search range
-    error_margin = 0
+    error_margin = 50
     for dim in [width, length, height]:
         if dim:
             if dim < error_margin:
                 error_margin = dim - 1
+
+    print(error_margin, 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 
     error_margin_diameter = 15
     # TODO put error margin in form
