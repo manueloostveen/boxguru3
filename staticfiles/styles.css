@@ -1901,13 +1901,20 @@ div.card-body {
 }
 
 /*ICONS*/
-.fas.fa-bars {
-    color: white;
-    /*position: absolute;*/
-    /*right: 20px;*/
-    /*bottom: 50%;*/
-    cursor: pointer;
-    margin-top: 5px;
+.fas.fa-bars.hamburger {
+    /*color: white;*/
+    /*!*position: absolute;*!*/
+    /*!*right: 20px;*!*/
+    /*!*bottom: 50%;*!*/
+    /*cursor: pointer;*/
+    /*!*margin-top: 5px;*!*/
+    left: 0;
+    /*top: 20px;*/
+    position: absolute !important;
+}
+
+i.hamburger {
+    color: #5b80b2;
 }
 
 /*NAVIGATION*/

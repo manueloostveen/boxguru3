@@ -221,12 +221,4 @@ class RajapackSpider(scrapy.Spider):
             box["in_stock"] = None
             box['indices_dict'] = table_handler.indices_dict
 
-            # TESTING
-            if box.get('inner_dim1'):
-                if box['inner_dim1'] < 36:
-                    print('inner_dim1: ' + box['inner_dim1'])
-                    print('URL: ' + response.request.url)
-                    print('-----------------------------------------------------------------')
-
-
             yield box
