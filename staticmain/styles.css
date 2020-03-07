@@ -246,9 +246,6 @@ h6.logout {
         display: none;
     }
 
-    nav.menu {
-        display: none;
-    }
 
     h1.welcome-message {
         font-size: 40px;
@@ -258,6 +255,18 @@ h6.logout {
         font-size: 35px;
     }
 
+}
+
+@media (max-width: 480px) {
+    nav.menu {
+        display: none;
+    }
+}
+
+@media (min-width: 481px) {
+    .fas.fa-bars {
+        display: none;
+    }
 }
 
 .table-wrapper {
@@ -279,9 +288,7 @@ h6.logout {
         display: none;
     }
 
-    .fas.fa-bars {
-        display: none;
-    }
+
 }
 
 .product-filter-mobile {
@@ -350,7 +357,7 @@ table.table-mobile tr:last-child a {
 }
 
 table.table-mobile td {
-    width: 30px!important;
+    width: 30px !important;
 }
 
 table.table-mobile tr:nth-child(3) {
@@ -1908,6 +1915,9 @@ div.card-body {
     /*bottom: 50%;*/
     cursor: pointer;
     margin-top: 5px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
 }
 
 /*NAVIGATION*/
@@ -2204,11 +2214,12 @@ h2.category-name {
     text-align: center;
     border: 1px solid black
 }
+
 .mobile-results-wrapper div {
     border: 1px solid red;
 }
 
 .mobile-results div.col-6.staffel {
-    display: table-cell!important;
+    display: table-cell !important;
     vertical-align: middle;
 }
