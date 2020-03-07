@@ -222,14 +222,24 @@ class RajapackSpider(scrapy.Spider):
             box['indices_dict'] = table_handler.indices_dict
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             # TESTING
             if box.get('inner_dim3') and box.get('inner_dim1'):
                 if box['inner_dim3'] < 15 or box['inner_dim1'] < 26:
                     print('inner_dim3: ' + box['inner_dim3'] +'| inner_dim1: ' + box['inner_dim1'])
+=======
+            # TESTING
+            if box.get('inner_dim1'):
+                if box['inner_dim1'] < 36:
+                    print('inner_dim1: ' + box['inner_dim1'])
+>>>>>>> parent of 3e0637f... foutjes gemaakt met staticfiles directory deletes
                     print('URL: ' + response.request.url)
                     print('-----------------------------------------------------------------')
 
 
+<<<<<<< HEAD
 >>>>>>> parent of 5bd8977... mmmmraja
+=======
+>>>>>>> parent of 3e0637f... foutjes gemaakt met staticfiles directory deletes
             yield box
