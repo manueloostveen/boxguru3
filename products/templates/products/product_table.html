@@ -195,13 +195,12 @@
     {% if products %}
         <div class="results-mobile">
 
-            <div class="col d-flex justify-content-center">
+            <div class="col d-flex justify-content-center no-gutter">
                 <div class="mobile-table-top mt-3">
-                    <div class="pagination-bottom-mobile">
+
                         <a href="{{ liked_filter.url }}"
                            class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
-                    </div>
-                    <div class="pagination-bottom-mobile">
+                    <div class="pagination-bottom-mobile desktop">
                         <div class="pagination-block">
                             {% include "products/pagination.html" %}
                         </div>
@@ -439,12 +438,12 @@
         </div>
         <div class="row">
             {#            <div class="col-lg-0 col-1"></div>#}
-            <div class="col-md-3 col-4 filter-col">
+            <div class="col filter-col">
                 <div class="product-filter-normal">
                     {% include 'products/filters_desktop.html' %}
                 </div>
             </div>
-            <div class="col-8 col-lg-8">
+            <div class="col">
                 {% if no_search %}
                 {% else %}
                     <div class="table-top-wrap">

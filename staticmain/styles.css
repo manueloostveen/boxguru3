@@ -232,13 +232,36 @@ h6.logout {
 
 /*Table style*/
 
+/*tablet ipad width*/
+@media (max-width: 1213px) {
+    .product-filter-normal {
+        display: none;
+    }
+
+    .filter-col {
+        display: none;
+    }
+}
+
+@media (min-width: 1214px) {
+    .product-filter-mobile {
+        display: none;
+    }
+}
+
+
 @media (max-width: 785px) {
+    .pagination-bottom-mobile.desktop {
+        display: none;
+    }
     .table-wrapper {
         display: none;
     }
 
-    .product-filter-normal {
-        display: none;
+    .mobile-table-top {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
     }
 
 
@@ -250,12 +273,27 @@ h6.logout {
         font-size: 35px;
     }
 
+    a.show-liked-boxes.big {
+        font-size: 10px !important;
+        width: 150px !important;
+    }
+    .orderbtn {
+        width: 150px !important;
+    }
+
+    .orderOps-content {
+        width: 150px !important;
+    }
+
 }
 
 @media (max-width: 480px) {
     nav.menu {
         display: none;
     }
+
+
+
 }
 
 @media (min-width: 481px) {
@@ -278,12 +316,6 @@ h6.logout {
     .results-mobile {
         display: none;
     }
-
-    .product-filter-mobile {
-        display: none;
-    }
-
-
 }
 
 .product-filter-mobile {
@@ -297,7 +329,7 @@ table {
 }
 
 table.table-center {
-    margin-left: 0;
+    margin-left: auto;
     margin-right: auto;
     min-width: 80%;
     width: 100%;
@@ -448,8 +480,6 @@ img.product-thumb:hover {
 
 /*RESULTLIST*/
 
-.resultlist {
-}
 
 .resultlist li {
     list-style-type: none;
@@ -470,6 +500,10 @@ img.product-thumb:hover {
 
 }
 
+.no-gutter {
+    padding: 0;
+}
+
 .pagination-bottom {
     display: flex;
     justify-content: space-between;
@@ -478,6 +512,8 @@ img.product-thumb:hover {
 .pagination-bottom-mobile {
     display: flex;
     justify-content: center;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .table-top-wrap {
@@ -486,12 +522,15 @@ img.product-thumb:hover {
     justify-content: space-between;
 }
 
-.mobile-table-top {
-    /*display: flex;*/
-}
+/*.mobile-table-top {*/
+/*    display: flex;*/
+/*}*/
 
 .filter-col {
     margin-top: 20px;
+    max-width: 350px;
+    min-width: 350px;
+
 }
 
 .box {
@@ -913,6 +952,8 @@ a.show-liked-boxes.big {
     margin-bottom: 20px;
     width: 214px;
     box-sizing: content-box;
+    margin-top: 0;
+    margin-right: 5px;
 }
 
 a.show-liked-boxes:hover {
@@ -1150,7 +1191,7 @@ button.show-liked-boxes.delete:hover {
     display: inline-block;
     width: 80%;
     /*min-width: 200px;*/
-    max-width: 800px;
+    max-width: 600px;
 }
 
 /*.filter-section div, .filter-section a {*/
