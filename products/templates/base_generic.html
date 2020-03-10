@@ -320,6 +320,60 @@
 
 {% block js_searchAndHome %}
     <script>
+        $(function () {
+            $('#id_rectangular_cylindrical').change(function () {
+
+                if ($(this).val() === '1') {
+                    $('#diameter_container').toggle();
+                    $('#id_product_diameter').prop('required', true);
+
+                    $('#width_container').toggle();
+                    $('#length_container').toggle();
+                    $('#id_product_width').removeAttr('required');
+                    $('#id_product_length').removeAttr('required');
+
+                } else {
+                    $('#diameter_container').toggle();
+                    $('#id_product_diameter').removeAttr('required');
+
+                    $('#width_container').toggle();
+                    $('#id_product_width').prop('required', true);
+
+                    $('#length_container').toggle();
+                    $('#id_product_length').prop('required', true);
+
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $(document).ready(function () {
+                if ($('#id_rectangular_cylindrical').val() === '1') {
+                    $('#diameter_container').show();
+                    $('#id_product_diameter').prop('required', true);
+
+                    $('#width_container').hide();
+                    $('#length_container').hide();
+                    $('#id_product_width').removeAttr('required');
+                    $('#id_product_length').removeAttr('required');
+                } else {
+                    $('#diameter_container').hide();
+                    $('#id_product_diameter').removeAttr('required');
+
+                    $('#width_container').show();
+                    $('#id_product_width').prop('required', true);
+
+                    $('#length_container').show();
+                    $('#id_product_length').prop('required', true);
+
+                }
+            }
+        )
+    </script>
+
+
+    <script>
 
         {% if force_show_categories %}
             {% comment %}When selecting categories on home page{% endcomment %}

@@ -99,6 +99,8 @@
 
 
 {% block js %}
+
+    <poep></poep>
     <script>
         // Script to store selected tab when refreshing
 
@@ -276,59 +278,6 @@
 
 
     <script>
-        $(function () {
-            $('#id_rectangular_cylindrical').change(function () {
-
-                if ($(this).val() === '1') {
-                    $('#diameter_container').toggle();
-                    $('#id_product_diameter').prop('required', true);
-
-                    $('#width_container').toggle();
-                    $('#length_container').toggle();
-                    $('#id_product_width').removeAttr('required');
-                    $('#id_product_length').removeAttr('required');
-
-                } else {
-                    $('#diameter_container').toggle();
-                    $('#id_product_diameter').removeAttr('required');
-
-                    $('#width_container').toggle();
-                    $('#id_product_width').prop('required', true);
-
-                    $('#length_container').toggle();
-                    $('#id_product_length').prop('required', true);
-
-                }
-            })
-        })
-    </script>
-
-    <script>
-        $(document).ready(function () {
-                if ($('#id_rectangular_cylindrical').val() === '1') {
-                    $('#diameter_container').show();
-                    $('#id_product_diameter').prop('required', true);
-
-                    $('#width_container').hide();
-                    $('#length_container').hide();
-                    $('#id_product_width').removeAttr('required');
-                    $('#id_product_length').removeAttr('required');
-                } else {
-                    $('#diameter_container').hide();
-                    $('#id_product_diameter').removeAttr('required');
-
-                    $('#width_container').show();
-                    $('#id_product_width').prop('required', true);
-
-                    $('#length_container').show();
-                    $('#id_product_length').prop('required', true);
-
-                }
-            }
-        )
-    </script>
-
-    <script>
         $(".js-range-slider").ionRangeSlider();
     </script>
 
@@ -352,7 +301,6 @@
     <script>
         $('.js-company-link').click(function () {
             var clicked_link = $(this).attr('href');
-            console.log('function reached')
             $.ajax({
                 url: $(this).attr('data-collect-url'),
                 data: {
@@ -369,4 +317,4 @@
 
 
 
-{% endblock %}
+{% endblock js%}
