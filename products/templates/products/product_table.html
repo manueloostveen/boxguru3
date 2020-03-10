@@ -198,8 +198,8 @@
             <div class="col d-flex justify-content-center no-gutter">
                 <div class="mobile-table-top mt-3">
 
-                        <a href="{{ liked_filter.url }}"
-                           class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
+                    <a href="{{ liked_filter.url }}"
+                       class="show-liked-boxes big">{{ liked_filter.text_alt }}</a>
                     <div class="pagination-bottom-mobile desktop">
                         <div class="pagination-block">
                             {% include "products/pagination.html" %}
@@ -245,66 +245,66 @@
             </div>
             {% for object in products %}
 
-{#                <div class="container mobile-results-wrapper">#}
-{#                    <div class="row">#}
-{#                        <div class="col-9">{{ object.product_type }}</div>#}
-{#                        <div class="col-3">{% include 'products/like_unlike_product_form_cookies.html' %}</div>#}
-{#                    </div>#}
-{#                    <div class="row">#}
-{#                        <div class="col-6"><a class="product-thumb" data-toggle="popover-hover"#}
-{#                                    {% with 'products/images/'|add:object.get_product_image as image_static %}#}
-{#                               data-img="{% static image_static %}"><img class="product-thumb"#}
-{#                                                                         src="{% static image_static %}"#}
-{#                                                                         alt="product">{% endwith %}</a></div>#}
-{#                        <div class="col-6 {% if object.popover_tierprices|length > 0 %} staffel{% endif %}">€{{ object.price_ex_BTW }}#}
-{#                            {% if object.popover_tierprices|length > 0 %}#}
-{#                                - €{{ object.lowest_price }}#}
-{#                                    <table class="tooltiptext popover-table">#}
-{#                                        <thead>#}
-{#                                        <tr>#}
-{#                                            <th>Aantal</th>#}
-{#                                            <th></th>#}
-{#                                            <th>Prijs</th>#}
-{#                                        </tr>#}
-{#                                        </thead>#}
-{#                                        <tbody>#}
-{#                                        {% for tier, price in object.price_table.items %}#}
-{#                                            <tr>#}
-{#                                            <td>{{ tier }}</td>#}
-{#                                            <td></td>#}
-{#                                            <td>{{ price }}</td>{% endfor %}</tr>#}
-{#                                        </tbody>#}
-{#                                    </table>#}
-{#                            {% endif %}</div>#}
-{#                    </div>#}
-{#                    <div class="row">#}
-{#                        <div class="col-8">{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times#}
-{#                            {% if object.inner_dim2 %}{{ object.inner_dim2 }}{% else %}-{% endif %}#}
-{#                            &times#}
-{#                            {% if object.inner_dim3 %}#}
-{#                                {{ object.inner_dim3 }}{% elif object.inner_variable_dimension_MAX %}#}
-{#                                {{ object.inner_variable_dimension_MIN }} -#}
-{#                                {{ object.inner_variable_dimension_MAX }}{% endif %}#}
-{#                            <span> ({{ object.volume|floatformat }}L)</span></div>#}
-{#                        <div class="col-4">{% if show_match_header %}#}
-{#                            Match: {{ object.max_match }}%{% endif %}</div>#}
-{#                    </div>#}
-{#                    <div class="row">#}
-{#                        <div class="col-4">{{ object.color }}</div>#}
-{#                        <div class="col-4">{{ object.wall_thickness }}</div>#}
-{#                        <div class="col-4">{% if object.standard_size %}                        {{ object.standard_size }}{% elif object.bottles %}#}
-{#                                {% if object.bottles > 1 %}{{ object.bottles }} flessen#}
-{#                                {% else %}{{ object.bottles }} fles{% endif %}{% else %}-{% endif %}</div>#}
-{#                    </div>#}
-{#                    <div class="row">#}
-{#                        <div class="col"><a style="word-break: break-all;"#}
-{#                                           data-collect-url="/ajax/collect_reffered_link/"#}
-{#                                           class="js-company-link lowercase"#}
-{#                                           href="{{ object.url }}" target="_blank"#}
-{#                                           rel="noopener noreferrer">{{ object.company }}<i#}
-{#                                class="fas fa-external-link-alt"></i></a></div>#}
-{#                    </div>#}
-{#                </div>#}
+                {#                <div class="container mobile-results-wrapper">#}
+                {#                    <div class="row">#}
+                {#                        <div class="col-9">{{ object.product_type }}</div>#}
+                {#                        <div class="col-3">{% include 'products/like_unlike_product_form_cookies.html' %}</div>#}
+                {#                    </div>#}
+                {#                    <div class="row">#}
+                {#                        <div class="col-6"><a class="product-thumb" data-toggle="popover-hover"#}
+                {#                                    {% with 'products/images/'|add:object.get_product_image as image_static %}#}
+                {#                               data-img="{% static image_static %}"><img class="product-thumb"#}
+                {#                                                                         src="{% static image_static %}"#}
+                {#                                                                         alt="product">{% endwith %}</a></div>#}
+                {#                        <div class="col-6 {% if object.popover_tierprices|length > 0 %} staffel{% endif %}">€{{ object.price_ex_BTW }}#}
+                {#                            {% if object.popover_tierprices|length > 0 %}#}
+                {#                                - €{{ object.lowest_price }}#}
+                {#                                    <table class="tooltiptext popover-table">#}
+                {#                                        <thead>#}
+                {#                                        <tr>#}
+                {#                                            <th>Aantal</th>#}
+                {#                                            <th></th>#}
+                {#                                            <th>Prijs</th>#}
+                {#                                        </tr>#}
+                {#                                        </thead>#}
+                {#                                        <tbody>#}
+                {#                                        {% for tier, price in object.price_table.items %}#}
+                {#                                            <tr>#}
+                {#                                            <td>{{ tier }}</td>#}
+                {#                                            <td></td>#}
+                {#                                            <td>{{ price }}</td>{% endfor %}</tr>#}
+                {#                                        </tbody>#}
+                {#                                    </table>#}
+                {#                            {% endif %}</div>#}
+                {#                    </div>#}
+                {#                    <div class="row">#}
+                {#                        <div class="col-8">{% if object.inner_dim1 %}{{ object.inner_dim1 }}{% else %}-{% endif %} &times#}
+                {#                            {% if object.inner_dim2 %}{{ object.inner_dim2 }}{% else %}-{% endif %}#}
+                {#                            &times#}
+                {#                            {% if object.inner_dim3 %}#}
+                {#                                {{ object.inner_dim3 }}{% elif object.inner_variable_dimension_MAX %}#}
+                {#                                {{ object.inner_variable_dimension_MIN }} -#}
+                {#                                {{ object.inner_variable_dimension_MAX }}{% endif %}#}
+                {#                            <span> ({{ object.volume|floatformat }}L)</span></div>#}
+                {#                        <div class="col-4">{% if show_match_header %}#}
+                {#                            Match: {{ object.max_match }}%{% endif %}</div>#}
+                {#                    </div>#}
+                {#                    <div class="row">#}
+                {#                        <div class="col-4">{{ object.color }}</div>#}
+                {#                        <div class="col-4">{{ object.wall_thickness }}</div>#}
+                {#                        <div class="col-4">{% if object.standard_size %}                        {{ object.standard_size }}{% elif object.bottles %}#}
+                {#                                {% if object.bottles > 1 %}{{ object.bottles }} flessen#}
+                {#                                {% else %}{{ object.bottles }} fles{% endif %}{% else %}-{% endif %}</div>#}
+                {#                    </div>#}
+                {#                    <div class="row">#}
+                {#                        <div class="col"><a style="word-break: break-all;"#}
+                {#                                           data-collect-url="/ajax/collect_reffered_link/"#}
+                {#                                           class="js-company-link lowercase"#}
+                {#                                           href="{{ object.url }}" target="_blank"#}
+                {#                                           rel="noopener noreferrer">{{ object.company }}<i#}
+                {#                                class="fas fa-external-link-alt"></i></a></div>#}
+                {#                    </div>#}
+                {#                </div>#}
 
                 <table class="table-mobile table">
 
@@ -417,23 +417,25 @@
 
 
     <div class="table-wrapper">
-        <h1 class="category-name">{{ category_name }}</h1>
-        <div class="sub-cat-links">
-            {% if sub_category_links %}
-                {% for category_tuple in sub_category_links %}
-                    <div class="dropdown"><a
-                            href="{% url 'browse-subcategory' main_category_raw_parameter category_tuple.2 %}">
-                        <button class="dropbtn">{{ category_tuple.1 }}</button>
-                    </a></div>
-                {% endfor %}
-            {% endif %}
-        </div>
-
-        <div class="about-category-section">
-            <div class='about-cat-text'>
-                {% if show_initial_subcategory %}{{ show_initial_subcategory|small_text_subcategory }}
-                    {% elif show_initial_category %}{{ show_initial_category|small_text_maincategory }}
+        <div class="title-description">
+            <h1 class="category-name">{{ category_name }}</h1>
+            <div class="sub-cat-links">
+                {% if sub_category_links %}
+                    {% for category_tuple in sub_category_links %}
+                        <div class="dropdown"><a
+                                href="{% url 'browse-subcategory' main_category_raw_parameter category_tuple.2 %}">
+                            <button class="dropbtn">{{ category_tuple.1 }}</button>
+                        </a></div>
+                    {% endfor %}
                 {% endif %}
+            </div>
+
+            <div class="about-category-section">
+                <div class='about-cat-text'>
+                    {% if show_initial_subcategory %}{{ show_initial_subcategory|small_text_subcategory }}
+                        {% elif show_initial_category %}{{ show_initial_category|small_text_maincategory }}
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="row">

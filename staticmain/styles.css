@@ -241,6 +241,10 @@ h6.logout {
     .filter-col {
         display: none;
     }
+
+    .title-description {
+        display: none;
+    }
 }
 
 @media (min-width: 1214px) {
