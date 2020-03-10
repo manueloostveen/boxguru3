@@ -639,8 +639,11 @@ def create_queryset_product_fit(request, form, context):
     wall_thicknesses = request.GET.getlist('wall_thickness')
     standard_size = request.GET.getlist('standard_size')
     bottles = request.GET.getlist('bottles')
-    product_types = [product_type for product_type in request.GET.getlist('product_type') if product_type]
+    product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if
+                         product_type]
     companies = request.GET.getlist('company')
+
+    print(product_types, 'product types')
 
     qobjects = []
 

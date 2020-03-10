@@ -17,17 +17,20 @@
 
 
 {% block breadcrumbs %}
+    {% if breadcrumb or category_name %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb custom">
             <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
             <li class="breadcrumb-item"><a href="{% url 'categories' %}">Dozen</a></li>
             {% if breadcrumb %}
                 <li class="breadcrumb-item"><a
-                        href="{% url 'browse-maincategory' breadcrumb.0 %}">{{ breadcrumb.1 }}</a></li>{% endif %}
+                        href="{% url 'browse-maincategory' breadcrumb.0 %}">{{ breadcrumb.1 }}</a></li>
+            {% endif %}
             <li class="breadcrumb-item active" aria-current="page">
                 {% if category_name %}{{ category_name }}{% else %}Zoek{% endif %}</li>
         </ol>
     </nav>
+    {% endif %}
 {% endblock breadcrumbs %}
 
 {% block content %}
@@ -317,4 +320,4 @@
 
 
 
-{% endblock js%}
+{% endblock js %}
