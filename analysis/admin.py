@@ -3,7 +3,11 @@ from django.contrib import admin
 # Register your models here.
 from analysis.models import Referral
 
-admin.site.register(Referral)
+
+class ReferralAdmin(admin.ModelAdmin):
+    readonly_fields = ('date',)
+
+admin.site.register(Referral, ReferralAdmin)
 # admin.site.register(Visitor)
 # admin.site.register(VisitData)
 # admin.site.register(UniqueVisitWeek)
