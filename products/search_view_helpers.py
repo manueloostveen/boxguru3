@@ -295,7 +295,6 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
     width = form.cleaned_data.get('width')
     length = form.cleaned_data.get('length')
     height = form.cleaned_data.get('height')
-    diameter = form.cleaned_data.get('diameter')
     colors = request.GET.getlist('color')
     wall_thicknesses = request.GET.getlist('wall_thickness')
     standard_size = request.GET.getlist('standard_size')
@@ -309,91 +308,32 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
         product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if
                          product_type]
 
+
+    qobjects = create_filter_qobjects(
+        request, context, colors, wall_thicknesses, product_types, standard_size,
+        bottles, companies
+    )
+
+    # Add box search form qobjects
     if initial_main_category:
         main_category = initial_main_category
     else:
         main_category = form.cleaned_data.get('category')
 
-
-
-    qobjects = []
-
-    # Show liked boxes
-    only_liked_boxes = request.GET.get('liked')
-
-    saved_boxes_json = request.COOKIES.get('saved_boxes')
-    if saved_boxes_json:
-        saved_boxes = json.loads(saved_boxes_json)
-        context['saved_boxes'] = saved_boxes
+    if main_category:
+        qmain_category = Q(product_type__main_category__category_id=main_category)
+        qobjects.append(qmain_category)
     else:
-        context['saved_boxes'] = None
-        saved_boxes = None
+        if context['searched'] == 'box':
+            qmain_category = Q(product_type__main_category__category_id__in=list(range(1, 11)))
+            qobjects.append(qmain_category)
 
-    if only_liked_boxes:
-        # context['category_name'] = 'Mijn bewaarde dozen'
-        if only_liked_boxes == '2':
-            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaar" knop.</p>'
-        else:
-            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Bewaar dozen in de zoekresultaten met de "bewaarknop".</p>'
-
-        if saved_boxes:
-            qsaved = Q(pk__in=saved_boxes)
-            if not len(saved_boxes):
-                context['saved_boxes_message'] = no_saved_boxes_message
-        else:
-            context['saved_boxes_message'] = no_saved_boxes_message
-            qsaved = Q(pk__in=[])
-
-        qobjects.append(qsaved)
-
-    # Deal with variable height
     qvariable_height = Q()
     if variable_height == '1':
         qvariable_height = Q(variable_height=True)
     elif variable_height == '2':
         qvariable_height = Q(variable_height=False)
-
     qobjects.append(qvariable_height)
-
-    # Q objects query
-    if colors:
-        qcolors = Q(color__in=colors)
-        qobjects.append(qcolors)
-
-    if wall_thicknesses:
-        qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
-        qobjects.append(qwall_thicknesses)
-
-    if main_category:
-        qmain_category = Q(product_type__main_category__category_id=main_category)
-        qobjects.append(qmain_category)
-
-    else:
-        if context['searched'] == 'box':
-            qmain_category = Q(product_type__main_category__category_id__in=list(range(1, 11)))
-            qobjects.append(qmain_category)
-        # elif context['searched'] == 'tube':
-        #     qmain_category = Q(product_type__main_category=14)
-        #     qobjects.append(qmain_category)
-        # elif context['searched'] == 'envelope':
-        #     qmain_category = Q(product_type__main_category=13)
-        #     qobjects.append(qmain_category)
-
-    if len(product_types):
-        qproduct_types = Q(product_type__product_type_id__in=product_types)
-        qobjects.append(qproduct_types)
-
-    if len(standard_size):
-        qstandard_size = Q(standard_size__in=standard_size)
-        qobjects.append(qstandard_size)
-
-    if len(bottles):
-        qbottles = Q(bottles__in=bottles)
-        qobjects.append(qbottles)
-
-    if len(companies):
-        qcompanies = Q(company__in=companies)
-        qobjects.append(qcompanies)
 
     # Set error margin for query search range
     error_margin = 50
@@ -402,11 +342,8 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
             if dim < error_margin:
                 error_margin = dim - 1
 
-    error_margin_diameter = 15
-    # TODO put error margin in form
-
     # Set maxmatch variable for template context
-    if width or length or height or diameter:
+    if width or length or height:
         context['show_match_header'] = True
         max_match = True
     else:
@@ -440,11 +377,6 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
             (Q(inner_variable_dimension_MAX__gte=height) & Q(inner_variable_dimension_MIN__lte=height)))
         qobjects.append(qheight)
 
-    if diameter:
-        diameter = float(diameter)
-        qdiameter = Q(diameter__range=(diameter - error_margin_diameter, diameter + error_margin_diameter))
-        qobjects.append(qdiameter)
-
     # Create Queryset
     swidth_width_test = Case(
         When(inner_dim1__isnull=False,
@@ -476,12 +408,6 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
         default=0, output_field=DecimalField()
     )
 
-    sdiameter_diameter_test = Case(
-        When(diameter__isnull=False,
-             then=(100 - (Abs(F('diameter') - diameter) / F('diameter')) * 100.0)),
-        default=0, output_field=DecimalField()
-    )
-
     if width and not length and not height:
 
         queryset_qobjects = Product.objects.filter(
@@ -492,7 +418,7 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
             max_match=Round(Greatest('swidth_width_test', 'swidth_length_test'))).distinct()
 
 
-    elif length and not width and not height and not diameter:
+    elif length and not width and not height:
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
@@ -501,7 +427,7 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
             slength_length_test=slength_length_test,
             max_match=Round(Greatest('slength_width_test', 'slength_length_test'))).distinct()
 
-    elif height and not width and not length and not diameter:
+    elif height and not width and not length:
 
         queryset_qobjects = Product.objects.filter(
             *qobjects
@@ -559,24 +485,6 @@ def create_queryset(request, form, context, initial_product_type=None, initial_m
             wl_match=Greatest('sww_sll_match', 'swl_slw_match'),
             max_match=Round((F('wl_match') * 2 + F('sheight_height_test')) / 3)).distinct()
 
-    elif diameter and not length:
-
-        queryset_qobjects = Product.objects.filter(
-            *qobjects
-        ).order_by().annotate(
-            max_match=Round(sdiameter_diameter_test)).distinct()
-
-    elif length and diameter:
-
-        queryset_qobjects = Product.objects.filter(
-            *qobjects
-        ).order_by().annotate(
-            slength_width_test=slength_width_test,
-            slength_length_test=slength_length_test,
-            sdiameter_diameter_test=sdiameter_diameter_test,
-            slength_match=Greatest('slength_width_test', 'slength_length_test'),
-            max_match=Round((F('slength_match') + F('sdiameter_diameter_test')) / 2)).distinct()
-
     else:
         queryset_qobjects = Product.objects.filter(*qobjects).order_by().distinct()
 
@@ -617,32 +525,8 @@ def find_perfect_match(requested_amount, queryset, product):
     return success_boxes
 
 
-def create_queryset_product_fit(request, form, context):
-    width = form.cleaned_data.get('product_width')
-    length = form.cleaned_data.get('product_length')
-    height = form.cleaned_data.get('product_height')
-    diameter = form.cleaned_data.get('product_diameter')
-    amount_of_products = form.cleaned_data.get('amount_of_products_in_box')
-    cylindrical = form.cleaned_data.get('rectangular_cylindrical')
-    no_tipping = form.cleaned_data.get('no_tipping')
-    no_stacking = form.cleaned_data.get('no_stacking')
-
-    # Calculate estimate of product volume for initial box selection
-    if cylindrical:
-        product_volume = diameter ** 2 * height / 1000000.0
-        product = CylindricalProduct(diameter, height, no_tipping, no_stacking)
-    else:
-        product_volume = width * length * height / 1000000.0
-        product = RectangularProduct(width, length, height, no_tipping, no_stacking)
-
-    colors = request.GET.getlist('color')
-    wall_thicknesses = request.GET.getlist('wall_thickness')
-    standard_size = request.GET.getlist('standard_size')
-    bottles = request.GET.getlist('bottles')
-    product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if
-                         product_type]
-    companies = request.GET.getlist('company')
-
+def create_filter_qobjects(request, context, colors, wall_thicknesses, product_types,
+                           standard_size, bottles, companies):
     qobjects = []
 
     # Show liked boxes
@@ -657,8 +541,9 @@ def create_queryset_product_fit(request, form, context):
         saved_boxes = None
 
     if only_liked_boxes:
+        # context['category_name'] = 'Mijn bewaarde dozen'
         if only_liked_boxes == '2':
-            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaarknop".</p>'
+            no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Doe hierboven een zoekopdracht en bewaar dozen met de "bewaar" knop.</p>'
         else:
             no_saved_boxes_message = '<h4>Er zijn nog geen dozen bewaard om te vergelijken!</h4><p> Bewaar dozen in de zoekresultaten met de "bewaarknop".</p>'
 
@@ -672,6 +557,8 @@ def create_queryset_product_fit(request, form, context):
 
         qobjects.append(qsaved)
 
+
+
     # Q objects query
     if colors:
         qcolors = Q(color__in=colors)
@@ -681,8 +568,6 @@ def create_queryset_product_fit(request, form, context):
         qwall_thicknesses = Q(wall_thickness__in=wall_thicknesses)
         qobjects.append(qwall_thicknesses)
 
-    qmain_category = Q(product_type__main_category__category_id__in=range(1, 11))
-    qobjects.append(qmain_category)
 
     if len(product_types):
         qproduct_types = Q(product_type__product_type_id__in=product_types)
@@ -700,6 +585,46 @@ def create_queryset_product_fit(request, form, context):
         qcompanies = Q(company__in=companies)
         qobjects.append(qcompanies)
 
+    return qobjects
+
+
+def create_queryset_product_fit(request, form, context):
+    # Search form data
+    width = form.cleaned_data.get('product_width')
+    length = form.cleaned_data.get('product_length')
+    height = form.cleaned_data.get('product_height')
+    diameter = form.cleaned_data.get('product_diameter')
+    amount_of_products = form.cleaned_data.get('amount_of_products_in_box')
+    cylindrical = form.cleaned_data.get('rectangular_cylindrical')
+    no_tipping = form.cleaned_data.get('no_tipping')
+    no_stacking = form.cleaned_data.get('no_stacking')
+
+    # Calculate estimate of product volume for initial box selection
+    if cylindrical:
+        product_volume = diameter ** 2 * height / 1000000.0
+        product = CylindricalProduct(diameter, height, no_tipping, no_stacking)
+    else:
+        product_volume = width * length * height / 1000000.0
+        product = RectangularProduct(width, length, height, no_tipping, no_stacking)
+
+    # Filter data
+    colors = request.GET.getlist('color')
+    wall_thicknesses = request.GET.getlist('wall_thickness')
+    standard_size = request.GET.getlist('standard_size')
+    bottles = request.GET.getlist('bottles')
+    product_types = [product_type for product_type in request.GET.getlist('product_type__product_type_id') if
+                     product_type]
+    companies = request.GET.getlist('company')
+
+    # Create Q objects
+    qobjects = create_filter_qobjects(
+            request, context, colors, wall_thicknesses, product_types, standard_size,
+            bottles, companies
+        )
+
+    qmain_category = Q(product_type__main_category__category_id__in=range(1, 11))
+    qobjects.append(qmain_category)
+
     # Set box volume benchmark
     error_margin = 30
     qvolume = Q(volume__range=((product_volume * amount_of_products) - error_margin * product_volume,
@@ -707,13 +632,11 @@ def create_queryset_product_fit(request, form, context):
 
     qobjects.append(qvolume)
 
+
     # Create Queryset
     queryset_qobjects = Product.objects.filter(
         *qobjects
     ).order_by().distinct()
-    #
-    # queryset_qobjects = queryset_qobjects.annotate(
-    #     volume_calculated=calculate_volume).filter(qvolume)
 
     # Find perfect boxes in queryset boxes
     queryset_qobjects = find_perfect_match(amount_of_products, queryset_qobjects, product)
@@ -791,7 +714,6 @@ def order_queryset(request, context, queryset, max_match_possible=False):
 def create_filters(request, context, queryset, browse=False):
     no_filter = [('', 'x')]
 
-
     if request.GET.get('initial_search') or browse != request.session.get('browse'):
 
         # Set browse in session to check when a filter is clicked
@@ -866,8 +788,8 @@ def create_filters(request, context, queryset, browse=False):
     if 'filter_product_type' in request.session:
         context['filters'] = {
             'Type doos': create_filter_list2(Filter2, request, 'product_type__product_type_id',
-                                                 request.session['filter_product_type'], remaining_filters,
-                                                 count_dictionary),
+                                             request.session['filter_product_type'], remaining_filters,
+                                             count_dictionary),
             'Kwaliteit': create_filter_list2(Filter2, request, 'wall_thickness',
                                              request.session['filter_wall_thickness'], remaining_filters,
                                              count_dictionary),
@@ -928,7 +850,6 @@ def get_min_max_dimensions(queryset):
         max_dim3=Max('inner_dim3'),
         max_var_height=Max('inner_variable_dimension_MAX')
     )
-
 
     # Determine maximum height
     if aggregation.get('max_var_height') and aggregation.get('max_dim3'):
