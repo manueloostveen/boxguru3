@@ -558,7 +558,6 @@ def create_filter_qobjects(request, context, colors, wall_thicknesses, product_t
         qobjects.append(qsaved)
 
 
-
     # Q objects query
     if colors:
         qcolors = Q(color__in=colors)
