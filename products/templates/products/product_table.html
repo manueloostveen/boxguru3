@@ -496,14 +496,15 @@
                                 {% if searched == 'tube' %}
                                     <a href="{{ diameter_header }}">Diameter</a>{% else %}
                                     <a href="{{ height_header }}">Hoogte</a>{% endif %}
-                                <div {% if order_by == '-inner_dim3' %}class="arrowDown"
-                                     {% elif order_by == 'inner_dim3' %}class="arrowUp"
-                                     {% elif order_by == '-diameter' %}class="arrowDown"
-                                     {% elif order_by == 'diameter' %}class="arrowUp"{% endif %}></div>
+                                <div {% if order_by == '-height_sorter' %}class="arrowDown"
+                                     {% elif order_by == 'height_sorter' %}class="arrowUp"
+                                     {% endif %}></div>
                             </th>
 
                             <th>
                                 <a href="{{ volume_header }}">Inhoud</a>
+                                <div {% if order_by == '-volume' %}class="arrowDown"
+                                     {% elif order_by == 'volume' %}class="arrowUp"{% else %}{% endif %}></div>
                             </th>
 
                             {% if show_match_header %}

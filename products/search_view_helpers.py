@@ -643,8 +643,6 @@ def create_queryset_product_fit(request, form, context):
                          product_type]
     companies = request.GET.getlist('company')
 
-    print(product_types, 'product types')
-
     qobjects = []
 
     # Show liked boxes
